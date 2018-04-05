@@ -45,15 +45,15 @@ if __name__ == '__main__':
     #Test de la récupération de route
     #t_waypoints = dm.np.array([[48.856614,2.3522219000000177],[48.390394,-4.486076]])
     t_waypoints = dm.np.array([])
-    link=dm.getTrace("/home/pmaksud/Projet/data/data_route.json", str(49.357571), str(6.168426), str(43.300000), str(5.400000), t_waypoints)
+    link=dm.getTrace("../data/data_route.json", str(49.357571), str(6.168426), str(43.300000), str(5.400000), t_waypoints)
     t2=time.time()
     #print("Temps de reception des données via API : ", t2-t1, " s")
     #Test de la récupération du trajet sous forme de tableau de coordonnées GPS
-    dm.getTraceGps("/home/pmaksud/Projet/data/data_route.json", link, "/home/pmaksud/Projet/data/GPScoords.csv")
+    dm.getTraceGps("../data/data_route.json", link, "../data/GPScoords.csv")
     dm.getPlaces(str(49.357571), str(6.168426))
     dm.getPlaceFromId("4c5c6cd16ebe2d7f060bd02e","/home/pmaksud/Projet/data/data_place.json")
     #Test de la récupération de tous les lieux autour du trajet et affichage
-    test_places=dm.getPlacesGps("/home/pmaksud/Projet/data/GPScoords.csv")
+    test_places=dm.getPlacesGps("../data/GPScoords.csv")
     for Place in test_places:
             Place.displayPlace()
 ###############################################################################

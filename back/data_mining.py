@@ -198,7 +198,7 @@ def getPlacesGps(path_coords):
             else:
                 places_id = places_id + getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]))
         nSize=len(places_id)
-        path_file="/home/pmaksud/Projet/data/data_place.json"
+        path_file="../data/data_place.json"
         for i in range(0,nSize):
             getPlaceFromId(places_id[i], path_file)
             if(i==0):
