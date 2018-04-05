@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from flask import render_template, flash, redirect, Markup
 from app import app
 from app.forms import TrajectForm
+import sys
 from app.cache import cache
 
 @app.route('/')
@@ -10,11 +13,13 @@ def index():
 	return render_template('index.html', title='Home', user=user)
 
 @app.route('/form', methods=['GET', 'POST'])
-@cache.cached(timeout=150)
+@cache.cached(timeout=300)
 #@cache.cached(300, key_prefix='form', unless='only_cache_get')
 def form():
 	form = TrajectForm()
 	if form.validate_on_submit():
+		reload(sys)
+		sys.setdefaultencoding('utf8')
 		flash(Markup('Ville de départ : <b>{}</b>'.format(form.depart.data)))
 		flash(Markup('Ville d arrivee : <b>{}</b>'.format(form.arrivee.data)))
 		flash(Markup('Moyen de transport : <b>{}</b>'.format(form.mode.data)))
@@ -22,6 +27,4 @@ def form():
 		flash(Markup('Durée maximale du repas : <b>{}</b>'.format(form.tps_repas.data)))
 		return redirect('/form')
 	return render_template('forms.html', title='Formulaire', form=form)
-
-
 

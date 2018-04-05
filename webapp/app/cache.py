@@ -1,3 +1,3 @@
 from flask_cache import Cache 
 
-cache = Cache()
+cache = Cache(config={})

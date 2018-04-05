@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/pmaksud/Documents/interface/venv"
+VIRTUAL_ENV="/home/pmaksud/Documents/Machine%20Learning%20-%20Planificateur%20intelligent/webapp/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

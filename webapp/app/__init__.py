@@ -1,5 +1,5 @@
 from flask import Flask
-from flask.ext.cache import Cache
+from flask_caching import Cache
 from config import Config
 #from app.cache import cache
 #from flask_sqlalchemy import SQLAlchemy
