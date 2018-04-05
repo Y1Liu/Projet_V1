@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+	{% extends "base.html" %}
+
+	{% block content %}
+		<h1> Formulaire de renseignements</h1>
+		<form action="" method="post">
+			<p>
+				{{ form.depart.label }}
+				{{ form.depart(size=16) }}
+			</p>
+			<p>
+				{{ form.arrivee.label }}
+				{{ form.arrivee(size=16) }}
+			</p>
+			<p>
+				{{ form.mode.label }}
+				{{ form.mode() }}
+			</p>
+			<p>
+				{{ form.pause_voyage.label }}
+				{{ form.pause_voyage() }}
+			</p>
+			<p>
+				{{ form.tps_repas.label }}
+				{{ form.tps_repas() }}
+			</p>
+
+			<p>
+				{{ form.submit() }}
+				{{ form.csrf_token }}
+    			<!--{{ form.name }}
+    			<input type=submit><!-->
+			</p>
+
+			<p>Tags
+				<ul>
+					<li>
+
+		</form>
+	{% endblock %}
+
+</html>
+
