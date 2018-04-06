@@ -27,26 +27,15 @@ def getSimilarity(str1, str2):
     return(s)
 
 
-#Creation du fichier csv permettant de creer la table "words"
-#Arguments : chemin du fichier et liste de tags
-def createWordCSV(path_file, l):
-    with open(path_file, 'w+') as csvfile:
-        word=csv.writer(csvfile, delimiter=',')
-        word.writerow(['word_id:ID', 'word'])
-        nSize=len(l)
-        for i in range (0,nSize-1):
-            word.writerow(["w"+str(i), ''.join(l[i])])
-
-
 #Creation du fichier csv permettant de creer la table "similarities"
-def createSimilarityCSV(path_file, t):
+def createSimilarityCSV(path_file, t, l):
     with open(path_file, 'w+') as csvfile:
         word=csv.writer(csvfile, delimiter=',')
         word.writerow(['similarity_id:ID', 'word_id1', 'word_id2', 'similarity:float'])
         nSize=len(t)
         for i in range (0,nSize):
             for j in range (0,nSize):
-                word.writerow(["s"+str(i), "w"+str(i), "w"+str(j), t[i][j]])
+                word.writerow(["s"+str(i)+str(j),''.join(l[i]),''.join(l[j]), t[i][j]])
 
 
 #prends la liste de tag et renvoie une matrice de similarité
@@ -55,13 +44,12 @@ def csvToMatrix(path_file):
         tags=csv.reader(csvfile)
         l=list(map(tuple,tags))
         nSize=len(l)
-        createWordCSV("../data/words.csv", l)
         t=np.zeros((nSize-1, nSize-1),dtype='float')
         for i in range (0,nSize-1):
             for j in range (0,nSize-1):
                 t[i][j]=getSimilarity(''.join(l[i]),''.join(l[j]))
         print(t)
-        createSimilarityCSV("../data/similarities.csv", t)
+        createSimilarityCSV("../data/similarities.csv", t, l)
     return(t)
 
 
