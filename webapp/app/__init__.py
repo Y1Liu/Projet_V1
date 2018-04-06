@@ -1,3 +1,15 @@
+###############################################################################
+#Fichier permettant l'initialisation de l'application
+#Par Arnaud Duhamel et Robin Cavalieri
+#Planificateur intelligent
+#SOLUTEC Paris
+#06/04/2018
+###############################################################################
+
+
+###############################################################################
+#LIBRAIRIES
+###############################################################################
 from flask import Flask
 from flask_caching import Cache
 from config import Config
@@ -6,6 +18,9 @@ from config import Config
 #from flask_migrate import Migrate
 
 
+###############################################################################
+#Initialisation de l'application
+###############################################################################
 app = Flask(__name__)
 app.config.from_object(Config)
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})

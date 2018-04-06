@@ -4,7 +4,7 @@
 	{% extends "base.html" %}
 
 	{% block content %}
-		<h1> Formulaire de renseignements</h1>
+		<h1> Formulaire de renseignement</h1>
 		<form action="" method="post">
 			<p>
 				{{ form.depart.label }}
@@ -27,16 +27,17 @@
 				{{ form.tps_repas() }}
 			</p>
 
+			<p>  
+				{{ form.tags.label.center }}
+				{{ form.tags() }}
+			</p>
+
 			<p>
 				{{ form.submit() }}
 				{{ form.csrf_token }}
     			<!--{{ form.name }}
     			<input type=submit><!-->
 			</p>
-
-			<p>Tags
-				<ul>
-					<li>
 
 		</form>
 	{% endblock %}
