@@ -15,7 +15,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 ###############################################################################
-#Fonction cointenant la classe de configuration de l'application
+#Fonction contenant la classe de configuration de l'application
 ###############################################################################
 class Config(object):
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'solutec'
