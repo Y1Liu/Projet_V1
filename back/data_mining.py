@@ -38,9 +38,7 @@ TK_MAPS_2="AIzaSyCiZVNwOpKaJyBT0L0s6PDUA98_nizshIA"
 CLIENT_ID="1LD4L3ES2MGHGMEUQTSGMTTJUL5AWHTYMOA340FFHY5HBLED"
 CLIENT_SECRET="PYDER5QZHVZZE4NYAUFKTHIMXEP513WWBLV14DNOWKAZLUDN"
 #Filtres de recherche
-RAYON="20000"
-MODE="driving"
-LIMIT="5"
+LIMIT="50"
 RAYON_TERRE=6378137.0
 ###############################################################################
 
@@ -65,7 +63,7 @@ def getGps(address):
 
 
 #Permet de récupérer un JSON avec le trajet entre N points
-def getTrace(path_file, latDep, longDep, latArr, longArr, tWaypoints):
+def getTrace(path_file, latDep, longDep, latArr, longArr, tWaypoints, mode):
     #Création des stops
     temp=np.shape(tWaypoints)
     if(temp[0]==0):
@@ -77,7 +75,7 @@ def getTrace(path_file, latDep, longDep, latArr, longArr, tWaypoints):
         for i in range(1,temp[0]):
             waypoints = waypoints + "%7Cvia:" + str(tWaypoints[i,0]) + "%2C" + str(tWaypoints[i,1])
     #Récupération des données via API
-    link="https://maps.googleapis.com/maps/api/directions/json?origin="+latDep+","+longDep+"&mode="+MODE+"&destination="+latArr+","+longArr+waypoints+"&key="+TK_MAPS_2
+    link="https://maps.googleapis.com/maps/api/directions/json?origin="+latDep+","+longDep+"&mode="+mode+"&destination="+latArr+","+longArr+waypoints+"&key="+TK_MAPS_2
     json_data=requests.get(link)
     #conversion au format JSON
     data=json_data.json()
@@ -102,12 +100,13 @@ def getTraceGps(json_file, base_url, csv_file):
     with open(csv_file, "w+") as f:
         writer = csv.writer(f, lineterminator="\n")
         writer.writerows(np.column_stack((lat, lng)))
+    return ([[lat], [lng]])
 
 
 #Fonction permettant de renvoyer une liste d'id_place
-def getPlaces(lat, lng):
+def getPlaces(lat, lng, rayon):
     #Récupération des données via API
-    link="https://api.foursquare.com/v2/venues/search?ll="+lat+","+lng+"&categoryId=4d4b7104d754a06370d81259&limit="+LIMIT+"&radius="+RAYON+"&client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&v=20180403"
+    link="https://api.foursquare.com/v2/venues/search?ll="+lat+","+lng+"&categoryId=4d4b7104d754a06370d81259&limit="+LIMIT+"&radius="+rayon+"&client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&v=20180403"
     list_id=[]
     #Requêtes
     json_data=requests.get(link)
@@ -186,7 +185,7 @@ def remove_duplicates(lst):
 #Lecture du fichiers contenant les coordonnées GPS
 #Recherche des places autour de chaque point
 #Retourne la liste avec toutes les places
-def getPlacesGps(path_coords):
+def getPlacesGps(path_coords, path_file):
     #Ouverture du fichier
     t1=time.time()
     with open(path_coords, "r") as file_csv:
@@ -203,7 +202,6 @@ def getPlacesGps(path_coords):
             else:
                 places_id = places_id + getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]))
         nSize=len(places_id)
-        path_file="../data/data_place.json"
         for i in range(0,nSize):
             getPlaceFromId(places_id[i], path_file)
             if(i==0):
@@ -233,7 +231,7 @@ def getDistance_Duree(latDep, lngDep, latArr, lngArr, tWaypoints, mode):
     json_data=requests.get(link)
     #conversion au format JSON
     data=json_data.json()
-    t2=time.time() 
+    t2=time.time()
     dist = data['routes'][0]['legs'][0]['distance']['value']
     duree = data['routes'][0]['legs'][0]['duration']['value']
     heuristic = RAYON_TERRE*acos(sin(radians(float(latDep)))*sin(radians(float(latArr)))+cos(radians(float(latDep)))*cos(radians(float(latArr)))*cos(radians(float(lngArr))-radians(float(lngDep))))
