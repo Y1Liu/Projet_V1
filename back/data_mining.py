@@ -23,7 +23,7 @@ import pandas as pd
 from geopy.geocoders import Nominatim
 from pyspark.sql import SQLContext
 from pyspark.sql.functions import explode
-from math import sin, cos, sqrt, atan2, radians
+from math import sin, cos, acos, radians
 ###############################################################################
 
 
@@ -40,8 +40,8 @@ CLIENT_SECRET="PYDER5QZHVZZE4NYAUFKTHIMXEP513WWBLV14DNOWKAZLUDN"
 #Filtres de recherche
 RAYON="20000"
 MODE="driving"
-MODE_WALKING="walking"
 LIMIT="5"
+RAYON_TERRE=6378137.0
 ###############################################################################
 
 
@@ -236,7 +236,7 @@ def getDistance_Duree(latDep, lngDep, latArr, lngArr, tWaypoints, mode):
     t2=time.time() 
     dist = data['routes'][0]['legs'][0]['distance']['value']
     duree = data['routes'][0]['legs'][0]['duration']['value']
-    print("Distance en mode " + mode + ": ", dist,  "m")
-    print("Temps en mode " + mode + ": ", duree, "s")
+    heuristic = RAYON_TERRE*acos(sin(radians(float(latDep)))*sin(radians(float(latArr)))+cos(radians(float(latDep)))*cos(radians(float(latArr)))*cos(radians(float(lngArr))-radians(float(lngDep))))
     print(t2-t1, "s")
+    return [duree, dist, heuristic]
 ###############################################################################

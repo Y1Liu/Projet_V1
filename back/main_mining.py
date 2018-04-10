@@ -62,5 +62,5 @@ if __name__ == '__main__':
             #Place.displayPlace()
 
     dm.getDistance_Duree(str(49.357571), str(6.168426), str(43.300000), str(5.400000), t_waypoints, "driving")
-    dm.getDistance_Duree(str(48.87430279999999),str(2.3243563999999424), str(48.820786), str(2.390798000000018), t_waypoints_2, "walking")
+    #dm.getDistance_Duree(str(48.87430279999999),str(2.3243563999999424), str(48.820786), str(2.390798000000018), t_waypoints_2, "walking")
 ###############################################################################
