@@ -4,7 +4,7 @@
 #Planificateur intelligent
 #SOLUTEC Paris
 #10/04/2018
-#Les fonctions d'insertion dans la BDD sont encascadées selon les dépendances 
+#Les fonctions d'insertion dans la BDD sont encascadées selon les dépendances
 ###############################################################################
 
 
@@ -22,10 +22,11 @@ import pandas as pd
 #Initialisation de la base de données
 #Retourne le contexte
 def init_db():
-    connexion = pypyodbc.connect("Driver={SQL Server Native Client 11.0};"
+    connexion = pypyodbc.connect("Driver={ODBC Driver 13 for SQL Server};"
         "Server=10.2.38.20;"
+        "DNS=ALUMINIUM.SOLUTEC.LAN;"
         "Database=Planner;"
-        "uid=;pwd=")
+        "uid=SOLUTEC\rcavalieri;pwd=")
     return connexion
 
 

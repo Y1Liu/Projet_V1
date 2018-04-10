@@ -22,6 +22,7 @@ import pyspark
 import os
 import time
 import place as p
+import db
 from pyspark import *
 from pyspark.sql.session import SparkSession
 ###############################################################################
@@ -33,11 +34,11 @@ from pyspark.sql.session import SparkSession
 if __name__ == '__main__':
 
     #Création du spark context
-    conf = pyspark.SparkConf().setAll([('spark.executor.memory', '2g'), ('spark.executor.cores', '4'),("spark.cores.max", "8"), ('spark.driver.memory','4g')])
-    sc = pyspark.SparkContext.getOrCreate()
-    sc.stop()
-    sc = pyspark.SparkContext(master='local[*]', appName='SchedulerJob',conf=conf)
-    spark = SparkSession(sc)
+    #conf = pyspark.SparkConf().setAll([('spark.executor.memory', '2g'), ('spark.executor.cores', '4'),("spark.cores.max", "8"), ('spark.driver.memory','4g')])
+    #sc = pyspark.SparkContext.getOrCreate()
+    #sc.stop()
+    #sc = pyspark.SparkContext(master='local[*]', appName='SchedulerJob',conf=conf)
+    #spark = SparkSession(sc)
     #Récupération date
     [date_today, end_time] = dm.getDate()
     t1=time.time()
@@ -63,4 +64,5 @@ if __name__ == '__main__':
 
     dm.getDistance_Duree(str(49.357571), str(6.168426), str(43.300000), str(5.400000), t_waypoints, "driving")
     #dm.getDistance_Duree(str(48.87430279999999),str(2.3243563999999424), str(48.820786), str(2.390798000000018), t_waypoints_2, "walking")
+    db.insert_positions([str(1.02020), str(1.01551)],[],[],[],[],[])
 ###############################################################################
