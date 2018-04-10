@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 ###############################################################################
 #Fichier contenant les fonctions permettant la récupération des données au format JSON
 #Par Arnaud Duhamel et Robin Cavalieri
@@ -20,6 +23,7 @@ import pandas as pd
 from geopy.geocoders import Nominatim
 from pyspark.sql import SQLContext
 from pyspark.sql.functions import explode
+from math import sin, cos, sqrt, atan2, radians
 ###############################################################################
 
 
@@ -36,6 +40,7 @@ CLIENT_SECRET="PYDER5QZHVZZE4NYAUFKTHIMXEP513WWBLV14DNOWKAZLUDN"
 #Filtres de recherche
 RAYON="20000"
 MODE="driving"
+MODE_WALKING="walking"
 LIMIT="5"
 ###############################################################################
 
@@ -208,4 +213,30 @@ def getPlacesGps(path_coords):
     t2=time.time()
     print("Temps de reception des places : ", t2-t1, " s")
     return remove_duplicates(places)
+
+
+#Fonction permettant de récupérer la distance et la durée entre deux coordonnées
+#lors d'un trajet selon différents modes de transport
+def getDistance_Duree(latDep, lngDep, latArr, lngArr, tWaypoints, mode):
+    t1=time.time()
+    temp=np.shape(tWaypoints)
+    if(temp[0]==0):
+        waypoints=''
+    elif(temp[0]>=1):
+        waypoints="&waypoints=via:"+ str(tWaypoints[0,0]) + "%2C" + str(tWaypoints[0,1])
+        #print(waypoints)
+    elif(temp[0]>1):
+        for i in range(1,temp[0]):
+            waypoints = waypoints + "%7Cvia:" + str(tWaypoints[i,0]) + "%2C" + str(tWaypoints[i,1])
+    #Récupération des données via API
+    link="https://maps.googleapis.com/maps/api/directions/json?origin="+latDep+","+lngDep+"&mode="+mode+"&destination="+latArr+","+lngArr+waypoints+"&key="+TK_MAPS_2
+    json_data=requests.get(link)
+    #conversion au format JSON
+    data=json_data.json()
+    t2=time.time() 
+    dist = data['routes'][0]['legs'][0]['distance']['value']
+    duree = data['routes'][0]['legs'][0]['duration']['value']
+    print("Distance en mode " + mode + ": ", dist,  "m")
+    print("Temps en mode " + mode + ": ", duree, "s")
+    print(t2-t1, "s")
 ###############################################################################

@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 ###############################################################################
 #Fichier appelant les fonctions permettant la récupération des données au format JSON
 #Par Arnaud Duhamel et Robin Cavalieri
@@ -43,17 +46,21 @@ if __name__ == '__main__':
     #Test récupération des données GPS : FONCTIONNE
     temp = dm.getGps("86 boulevard Haussmann, Paris\n")
     #Test de la récupération de route
-    #t_waypoints = dm.np.array([[48.856614,2.3522219000000177],[48.390394,-4.486076]])
-    t_waypoints = dm.np.array([])
-    link=dm.getTrace("../data/data_route.json", str(49.357571), str(6.168426), str(43.300000), str(5.400000), t_waypoints)
-    t2=time.time()
+    t_waypoints = dm.np.array([[48.856614,2.3522219000000177],[48.390394,-4.486076]])
+    #t_waypoints = dm.np.array([])
+    t_waypoints_2 = dm.np.array([])
+    #link=dm.getTrace("../data/data_route.json", str(49.357571), str(6.168426), str(43.300000), str(5.400000), t_waypoints)
+    #t2=time.time()
     #print("Temps de reception des données via API : ", t2-t1, " s")
     #Test de la récupération du trajet sous forme de tableau de coordonnées GPS
-    dm.getTraceGps("../data/data_route.json", link, "../data/GPScoords.csv")
-    dm.getPlaces(str(49.357571), str(6.168426))
-    dm.getPlaceFromId("4c5c6cd16ebe2d7f060bd02e","/home/pmaksud/Projet/data/data_place.json")
+    #dm.getTraceGps("../data/data_route.json", link, "../data/GPScoords.csv")
+    #dm.getPlaces(str(49.357571), str(6.168426))
+    #dm.getPlaceFromId("4c5c6cd16ebe2d7f060bd02e","/home/pmaksud/Projet/data/data_place.json")
     #Test de la récupération de tous les lieux autour du trajet et affichage
-    test_places=dm.getPlacesGps("../data/GPScoords.csv")
-    for Place in test_places:
-            Place.displayPlace()
+    #test_places=dm.getPlacesGps("../data/GPScoords.csv")
+    #for Place in test_places:
+            #Place.displayPlace()
+
+    dm.getDistance_Duree(str(49.357571), str(6.168426), str(43.300000), str(5.400000), t_waypoints, "driving")
+    dm.getDistance_Duree(str(48.87430279999999),str(2.3243563999999424), str(48.820786), str(2.390798000000018), t_waypoints_2, "walking")
 ###############################################################################
