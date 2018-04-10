@@ -11,7 +11,9 @@
 #LIBRAIRIES
 ###############################################################################
 from nltk.corpus import wordnet
+from collections import OrderedDict
 import numpy as np
+from graphdb import GraphDB
 import csv
 ###############################################################################
 
@@ -28,18 +30,17 @@ def getSimilarity(str1, str2):
 
 
 #Creation du fichier csv permettant de creer la table "similarities"
-def createSimilarityCSV(path_file, t, l):
-    with open(path_file, 'w+') as csvfile:
-        word=csv.writer(csvfile, delimiter=',')
-        word.writerow(['similarity_id:ID', 'word_id1', 'word_id2', 'similarity:float'])
-        nSize=len(t)
-        for i in range (0,nSize):
-            for j in range (0,nSize):
-                word.writerow(["s"+str(i)+str(j),''.join(l[i]),''.join(l[j]), t[i][j]])
+def createSimilarityHashtable(t, l):
+    nSize=len(t)
+    dico = OrderedDict()
+    for i in range (0,nSize):
+        for j in range (0,nSize):
+            dico[''.join(l[i]),''.join(l[j])]=t[i][j]
+    return dico
 
 
 #prends la liste de tag et renvoie une matrice de similarité
-def csvToMatrix(path_file):
+def csvToHashtable(path_file):
     with open(path_file, 'r') as csvfile:
         tags=csv.reader(csvfile)
         l=list(map(tuple,tags))
@@ -48,10 +49,18 @@ def csvToMatrix(path_file):
         for i in range (0,nSize-1):
             for j in range (0,nSize-1):
                 t[i][j]=getSimilarity(''.join(l[i]),''.join(l[j]))
-        print(t)
-        createSimilarityCSV("../data/similarities.csv", t, l)
-    return(t)
+    dico=createSimilarityHashtable(t, l)
 
 
-csvToMatrix("../data/tags.csv")
+#Initialisation de la base de données
+def dbInit():
+    db=GraphDB('/tmp/test_graph.db')
+    for a in range(10):
+        b = a + 1
+        print(a, b)
+        db.store_relation(a, 'comes_before', b)
+
+
+csvToHashtable("../data/tags.csv")
+dbInit()
 ###############################################################################
