@@ -24,8 +24,8 @@ import pandas as pd
 def init_db():
     server = '10.2.38.20'
     database = 'Planner'
-    username = 'SOLUTEC\rcavalieri'
-    password = 'mmJHZ6Fr'
+    username = 'rcavalieri'
+    password = 'rcavalieri'
     connexion = pyodbc.connect('DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
     return connexion
 

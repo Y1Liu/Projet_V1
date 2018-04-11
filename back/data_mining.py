@@ -139,7 +139,6 @@ def getPlaceFromId(id_p, path_file):
 def fromJsonToPlace(path_file):
     list_places=[]
     data_json=json.load(open(path_file))
-    temp=len(data_json)
     if (len(data_json)!=0):
         nSize=len(data_json['categories'])
         #On enregistre uniquement les éléments avec description et photo
