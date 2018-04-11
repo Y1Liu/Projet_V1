@@ -11,7 +11,7 @@
 ###############################################################################
 #LIBRAIRIES
 ###############################################################################
-import pypyodbc
+import pyodbc
 import pandas as pd
 ###############################################################################
 
@@ -22,11 +22,11 @@ import pandas as pd
 #Initialisation de la base de données
 #Retourne le contexte
 def init_db():
-    connexion = pypyodbc.connect("Driver={ODBC Driver 13 for SQL Server};"
-        "Server=10.2.38.20;"
-        "DNS=ALUMINIUM.SOLUTEC.LAN;"
-        "Database=Planner;"
-        "uid=SOLUTEC\rcavalieri;pwd=")
+    server = '10.2.38.20'
+    database = 'Planner'
+    username = 'SOLUTEC\rcavalieri'
+    password = 'mmJHZ6Fr'
+    connexion = pyodbc.connect('DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
     return connexion
 
 
