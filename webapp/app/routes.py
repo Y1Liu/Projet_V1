@@ -23,7 +23,7 @@ from werkzeug.contrib.cache import SimpleCache
 ###############################################################################
 #CONSTANTES
 ###############################################################################
-CACHE_TIMEOUT = 60
+CACHE_TIMEOUT = 60 #Définit le timeout du cache à 60 secondes
 cache = SimpleCache()
 
 ###############################################################################
@@ -66,6 +66,7 @@ def form():
 		sys.setdefaultencoding('utf8')
 		flash(Markup('Ville de départ : <b>{}</b>'.format(form.depart.data)))
 		flash(Markup('Ville d arrivee : <b>{}</b>'.format(form.arrivee.data)))
+		flash(Markup('Escale(s): <b>{}</b>'.format(form.choix_escales.data)))
 		flash(Markup('Moyen de transport : <b>{}</b>'.format(form.mode.data)))
 		flash(Markup('Temps maximal de trajet : <b>{}</b>'.format(form.pause_voyage.data)))
 		flash(Markup('Durée maximale du repas : <b>{}</b>'.format(form.tps_repas.data)))
