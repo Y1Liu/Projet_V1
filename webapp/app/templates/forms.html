@@ -15,8 +15,31 @@
 				{{ form.arrivee(size=16) }}
 			</p>
 			<p>
-				{{ form.escales.label }}
-				{{ form.escales() }}
+				
+			<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+			<script type="text/javascript">
+    			$(function () {
+        			$("#chkEscales").click(function () {
+            			if ($(this).is(":checked")) {
+                			$("#dvEscales").show();
+            			} else {
+                			$("#dvEscales").hide();
+            			}
+        			});
+    			});
+			</script>
+			<label for="chkEscales">
+    		<input type="checkbox" id="chkEscales" />
+    			{{ form.escales.label }}
+    			
+    			
+			</label>
+			
+			<div id="dvEscales" style="display: none">
+    			{{ form.choix_escales.label }}
+    			{{ form.choix_escales() }}
+			</div>
+
 				
 			</p>
 			<p>
