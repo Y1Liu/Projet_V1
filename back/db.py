@@ -13,6 +13,7 @@
 ###############################################################################
 import pyodbc
 import pandas as pd
+import getpass
 ###############################################################################
 
 
@@ -22,11 +23,11 @@ import pandas as pd
 #Initialisation de la base de données
 #Retourne le contexte
 def init_db():
-    server = '10.2.38.20'
+    server = '10.2.38.20,1433'
     database = 'Planner'
-    username = 'rcavalieri'
-    password = 'rcavalieri'
-    connexion = pyodbc.connect('DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+    username = 'SOLUTEC\rcavalieri'
+    password = getpass.getpass(prompt="Planner's password : ")
+    connexion = pyodbc.connect('Trusted_connection=yes;DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
     return connexion
 
 
@@ -35,37 +36,43 @@ def command(db_cmd):
     context=init_db()
     handler=context.cursor()
     res=handler.execute(db_cmd)
+    return res
 
 
 #Insertion des parametres dans la BDD : time | distance | heuristic | position_id(FK)
 def insert_param(lat, lng, position_id):
-    command("INSERT INTO param (time, distance, heuristic) VALUES ("+lat+","+lng+","+position_id+")")
+    command('INSERT INTO param([time],[distance],[heuristic]) VALUES('+lat+','+lng+','+position_id+')')
+    
+
+def test_cmd(db_cmd):
+    res=command(db_cmd)
+    print(res)
 
 
 #Insertion des position dans la BDD : lat | lng | trajet_id(FK)
 def insert_positions(coords_car, coords_foot, coords_transit, coords_car_, coords_foot_, coords_transit_):
     nSize=len(coords_car)
     for i in range (0,nSize):
-        command("INSERT INTO position (lat,lng,trajet_id) VALUES ("+coords_car[0][0]+","+coords_car[0][1]+",1)")
+        command('INSERT INTO position([lat],[lng],[trajet_id]) VALUES('+coords_car[0][0]+','+coords_car[0][1]+',1)')
         insert_param(coords_car[0][0], coords_car[0][1], 1)
     nSize=len(coords_foot)
     for i in range (0,nSize):
-        command("INSERT INTO position (lat,lng,trajet_id) VALUES ("+coords_foot[0][0]+","+coords_foot[0][1]+",2)")
+        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES("+coords_foot[0][0]+","+coords_foot[0][1]+",2)")
         insert_param(coords_foot[0][0], coords_foot[0][1], 2)
     nSize=len(coords_transit)
     for i in range (0,nSize):
-        command("INSERT INTO position (lat,lng,trajet_id) VALUES ("+coords_transit[0][0]+","+coords_transit[0][1]+",3)")
+        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES("+coords_transit[0][0]+","+coords_transit[0][1]+",3)")
         insert_param(coords_transit[0][0], coords_transit[0][1], 3)
     nSize=len(coords_car_)
     for i in range (0,nSize):
-        command("INSERT INTO position (lat,lng,trajet_id) VALUES ("+coords_car_[0][0]+","+coords_car_[0][1]+",4)")
+        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES("+coords_car_[0][0]+","+coords_car_[0][1]+",4)")
         insert_param(coords_car_[0][0], coords_car_[0][1], 4)
     nSize=len(coords_foot_)
     for i in range (0,nSize):
-        command("INSERT INTO position (lat,lng,trajet_id) VALUES ("+coords_foot_[0][0]+","+coords_foot_[0][1]+",5)")
+        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES("+coords_foot_[0][0]+","+coords_foot_[0][1]+",5)")
         insert_param(coords_foot_[0][0], coords_foot_[0][1], 5)
     nSize=len(coords_transit_)
     for i in range (0,nSize):
-        command("INSERT INTO position (lat,lng,trajet_id) VALUES ("+coords_transit_[0][0]+","+coords_transit_[0][1]+",6)")
+        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES("+coords_transit_[0][0]+","+coords_transit_[0][1]+",6)")
         insert_param(coords_transit_[0][0], coords_transit_[0][1], 6)
 ###############################################################################

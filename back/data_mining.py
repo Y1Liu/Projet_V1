@@ -56,7 +56,7 @@ def getDate():
 
 #Fonction permettant de récupérer des coordonnées GPS à partir d'une adresse
 def getGps(address):
-    geolocator = Nominatim()
+    geolocator=Nominatim(timeout=3)
     location = geolocator.geocode(address)
     #print(location.address)
     return [str(location.latitude), str(location.longitude)]
@@ -75,7 +75,7 @@ def getTrace(path_file, latDep, longDep, latArr, longArr, tWaypoints, mode):
         for i in range(1,temp[0]):
             waypoints = waypoints + "%7Cvia:" + str(tWaypoints[i,0]) + "%2C" + str(tWaypoints[i,1])
     #Récupération des données via API
-    link="https://maps.googleapis.com/maps/api/directions/json?origin="+latDep+","+longDep+"&mode="+mode+"&destination="+latArr+","+longArr+waypoints+"&key="+TK_MAPS_2
+    link="https://maps.googleapis.com/maps/api/directions/json?origin="+latDep+","+longDep+"&mode="+mode+"&destination="+latArr+","+longArr+waypoints+"&key="+TK_MAPS_1
     json_data=requests.get(link)
     #conversion au format JSON
     data=json_data.json()
@@ -214,19 +214,11 @@ def getPlacesGps(path_coords, path_file):
 
 #Fonction permettant de récupérer la distance et la durée entre deux coordonnées
 #lors d'un trajet selon différents modes de transport
-def getDistance_Duree(latDep, lngDep, latArr, lngArr, tWaypoints, mode):
+def getDistance_Duree(latDep, lngDep, latArr, lngArr, mode):
     t1=time.time()
-    temp=np.shape(tWaypoints)
-    if(temp[0]==0):
-        waypoints=''
-    elif(temp[0]>=1):
-        waypoints="&waypoints=via:"+ str(tWaypoints[0,0]) + "%2C" + str(tWaypoints[0,1])
-        #print(waypoints)
-    elif(temp[0]>1):
-        for i in range(1,temp[0]):
-            waypoints = waypoints + "%7Cvia:" + str(tWaypoints[i,0]) + "%2C" + str(tWaypoints[i,1])
     #Récupération des données via API
-    link="https://maps.googleapis.com/maps/api/directions/json?origin="+latDep+","+lngDep+"&mode="+mode+"&destination="+latArr+","+lngArr+waypoints+"&key="+TK_MAPS_2
+    link="https://maps.googleapis.com/maps/api/directions/json?origin="+latDep+","+lngDep+"&mode="+mode+"&destination="+latArr+","+lngArr+"&key="+TK_MAPS_1
+    print(link)
     json_data=requests.get(link)
     #conversion au format JSON
     data=json_data.json()

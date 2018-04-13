@@ -45,7 +45,7 @@ if __name__ == '__main__':
     #Récupérations des lieux autour
     #dm.getPlaces("/home/pmaksud/Projet/data/data_places.json", str(43.29609079999999), str(5.3698543))
     #Test récupération des données GPS : FONCTIONNE
-    temp = dm.getGps("86 boulevard Haussmann, Paris\n")
+    #temp = dm.getGps("86 boulevard Haussmann, Paris\n")
     #Test de la récupération de route
     t_waypoints = dm.np.array([[48.856614,2.3522219000000177],[48.390394,-4.486076]])
     #t_waypoints = dm.np.array([])
@@ -62,7 +62,6 @@ if __name__ == '__main__':
     #for Place in test_places:
             #Place.displayPlace()
 
-    dm.getDistance_Duree(str(49.357571), str(6.168426), str(43.300000), str(5.400000), t_waypoints, "driving")
-    #dm.getDistance_Duree(str(48.87430279999999),str(2.3243563999999424), str(48.820786), str(2.390798000000018), t_waypoints_2, "walking")
+    #dm.getDistance_Duree(str(49.357571), str(6.168426), str(43.300000), str(5.400000), "driving")
     db.insert_positions([str(1.02020), str(1.01551)],[],[],[],[],[])
 ###############################################################################
