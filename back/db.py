@@ -47,23 +47,5 @@ def insert_param(time, distance, heuristic):
     
 
 #Insertion des position dans la BDD : lat | lng | trajet_id(FK)
-def insert_positions(coords_car, coords_foot, coords_transit, coords_car_, coords_foot_, coords_transit_):
-    nSize=len(coords_car)
-    for i in range (0,nSize):
-        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES(?,?,?)"(coords_car[0][0], coords_car[0][1], 1))
-    nSize=len(coords_foot)
-    for i in range (0,nSize): 
-        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES(?,?,?)"(coords_foot[0][0], coords_foot[0][1], 2))
-    nSize=len(coords_transit)
-    for i in range (0,nSize):
-        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES(?,?,?)"(coords_foot[0][0], coords_foot[0][1], 3))
-    nSize=len(coords_car_)
-    for i in range (0,nSize):
-        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES(?,?,?)"(coords_foot[0][0], coords_foot[0][1], 4))
-    nSize=len(coords_foot_)
-    for i in range (0,nSize):
-        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES(?,?,?)"(coords_foot[0][0], coords_foot[0][1], 5))
-    nSize=len(coords_transit_)
-    for i in range (0,nSize):
-        command("INSERT INTO position([lat],[lng],[trajet_id]) VALUES(?,?,?)"(coords_foot[0][0], coords_foot[0][1], 6))
+def insert_cities(city_file):
 ###############################################################################

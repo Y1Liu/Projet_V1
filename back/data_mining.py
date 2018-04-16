@@ -20,7 +20,7 @@ import requests
 import place as p
 import numpy as np
 import pandas as pd
-from geopy.geocoders import Nominatim
+import geocoder
 from pyspark.sql import SQLContext
 from pyspark.sql.functions import explode
 from math import sin, cos, acos, radians
@@ -56,10 +56,9 @@ def getDate():
 
 #Fonction permettant de récupérer des coordonnées GPS à partir d'une adresse
 def getGps(address):
-    geolocator=Nominatim(timeout=3)
-    location = geolocator.geocode(address)
-    #print(location.address)
-    return [str(location.latitude), str(location.longitude)]
+    g = geocoder.google(address)
+    temp=g.latlng
+    return [str(temp[0,0]), str(temp[0,1])]
 
 
 #Permet de récupérer un JSON avec le trajet entre N points

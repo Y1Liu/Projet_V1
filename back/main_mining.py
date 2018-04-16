@@ -40,30 +40,4 @@ if __name__ == '__main__':
     #sc = pyspark.SparkContext(master='local[*]', appName='SchedulerJob',conf=conf)
     #spark = SparkSession(sc)
     
-    #Définition des adresses du trajet témoin
-    adresse_dep="Lille, France"
-    adresse_arr="Paris, France"
-    waypoint="Amiens, France"
-    
-    #récupération des lat lng
-    latDep=dm.getGps(adresse_dep)[0,0]
-    lngDep=dm.getGps(adresse_dep)[0,1]
-    latWayp=dm.getGps(adresse_arr)[0,0]
-    lngWayp=dm.getGps(adresse_arr)[0,1]
-    latArr=dm.getGps(waypoint)[0,0]
-    lngArr=dm.getGps(waypoint)[0,1]
-
-    #Création des fichiers de données coordonnées 
-    temp=dm.getTrace("../data/dataroute_car.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "driving")
-    dm.getTraceGps("../data/GPS_car.csv", temp)
-    temp=dm.getTrace("../data/dataroute_foot.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "walking")
-    dm.getTraceGps("../data/GPS_foot.csv", temp) 
-    temp=dm.getTrace("../data/dataroute_transit.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "transit")
-    dm.getTraceGps("../data/GPS_transit.csv", temp)   
-    temp=dm.getTrace("../data/dataroute_car_.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "driving")
-    dm.getTraceGps("../data/GPS_car_.csv", temp)   
-    temp=dm.getTrace("../data/dataroute_foot_.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "walking")
-    dm.getTraceGps("../data/GPS_foot_.csv", temp)  
-    temp=dm.getTrace("../data/dataroute_transit_.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "transit")
-    dm.getTraceGps("../data/GPS_transit_.csv", temp)
 ###############################################################################
