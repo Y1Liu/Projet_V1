@@ -75,7 +75,7 @@ def getTrace(path_file, latDep, longDep, latArr, longArr, tWaypoints, mode):
         for i in range(1,temp[0]):
             waypoints = waypoints + "%7Cvia:" + str(tWaypoints[i,0]) + "%2C" + str(tWaypoints[i,1])
     #Récupération des données via API
-    link="https://maps.googleapis.com/maps/api/directions/json?origin="+latDep+","+longDep+"&mode="+mode+"&destination="+latArr+","+longArr+waypoints+"&key="+TK_MAPS_1
+    link="https://maps.googleapis.com/maps/api/directions/json?origin="+str(latDep)+","+str(longDep)+"&mode="+mode+"&destination="+str(latArr)+","+str(longArr)+waypoints+"&key="+TK_MAPS_1
     json_data=requests.get(link)
     #conversion au format JSON
     data=json_data.json()
@@ -87,7 +87,7 @@ def getTrace(path_file, latDep, longDep, latArr, longArr, tWaypoints, mode):
 
 #Renvoie toutes les coordonnées GPS d'un tracé sous forme de tableau string lat | long
 #Export des coordonnées dans CSV
-def getTraceGps(json_file, base_url, csv_file):
+def getTraceGps(base_url, csv_file):
     lat=[];lng=[]
     r=requests.get(base_url)
     data=r.json()['routes'][0]['legs'][0]['steps']

@@ -39,29 +39,31 @@ if __name__ == '__main__':
     #sc.stop()
     #sc = pyspark.SparkContext(master='local[*]', appName='SchedulerJob',conf=conf)
     #spark = SparkSession(sc)
-    #Récupération date
-    [date_today, end_time] = dm.getDate()
-    t1=time.time()
-    #Récupérations des lieux autour
-    #dm.getPlaces("/home/pmaksud/Projet/data/data_places.json", str(43.29609079999999), str(5.3698543))
-    #Test récupération des données GPS : FONCTIONNE
-    #temp = dm.getGps("86 boulevard Haussmann, Paris\n")
-    #Test de la récupération de route
-    t_waypoints = dm.np.array([[48.856614,2.3522219000000177],[48.390394,-4.486076]])
-    #t_waypoints = dm.np.array([])
-    t_waypoints_2 = dm.np.array([])
-    #link=dm.getTrace("../data/data_route.json", str(49.357571), str(6.168426), str(43.300000), str(5.400000), t_waypoints)
-    #t2=time.time()
-    #print("Temps de reception des données via API : ", t2-t1, " s")
-    #Test de la récupération du trajet sous forme de tableau de coordonnées GPS
-    #dm.getTraceGps("../data/data_route.json", link, "../data/GPScoords.csv")
-    #dm.getPlaces(str(49.357571), str(6.168426))
-    #dm.getPlaceFromId("4c5c6cd16ebe2d7f060bd02e","/home/pmaksud/Projet/data/data_place.json")
-    #Test de la récupération de tous les lieux autour du trajet et affichage
-    #test_places=dm.getPlacesGps("../data/GPScoords.csv")
-    #for Place in test_places:
-            #Place.displayPlace()
+    
+    #Définition des adresses du trajet témoin
+    adresse_dep="Lille, France"
+    adresse_arr="Paris, France"
+    waypoint="Amiens, France"
+    
+    #récupération des lat lng
+    latDep=dm.getGps(adresse_dep)[0,0]
+    lngDep=dm.getGps(adresse_dep)[0,1]
+    latWayp=dm.getGps(adresse_arr)[0,0]
+    lngWayp=dm.getGps(adresse_arr)[0,1]
+    latArr=dm.getGps(waypoint)[0,0]
+    lngArr=dm.getGps(waypoint)[0,1]
 
-    #dm.getDistance_Duree(str(49.357571), str(6.168426), str(43.300000), str(5.400000), "driving")
-    db.insert_positions([str(1.02020), str(1.01551)],[],[],[],[],[])
+    #Création des fichiers de données coordonnées 
+    temp=dm.getTrace("../data/dataroute_car.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "driving")
+    dm.getTraceGps("../data/GPS_car.csv", temp)
+    temp=dm.getTrace("../data/dataroute_foot.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "walking")
+    dm.getTraceGps("../data/GPS_foot.csv", temp) 
+    temp=dm.getTrace("../data/dataroute_transit.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "transit")
+    dm.getTraceGps("../data/GPS_transit.csv", temp)   
+    temp=dm.getTrace("../data/dataroute_car_.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "driving")
+    dm.getTraceGps("../data/GPS_car_.csv", temp)   
+    temp=dm.getTrace("../data/dataroute_foot_.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "walking")
+    dm.getTraceGps("../data/GPS_foot_.csv", temp)  
+    temp=dm.getTrace("../data/dataroute_transit_.json", latDep, lngDep, latArr, lngArr, [latWayp, lngWayp], "transit")
+    dm.getTraceGps("../data/GPS_transit_.csv", temp)
 ###############################################################################
