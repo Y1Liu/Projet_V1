@@ -18,13 +18,14 @@ import random
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-import pyspark
+#import pyspark
 import os
 import time
 import place as p
 import db
-from pyspark import *
-from pyspark.sql.session import SparkSession
+import csv
+#from pyspark import *
+#from pyspark.sql.session import SparkSession
 ###############################################################################
 
 
@@ -42,5 +43,7 @@ if __name__ == '__main__':
     
     #Récupération de toutes les places et instanciation de objets
     temp = dm.getPlacesGps('../data/cities.csv', '../data/data_place.json')
-    
+    with open('../data/all_places.csv', 'wb') as myfile:
+        wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+        wr.writerow(temp)
 ###############################################################################

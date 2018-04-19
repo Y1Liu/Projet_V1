@@ -21,8 +21,8 @@ import place as p
 import numpy as np
 import pandas as pd
 import geocoder
-from pyspark.sql import SQLContext
-from pyspark.sql.functions import explode
+#from pyspark.sql import SQLContext
+#from pyspark.sql.functions import explode
 from math import sin, cos, acos, radians
 ###############################################################################
 
@@ -121,14 +121,13 @@ def getPlaces(lat, lng, rayon):
 
 
 #Fonction permettant de retourner une place avec details dans un JSON
-def getPlaceFromId(id_p, path_file, city_id):
+def getPlaceFromId(id_p, path_file):
     link="https://api.foursquare.com/v2/venues/"+id_p+"?client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&v=20180403"
     print("request : "+link)
     json_data=requests.get(link)
     try:
         data=json_data.json()['response']['venue']
         with open(path_file, 'w+') as json_file :
-            json.dump({"city_id" : city_id}, json_file, indent=4)
             json.dump(data, json_file, indent=4)
     except KeyError:
         print("no data")
@@ -136,7 +135,7 @@ def getPlaceFromId(id_p, path_file, city_id):
 
 #Fonction permettant de lire un json et d'instancier une place à partir des données
 #Retourne une liste de Places
-def fromJsonToPlace(path_file):
+def fromJsonToPlace(path_file, city_id):
     list_places=[]
     data_json=json.load(open(path_file))
     if (len(data_json)!=0):
@@ -152,7 +151,7 @@ def fromJsonToPlace(path_file):
             visitsCount=data_json['stats']['visitsCount']
             geometry=[data_json['location']['lat'],data_json['location']['lng']]
             name=data_json['name']
-            city_id=data_json['city_id']
+            print("CITYID de la place enregistrée : "+str(city_id))
             list_places.append(p.Place(id_, name, photo, types, geometry, visitsCount, city_id))
         except KeyError:
             print("informations manquantes")
@@ -191,25 +190,31 @@ def getPlacesGps(path_coords, path_file):
     with open(path_coords, "r") as file_csv:
         places=[]
         places_id=[]
+        city_id=[]
         temp=csv.reader(file_csv)
         coords=list(map(tuple,temp))
         coords_t = [t[2:4] for t in coords]
-        print(coords_t)
         datas_coord=np.array(coords_t).astype("float")
         nSize=len(datas_coord)
         for i in range(0,nSize):
             print(str(i)+" : "+str(datas_coord[i][0])+","+str(datas_coord[i][1]))
+            t=len(getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5000)))
+            print("Nombre de places pour la ville : " + str(t))
             if(i==0):
-                places_id = getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5))
+                places_id = getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5000))
             else:
-                places_id = places_id + getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]))
+                places_id = places_id + getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5000))
+            for j in range (0,t):
+                city_id.append(int(coords[i][0]))
         nSize=len(places_id)
+        print("Nombre de places au total : "+str(nSize))
+        print("Taille de la liste de villes : "+ str(len(city_id)))
         for i in range(0,nSize):
             getPlaceFromId(places_id[i], path_file)
             if(i==0):
-                places=fromJsonToPlace(path_file)
+                places=fromJsonToPlace(path_file, city_id[i])
             else:
-                places=places+fromJsonToPlace(path_file)
+                places=places+fromJsonToPlace(path_file, city_id[i])
     t2=time.time()
     print("Temps de reception des places : ", t2-t1, " s")
     return remove_duplicates(places)
