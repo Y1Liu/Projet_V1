@@ -44,8 +44,4 @@ def command(db_cmd, arg):
 def insert_param(time, distance, heuristic):
     res=command('INSERT INTO param([time],[distance],[heuristic]) VALUES(?,?,?)',(time, distance, heuristic))
     return res
-    
-
-#Insertion des position dans la BDD : lat | lng | trajet_id(FK)
-def insert_cities(city_file):
 ###############################################################################

@@ -12,7 +12,7 @@
 ###############################################################################
 class Place:
     #CONSTRUCTEUR DE Place
-    def __init__(self, id_, name, photo, types, geometry, visitsCount):
+    def __init__(self, id_, name, photo, types, geometry, visitsCount, city_i):
         self.id_ = id_ #String
         self.name=name #String
         self.photo=photo #String
@@ -37,6 +37,9 @@ class Place:
 
     def getVisitsCount(self):
         return self.visitsCount #Int
+    
+    def getCity_i(self):
+        return self.city_i #Int
 
     def displayPlace(self):
         print("Id : " + self.id_)
@@ -45,4 +48,5 @@ class Place:
         print("Types : " + str(self.types))
         print("Geometry : " + str(self.geometry))
         print("VisitsCounts : " + str(self.visitsCount))
+        print("City_i : " + str(self.city_i))
 ###############################################################################

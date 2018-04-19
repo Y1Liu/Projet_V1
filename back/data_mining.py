@@ -97,7 +97,7 @@ def getTraceGps(base_url, csv_file):
         lat.append(coord['lat'])
         lng.append(coord['lng'])
     with open(csv_file, "w+") as f:
-        writer = csv.writer(f, lineterminator="\n")
+        writer=csv.writer(f, lineterminator="\n")
         writer.writerows(np.column_stack((lat, lng)))
     return ([[lat], [lng]])
 
@@ -119,18 +119,19 @@ def getPlaces(lat, lng, rayon):
     #renvoi de liste
     return(list_id)
 
+
 #Fonction permettant de retourner une place avec details dans un JSON
-def getPlaceFromId(id_p, path_file):
+def getPlaceFromId(id_p, path_file, city_id):
     link="https://api.foursquare.com/v2/venues/"+id_p+"?client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&v=20180403"
     print("request : "+link)
     json_data=requests.get(link)
     try:
         data=json_data.json()['response']['venue']
         with open(path_file, 'w+') as json_file :
+            json.dump({"city_id" : city_id}, json_file, indent=4)
             json.dump(data, json_file, indent=4)
     except KeyError:
         print("no data")
-
 
 
 #Fonction permettant de lire un json et d'instancier une place à partir des données
@@ -151,7 +152,8 @@ def fromJsonToPlace(path_file):
             visitsCount=data_json['stats']['visitsCount']
             geometry=[data_json['location']['lat'],data_json['location']['lng']]
             name=data_json['name']
-            list_places.append(p.Place(id_, name, photo, types, geometry, visitsCount))
+            city_id=data_json['city_id']
+            list_places.append(p.Place(id_, name, photo, types, geometry, visitsCount, city_id))
         except KeyError:
             print("informations manquantes")
         except IndexError:
@@ -191,12 +193,14 @@ def getPlacesGps(path_coords, path_file):
         places_id=[]
         temp=csv.reader(file_csv)
         coords=list(map(tuple,temp))
-        datas_coord=np.array(coords).astype("float")
+        coords_t = [t[2:4] for t in coords]
+        print(coords_t)
+        datas_coord=np.array(coords_t).astype("float")
         nSize=len(datas_coord)
         for i in range(0,nSize):
             print(str(i)+" : "+str(datas_coord[i][0])+","+str(datas_coord[i][1]))
             if(i==0):
-                places_id = getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]))
+                places_id = getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5))
             else:
                 places_id = places_id + getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]))
         nSize=len(places_id)
