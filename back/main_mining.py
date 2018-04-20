@@ -41,9 +41,4 @@ if __name__ == '__main__':
     #sc = pyspark.SparkContext(master='local[*]', appName='SchedulerJob',conf=conf)
     #spark = SparkSession(sc)
     
-    #Récupération de toutes les places et instanciation de objets
-    temp = dm.getPlacesGps('../data/cities.csv', '../data/data_place.json')
-    with open('../data/all_places.csv', 'wb') as myfile:
-        wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-        wr.writerow(temp)
 ###############################################################################

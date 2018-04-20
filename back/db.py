@@ -12,8 +12,11 @@
 #LIBRAIRIES
 ###############################################################################
 import pyodbc
+import data_mining as dm
 import pandas as pd
 import getpass
+import csv
+from collections import namedtuple
 ###############################################################################
 
 
@@ -44,4 +47,15 @@ def command(db_cmd, arg):
 def insert_param(time, distance, heuristic):
     res=command('INSERT INTO param([time],[distance],[heuristic]) VALUES(?,?,?)',(time, distance, heuristic))
     return res
+
+
+#Récupération de toutes les places et instanciation de objets
+def placesToCsv():
+    temp = dm.getPlacesGps('../data/cities.csv', '../data/data_place.json')
+    Submission=namedtuple('Submission', ['id_', 'name', 'photo', 'types', 'geometry', 'visitsCount', 'city_id'])
+    with open('../data/all_places.csv', 'w', encoding='utf8') as myfile:
+        wr = csv.writer(myfile)
+        wr.writerow(Submission._fields)
+        for member in temp:
+            wr.writerow([member.getId(), member.getName(), member.getPhoto(), str(member.getTypes()), str(member.getGeometry()), str(member.getVisitsCount()), str(member.getCity_id())])
 ###############################################################################
