@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 ###############################################################################
 #Fichier base de donnÃ©es
 #Par Arnaud Duhamel et Robin Cavalieri
@@ -49,13 +52,12 @@ def insert_param(time, distance, heuristic):
     return res
 
 
-#Récupération de toutes les places et instanciation de objets
+#Récupération de toutes les places
 def placesToCsv():
     temp = dm.getPlacesGps('../data/cities.csv', '../data/data_place.json')
-    Submission=namedtuple('Submission', ['id_', 'name', 'photo', 'types', 'geometry', 'visitsCount', 'city_id'])
-    with open('../data/all_places.csv', 'w', encoding='utf8') as myfile:
+    #Mise au format sql
+    with open('../data/all_places.csv', 'w') as myfile:
         wr = csv.writer(myfile)
-        wr.writerow(Submission._fields)
         for member in temp:
-            wr.writerow([member.getId(), member.getName(), member.getPhoto(), str(member.getTypes()), str(member.getGeometry()), str(member.getVisitsCount()), str(member.getCity_id())])
+            wr.writerow(["("+member.getId(), member.getName(), member.getPhoto(), str(member.getTypes()), str(member.getGeometry()), str(member.getVisitsCount()), str(member.getCity_id())+"),"])
 ###############################################################################

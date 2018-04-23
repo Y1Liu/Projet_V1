@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8 
+
 ###############################################################################
 #Fichier contenant la classe place
 #Par Arnaud Duhamel et Robin Cavalieri

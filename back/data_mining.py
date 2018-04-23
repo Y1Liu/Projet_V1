@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#  coding: utf-8 
 
 ###############################################################################
 #Fichier contenant les fonctions permettant la récupération des données au format JSON
@@ -79,7 +79,7 @@ def getTrace(path_file, latDep, longDep, latArr, longArr, tWaypoints, mode):
     #conversion au format JSON
     data=json_data.json()
     #écriture du fichier
-    with open(path_file, 'w+') as json_file :
+    with open(path_file, 'w') as json_file :
         json.dump(data, json_file, indent=4)
     return(link)
 
@@ -96,7 +96,7 @@ def getTraceGps(base_url, csv_file):
         coord=data[i]['end_location']
         lat.append(coord['lat'])
         lng.append(coord['lng'])
-    with open(csv_file, "w+") as f:
+    with open(csv_file, "w") as f:
         writer=csv.writer(f, lineterminator="\n")
         writer.writerows(np.column_stack((lat, lng)))
     return ([[lat], [lng]])
@@ -127,7 +127,7 @@ def getPlaceFromId(id_p, path_file):
     json_data=requests.get(link)
     try:
         data=json_data.json()['response']['venue']
-        with open(path_file, 'w+') as json_file :
+        with open(path_file, 'w') as json_file :
             json.dump(data, json_file, indent=4)
     except KeyError:
         print("no data")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# coding: utf-8 
 
 ###############################################################################
 #Fichier appelant les fonctions permettant la récupération des données au format JSON
@@ -41,4 +41,5 @@ if __name__ == '__main__':
     #sc = pyspark.SparkContext(master='local[*]', appName='SchedulerJob',conf=conf)
     #spark = SparkSession(sc)
     
+    db.placesToCsv()
 ###############################################################################
