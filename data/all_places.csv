@@ -1,4 +1,4 @@
-﻿id_,name,photo,types,geometry,visitsCount,city_id
+﻿id,name,photo,type,lat,lng,visits,city_id
 4cd5555fa5b34688a1248d50,Les Arts Décoratifs,https://igx.4sqi.net/img/general//17873447_sIzQQRTq6VQFx7N9LaTVurMgSwRtXLyf1ESKkm4dzNk.jpg,['Art Museum'],48.863077314067475, 2.333393096923828,13159,1
 4adcda10f964a520af3521e3,Musée du Louvre,https://igx.4sqi.net/img/general//3871084_dyOWRHNigS0wzBIyA9H91CuoO8JAkmjTCoyU8EFLw4U.jpg,'Art Museum#History Museum#Historic Site',48.86084691113991, 2.336440086364746,288743,1
 4f6dabf5003944083fe0002e,Vestige de la forteresse du Louvre et salle Saint-Louis,https://igx.4sqi.net/img/general//GP1I8g375yvGc8WmYRozWM1X4Ybs6YYWbG0IQ3xkeWA.jpg,['Historic Site'],48.861693911299234, 2.3334789276123047,189,1
