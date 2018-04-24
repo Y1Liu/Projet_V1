@@ -20,7 +20,6 @@ import numpy as np
 import pandas as pd
 import getpass
 import csv
-from collections import namedtuple
 ###############################################################################
 
 
@@ -51,35 +50,4 @@ def command(db_cmd, arg):
 def insert_param(time, distance, heuristic):
     res=command('INSERT INTO param([time],[distance],[heuristic]) VALUES(?,?,?)',(time, distance, heuristic))
     return res
-
-
-#Récupération de toutes les places
-def placesToCsv():
-    temp = dm.getPlacesGps('../data/cities.csv', '../data/data_place.json')
-    with open('../data/all_places.csv', 'w') as myfile:
-        wr = csv.writer(myfile)
-        for member in temp:
-            wr.writerow([member.getId(), member.getName(), member.getPhoto(), str(member.getTypes()), str(member.getGeometry()), str(member.getVisitsCount()), str(member.getCity_id())])
-            
-            
-#Reception des tags disponibles dans les places françaises
-#ecriture d'un fichier csv listant les places  
-def getTypes():
-    list_places=[]
-    df = pd.read_csv('../data/all_places.csv')
-    nSize=len(df)
-    types = df.type
-    for i in range(0,nSize):
-        data = types[i].split()
-        for words in data:
-            nwords = words.replace(",", "").replace("[", "").replace("]", "").replace("'", "").replace("/", "").replace("&","").replace("or","").replace("Caf\xc3\xa9","").replace("#","")
-            #list(set(nwords))
-            #print (nwords)
-            list_places.append(nwords)
-            final=list(set(list_places))
-            del final[0]
-    with open('../data/tags.csv', 'w') as f:
-        wr = csv.writer(f, delimiter='\n')
-        wr.writerows([final])
-    print(final)
 ###############################################################################

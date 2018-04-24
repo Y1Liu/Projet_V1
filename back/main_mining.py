@@ -41,5 +41,6 @@ if __name__ == '__main__':
     #sc = pyspark.SparkContext(master='local[*]', appName='SchedulerJob',conf=conf)
     #spark = SparkSession(sc)
     
-    db.placesToCsv()
+    #db.placesToCsv()
+    dm.placeTags("../data/tags.csv", "../data/placeTags.csv")
 ###############################################################################

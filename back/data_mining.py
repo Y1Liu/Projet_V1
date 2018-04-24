@@ -20,7 +20,7 @@ import requests
 import place as p
 import numpy as np
 import pandas as pd
-import geocoder
+from geopy.geocoders import Nominatim
 #from pyspark.sql import SQLContext
 #from pyspark.sql.functions import explode
 from math import sin, cos, acos, radians
@@ -56,9 +56,9 @@ def getDate():
 
 #Fonction permettant de récupérer des coordonnées GPS à partir d'une adresse
 def getGps(address):
-    g = geocoder.google(address)
-    temp=g.latlng
-    return [str(temp[0,0]), str(temp[0,1])]
+    g = Nominatim()(address)
+    location=g.geocode(address)
+    return [str(location.latitude), str(location.longitude)]
 
 
 #Permet de récupérer un JSON avec le trajet entre N points
@@ -236,4 +236,55 @@ def getDistance_Duree(latDep, lngDep, latArr, lngArr, mode):
     heuristic = RAYON_TERRE*acos(sin(radians(float(latDep)))*sin(radians(float(latArr)))+cos(radians(float(latDep)))*cos(radians(float(latArr)))*cos(radians(float(lngArr))-radians(float(lngDep))))
     print(t2-t1, "s")
     return [duree, dist, heuristic]
+
+
+#Récupération de toutes les places
+def placesToCsv():
+    temp = getPlacesGps('../data/cities.csv', '../data/data_place.json')
+    with open('../data/all_places.csv', 'w') as myfile:
+        wr = csv.writer(myfile)
+        for member in temp:
+            wr.writerow([member.getId(), member.getName(), member.getPhoto(), str(member.getTypes()), str(member.getGeometry()), str(member.getVisitsCount()), str(member.getCity_id())])
+            
+            
+#Reception des tags disponibles dans les places françaises
+#ecriture d'un fichier csv listant les places  
+#retourne une liste avec les places_id et le stags associés
+def getTypes():
+    list_tags=[]
+    df = pd.read_csv('../data/all_places.csv')
+    nSize=len(df)
+    types = df.type
+    id_places=df.id
+    return_list=[]
+    for i in range(0,nSize):
+        data = types[i].split()
+        for words in data:
+            nwords = words.replace(",", "").replace("[", "").replace("]", "").replace("'", "").replace("/", "").replace("&","").replace("or","").replace("Caf\xc3\xa9","").replace("#","")
+            #list(set(nwords))
+            #print (nwords)
+            return_list.append([id_places[i], nwords])
+            list_tags.append(nwords)
+            final=list(set(list_tags))
+            del final[0]
+    with open('../data/tags.csv', 'w') as f:
+        wr = csv.writer(f, delimiter='\n')
+        wr.writerows([final])
+    print(final)
+    return return_list    
+    
+
+#Création du csv permettant de peupler la table d'association tag, place 
+#Une Place est associée par son id aux id de Tags
+def placeTags(path_file, return_file):
+    associations=getTypes()
+    tags = np.genfromtxt(path_file)
+    nSize=len(tags)
+    ySize=len(associations)
+    with open(return_file, 'w') as csv_file:
+        wr=csv.writer(csv_file, delimiter='\n')
+        for i in range(0,ySize):
+            for j in range(0,nSize):
+                if(associations[i][1]==tags[j]):
+                    wr.writerow([associations[i][1], j])
 ###############################################################################
