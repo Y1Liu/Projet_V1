@@ -24,6 +24,7 @@ from geopy.geocoders import Nominatim
 #from pyspark.sql import SQLContext
 #from pyspark.sql.functions import explode
 from math import sin, cos, acos, radians
+from StringIO import StringIO
 ###############################################################################
 
 
@@ -252,25 +253,35 @@ def placesToCsv():
 #retourne une liste avec les places_id et le stags associés
 def getTypes():
     list_tags=[]
+    list_tags2=[]
     df = pd.read_csv('../data/all_places.csv')
     nSize=len(df)
     types = df.type
     id_places=df.id
     return_list=[]
+    #Premiere boucle pour supprimer les # entre les mots
     for i in range(0,nSize):
         data = types[i].split()
         for words in data:
-            nwords = words.replace(",", "").replace("[", "").replace("]", "").replace("'", "").replace("/", "").replace("&","").replace("or","").replace("Caf\xc3\xa9","").replace("#","")
-            #list(set(nwords))
-            #print (nwords)
-            return_list.append([id_places[i], nwords])
+            nwords = words.replace('#',' ')   
             list_tags.append(nwords)
-            final=list(set(list_tags))
+            tags_doublons=list(set(list_tags))
+
+    #Deuxieme boucle permettant de supprimer les caracteres
+    #indesirables et d'écrire chaque tags unique dans un fichier csv
+    listSize=len(tags_doublons)
+    for i in range(0,listSize):
+        data2 = tags_doublons[i].split()
+        for words in data2:
+            nwords = words.replace(',', '').replace('[', '').replace(']', '').replace("'", "").replace('/', '').replace('&','').replace('or','').replace('Caf\xc3\xa9','')   
+            return_list.append([id_places[i], nwords])
+            list_tags_final.append(nwords)
+            final=list(set(list_tags2))
             del final[0]
+            
     with open('../data/tags.csv', 'w') as f:
         wr = csv.writer(f, delimiter='\n')
         wr.writerows([final])
-    print(final)
     return return_list    
     
 
@@ -278,13 +289,16 @@ def getTypes():
 #Une Place est associée par son id aux id de Tags
 def placeTags(path_file, return_file):
     associations=getTypes()
-    tags = np.genfromtxt(path_file)
+    #print(StringIO(associations))
+    tags = np.genfromtxt(path_file, dtype = None)
+    print(tags)
     nSize=len(tags)
+    print(nSize)
     ySize=len(associations)
     with open(return_file, 'w') as csv_file:
-        wr=csv.writer(csv_file, delimiter='\n')
+        wr=csv.writer(csv_file)
         for i in range(0,ySize):
             for j in range(0,nSize):
                 if(associations[i][1]==tags[j]):
-                    wr.writerow([associations[i][1], j])
+                    wr.writerow([associations[i][0], j])
 ###############################################################################
