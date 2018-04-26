@@ -266,7 +266,6 @@ def getTypes():
             nwords = words.replace('#',' ')   
             list_tags.append(nwords)
             tags_doublons=list(set(list_tags))
-
     #Deuxieme boucle permettant de supprimer les caracteres
     #indesirables et d'écrire chaque tags unique dans un fichier csv
     listSize=len(tags_doublons)
@@ -275,10 +274,8 @@ def getTypes():
         for words in data2:
             nwords = words.replace(',', '').replace('[', '').replace(']', '').replace("'", "").replace('/', '').replace('&','').replace('or','').replace('Caf\xc3\xa9','')   
             return_list.append([id_places[i], nwords])
-            list_tags_final.append(nwords)
             final=list(set(list_tags2))
             del final[0]
-            
     with open('../data/tags.csv', 'w') as f:
         wr = csv.writer(f, delimiter='\n')
         wr.writerows([final])
@@ -300,5 +297,5 @@ def placeTags(path_file, return_file):
         for i in range(0,ySize):
             for j in range(0,nSize):
                 if(associations[i][1]==tags[j]):
-                    wr.writerow([associations[i][0], j])
+                    wr.writerow([associations[i][0], j])                                
 ###############################################################################

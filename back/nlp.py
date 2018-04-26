@@ -14,7 +14,6 @@
 #LIBRAIRIES
 ###############################################################################
 from nltk.corpus import wordnet
-import numpy as np
 import csv
 ###############################################################################
 
@@ -24,31 +23,29 @@ import csv
 ###############################################################################
 #prends deux mots en arguments et renvoie la mesure de similarité
 def getSimilarity(str1, str2):
-    word1=wordnet.synsets(str1, 'n')[0]
-    word2=wordnet.synsets(str2, 'n')[0]
+    word1=wordnet.synsets(str1)[0]
+    word2=wordnet.synsets(str2)[0]
     s=word1.wup_similarity(word2)
     return(s)
 
 
-#prends la liste de tag et renvoie une matrice de similarité
-def csvToSimilarities(path_file, return_file):
-    with open(path_file, 'r') as csvfile:
-        tags=csv.reader(csvfile)
-        l=list(map(tuple,tags))
-        nSize=len(l)
-        t=np.zeros((nSize-1, nSize-1),dtype='float')
-        for i in range (0,nSize-1):
-            for j in range (0,nSize-1):
-                t[i][j]=getSimilarity(''.join(l[i]),''.join(l[j]))
-    #Création d'un csv avec toutes les similarités associées. 
-    #Indice du mot 1 | Indice du mot2 | Similarité
-    with open(return_file, 'w') as csvfile:
-        wr = csv.writer(csvfile)
-        for i in range (0,nSize-1):
-            for j in range (0,nSize-1):
-                if(i<=j):
-                    wr.writerow([str(i) ,str(j), str(t[i][j])])
-
-
-csvToSimilarities("../data/tags.csv", "../data/similarities.csv")
+#Création du csv contenant les similarités entre les mots contenus dans les tags
+#Csv à importer dans la base de données
+def similaritiesToCsv(path_file, return_file):
+    #Récupération du fichier des villes
+    with open(path_file, 'r') as csv_file:
+        rd=csv.reader(csv_file)
+        tags=list(rd)
+    nSize=len(tags)
+    print(nSize)
+    #écriture dans le fichier contenant ID_tag1 | ID_Tag2 | Similarity
+    with open(return_file, 'w') as csv_file:
+        wr=csv.writer(csv_file)
+        for i in range(0,nSize):
+            for j in range(0,nSize):
+                if(i <= j):
+                    wr.writerow([i, j, getSimilarity(str(tags[i]), str(tags[j]))])
+   
+    
+similaritiesToCsv('../data/tags.csv','../data/similaritiesTags.csv')
 ###############################################################################
