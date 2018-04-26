@@ -41,7 +41,7 @@ CREATE TABLE placeTypes(
 )
 
 CREATE TABLE similarity(
-	id VARCHAR(30) PRIMARY KEY NOT NULL,
+	id INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	similarity FLOAT,
 	type_id1 INT,
 	FOREIGN KEY (type_id1) references type(id),

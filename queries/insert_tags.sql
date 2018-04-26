@@ -1,4 +1,4 @@
-DELETE FROM type WHERE id >=0 
+DELETE FROM type WHERE id >=-1
 
 DBCC CHECKIDENT ("type", RESEED, -1);
 

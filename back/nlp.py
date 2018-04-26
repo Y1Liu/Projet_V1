@@ -15,6 +15,7 @@
 ###############################################################################
 from nltk.corpus import wordnet
 import csv
+import numpy as np
 ###############################################################################
 
 
@@ -23,9 +24,12 @@ import csv
 ###############################################################################
 #prends deux mots en arguments et renvoie la mesure de similarité
 def getSimilarity(str1, str2):
-    word1=wordnet.synsets(str1)[0]
-    word2=wordnet.synsets(str2)[0]
-    s=word1.wup_similarity(word2)
+    try:
+        word1=wordnet.synsets(str1, 'n')[0]
+        word2=wordnet.synsets(str2, 'n')[0]
+        s=word1.wup_similarity(word2)
+    except IndexError:
+        s=0.0
     return(s)
 
 
@@ -33,18 +37,17 @@ def getSimilarity(str1, str2):
 #Csv à importer dans la base de données
 def similaritiesToCsv(path_file, return_file):
     #Récupération du fichier des villes
-    with open(path_file, 'r') as csv_file:
-        rd=csv.reader(csv_file)
-        tags=list(rd)
+    tags=np.genfromtxt(path_file, dtype=str)
     nSize=len(tags)
-    print(nSize)
+    print(tags)
     #écriture dans le fichier contenant ID_tag1 | ID_Tag2 | Similarity
     with open(return_file, 'w') as csv_file:
         wr=csv.writer(csv_file)
         for i in range(0,nSize):
             for j in range(0,nSize):
                 if(i <= j):
-                    wr.writerow([i, j, getSimilarity(str(tags[i]), str(tags[j]))])
+                    print(tags[i], tags[j])
+                    wr.writerow([i, j, getSimilarity(tags[i], tags[j])])
    
     
 similaritiesToCsv('../data/tags.csv','../data/similaritiesTags.csv')
