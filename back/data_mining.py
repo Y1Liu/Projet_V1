@@ -24,7 +24,6 @@ from geopy.geocoders import Nominatim
 #from pyspark.sql import SQLContext
 #from pyspark.sql.functions import explode
 from math import sin, cos, acos, radians
-from StringIO import StringIO
 ###############################################################################
 
 
