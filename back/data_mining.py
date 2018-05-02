@@ -24,6 +24,7 @@ from geopy.geocoders import Nominatim
 #from pyspark.sql import SQLContext
 #from pyspark.sql.functions import explode
 from math import sin, cos, acos, radians
+from StringIO import StringIO
 ###############################################################################
 
 
@@ -166,7 +167,7 @@ def fromJsonToPlace(path_file, city_id):
 #Retourne la liste filtrée
 def remove_duplicates(lst):
     i=0
-    j=0
+    j=0 
     nSize=len(lst)
     while(i<nSize-1):
         obj=lst[i]
@@ -235,7 +236,7 @@ def getDistance_Duree(latDep, lngDep, latArr, lngArr, mode):
     duree = data['routes'][0]['legs'][0]['duration']['value']
     heuristic = RAYON_TERRE*acos(sin(radians(float(latDep)))*sin(radians(float(latArr)))+cos(radians(float(latDep)))*cos(radians(float(latArr)))*cos(radians(float(lngArr))-radians(float(lngDep))))
     print(t2-t1, "s")
-    return [duree, dist, heuristic]
+    return [mode, duree, dist, heuristic]
 
 
 #Récupération de toutes les places
@@ -265,6 +266,7 @@ def getTypes():
             nwords = words.replace('#',' ')   
             list_tags.append(nwords)
             tags_doublons=list(set(list_tags))
+
     #Deuxieme boucle permettant de supprimer les caracteres
     #indesirables et d'écrire chaque tags unique dans un fichier csv
     listSize=len(tags_doublons)
@@ -273,8 +275,10 @@ def getTypes():
         for words in data2:
             nwords = words.replace(',', '').replace('[', '').replace(']', '').replace("'", "").replace('/', '').replace('&','').replace('or','').replace('Caf\xc3\xa9','')   
             return_list.append([id_places[i], nwords])
+            list_tags_final.append(nwords)
             final=list(set(list_tags2))
             del final[0]
+            
     with open('../data/tags.csv', 'w') as f:
         wr = csv.writer(f, delimiter='\n')
         wr.writerows([final])
@@ -296,5 +300,38 @@ def placeTags(path_file, return_file):
         for i in range(0,ySize):
             for j in range(0,nSize):
                 if(associations[i][1]==tags[j]):
-                    wr.writerow([associations[i][0], j])                                
+                    wr.writerow([associations[i][0], j])
+
+
+#Récupération des paramètres de distance, durée et heuristique
+#entre toutes les villes
+#Insertion dans un CSV                     
+def paramsToCsv(path_file, return_file):
+    list_params=[]
+    with open(path_file, 'r') as csvfile:
+        cities=csv.reader(csvfile)
+        l=list(map(tuple,cities))
+        nSize=len(l)
+        df=pd.DataFrame(l)
+        id_dep=df.iloc[:,0]
+        id_arr=df.iloc[:,0]
+        lat_dep=df.iloc[:,2]
+        lng_dep=df.iloc[:,3]
+        lat_arr=df.iloc[:,2]
+        lng_arr=df.iloc[:,3]
+        #print(lat_dep)
+        #print(lat_arr)
+        with open(return_file, 'w+') as csv_file:
+            for i in range(0,nSize):
+                for j in range(0,nSize):
+                    if (i!=j or i<j):
+                        wr = csv.writer(csv_file)
+                        try:
+                            wr.writerow([getDistance_Duree(lat_dep[i], lng_dep[i], lat_arr[j], lng_arr[j], "driving"), id_dep[i], id_arr[j]])
+                            wr.writerow([getDistance_Duree(lat_dep[i], lng_dep[i], lat_arr[j], lng_arr[j], "walking"), id_dep[i], id_arr[j]])
+                            wr.writerow([getDistance_Duree(lat_dep[i], lng_dep[i], lat_arr[j], lng_arr[j], "transit"), id_dep[i], id_arr[j]])
+                            print(id_dep[i], id_arr[j])
+                        except IndexError:
+                            print("Trajet inexistant")
+                    #print(list_params)
 ###############################################################################

@@ -42,6 +42,8 @@ if __name__ == '__main__':
     #spark = SparkSession(sc)
     
     #db.placesToCsv()
-    dm.getTypes()
-    dm.placeTags("../data/tags.csv", "../data/placeTags.csv")
+    #dm.getTypes()
+    #dm.placeTags("../data/tags.csv", "../data/placeTags.csv")
+    #dm.paramsToCsv("../data/cities.csv", "../data/params_final.csv")
+    dm.clearParams()
 ###############################################################################
