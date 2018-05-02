@@ -7,7 +7,7 @@
 #Par Arnaud Duhamel et Robin Cavalieri
 #Planificateur intelligent
 #SOLUTEC Paris
-#15/03/2018
+#02/01/2018
 ###############################################################################
 
 
@@ -44,9 +44,10 @@ def placesToDf():
 
 
 #Fonction permettant de mettre la table PARAMS au format de DataFrame
-def paramsToDf():
+def paramsToDf(mode):
     connexion=db.init_db()
-    results=pd.read_sql('SELECT param.id, param.mode, param.time, param.distance, param.heuristic, param.cityDep_id, param.cityArr_id FROM param', connexion, index_col='id')
+    qr="SELECT param.id, param.time, param.distance, param.heuristic, param.cityDep_id, param.cityArr_id FROM param WHERE param.mode LIKE " + mode
+    results=pd.read_sql(qr, connexion, index_col='id')
     return results
 
 
@@ -62,6 +63,4 @@ def placeTypesToDf():
     connexion=db.init_db()
     results=pd.read_sql('SELECT placeTypes.place_id, placeTypes.word FROM placeTypes', connexion)
     return results
-
-typesToDf()
 ###############################################################################
