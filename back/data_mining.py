@@ -56,7 +56,7 @@ def getDate():
 
 #Fonction permettant de récupérer des coordonnées GPS à partir d'une adresse
 def getGps(address):
-    g = Nominatim()(address)
+    g = Nominatim()
     location=g.geocode(address)
     return [str(location.latitude), str(location.longitude)]
 
@@ -274,7 +274,6 @@ def getTypes():
         for words in data2:
             nwords = words.replace(',', '').replace('[', '').replace(']', '').replace("'", "").replace('/', '').replace('&','').replace('or','').replace('Caf\xc3\xa9','')   
             return_list.append([id_places[i], nwords])
-            list_tags_final.append(nwords)
             final=list(set(list_tags2))
             del final[0]
             
@@ -306,7 +305,6 @@ def placeTags(path_file, return_file):
 #entre toutes les villes
 #Insertion dans un CSV                     
 def paramsToCsv(path_file, return_file):
-    list_params=[]
     with open(path_file, 'r') as csvfile:
         cities=csv.reader(csvfile)
         l=list(map(tuple,cities))
@@ -332,5 +330,4 @@ def paramsToCsv(path_file, return_file):
                             print(id_dep[i], id_arr[j])
                         except IndexError:
                             print("Trajet inexistant")
-                    #print(list_params)
 ###############################################################################

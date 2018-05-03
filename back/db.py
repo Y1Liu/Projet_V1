@@ -26,8 +26,8 @@ import pyodbc
 def init_db():
     server = '10.2.38.20,1433'
     database = 'Planner'
-    username = 'SOLUTEC\rcavalieri'
-    connexion = pyodbc.connect('Trusted_connection=yes;DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ 'mmJHZ6Fr')
+    username = 'azerty'
+    connexion = pyodbc.connect('Trusted_connection=yes;DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ 'azerty')
     return connexion
 
 
