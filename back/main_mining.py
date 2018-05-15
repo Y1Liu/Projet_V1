@@ -44,6 +44,5 @@ if __name__ == '__main__':
     #db.placesToCsv()
     #dm.getTypes()
     #dm.placeTags("../data/tags.csv", "../data/placeTags.csv")
-    #dm.paramsToCsv("../data/cities.csv", "../data/params_final.csv")
-    dm.clearParams()
+    #dm.paramsToCsv("../data/cities.csv", "../data/params.csv")
 ###############################################################################

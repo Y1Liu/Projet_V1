@@ -14,27 +14,22 @@
 #LIBRAIRIES
 ###############################################################################
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, SelectMultipleField, BooleanField
+from wtforms import StringField, SubmitField, SelectField, SelectMultipleField, BooleanField, DateTimeField
+#from wtforms_components import TimeField
 from wtforms.validators import DataRequired
 from .tags import *
-
 
 ###############################################################################
 #Fonction créant le formulaire
 ###############################################################################
 class TrajectForm(FlaskForm):
 	depart = StringField('Adresse de depart', validators=[DataRequired()])
+	start_date_time = DateTimeField('Jour et heure de de départ (format JJ/MM/AAAA HH:MM)',format='%d/%m/%Y %H:%M')
 	arrivee = StringField('Adresse d arrivee', validators=[DataRequired()])
 	escales = BooleanField('Voulez-vous ajouter des escales ?')
 	choix_escales = StringField('Choix des escales ')
-	mode = SelectField('Moyen de transport', choices=[('Voiture', 'Voiture'), ('Train', 'Train')])
-	pause_voyage = SelectField('Duree maximale d un trajet avant une pause', choices=[('1h', '1h'),('2h', '2h'),('3h', '3h'),('4h', '4h'),('5h', '5h'),('6h', '6h'),])
+	mode = SelectField('Moyen de transport', choices=[('Voiture', 'Voiture'), ('Train', 'Train'), ('A pied', 'A pied')])
+	pause_voyage = SelectField('Duree maximale d un trajet avant une pause', choices=[('1h', '1h'),('2h', '2h'),('3h', '3h'),('4h', '4h')])
 	tps_repas = SelectField('Duree maximale du repas', choices=[('30min', '30min'),('1h', '1h'),('2h', '2h')])
 	tags = SelectMultipleField('Tags', choices=Tags(TAGS))
 	submit = SubmitField('Valider')
-
-
-
-
-#open(PATH_FILE, 'r') as csv_file:
-#	csv_file.reader()

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	{% extends "base.html" %}
+	<head>
+	<style>
+ 
+    #loading {
+    top: 200 px;
+    margin: auto;
+    position: absolute;
+    z-index: 1000;
+    width: 160px;
+    height: 24px;
+    background: url("loadingimage.gif") no-repeat;
+    cursor: wait;
+    }
+    </style>
+    </head>
+    
+    <body>
+        <div id="loading"></div>
+            
+<script type="text/javascript">// 
+        function preloader(){
+            document.getElementById("loading").style.display = "none";
+        }//preloader
+        window.onload = preloader;
+</script>        
+        
+    </body>
+    
+</html>
