@@ -252,7 +252,6 @@ def placesToCsv():
 #retourne une liste avec les places_id et le stags associés
 def getTypes():
     list_tags=[]
-    list_tags2=[]
     df = pd.read_csv('../data/all_places.csv')
     nSize=len(df)
     types = df.type
@@ -265,18 +264,16 @@ def getTypes():
             nwords = words.replace('#',' ')   
             list_tags.append(nwords)
             tags_doublons=list(set(list_tags))
-
-    #Deuxieme boucle permettant de supprimer les caracteres
-    #indesirables et d'écrire chaque tags unique dans un fichier csv
+    #Deuxieme boucle permettant de supprimer les caracteres indesirables et d'écrire chaque tags unique dans un fichier csv
     listSize=len(tags_doublons)
     for i in range(0,listSize):
         data2 = tags_doublons[i].split()
         for words in data2:
             nwords = words.replace(',', '').replace('[', '').replace(']', '').replace("'", "").replace('/', '').replace('&','').replace('or','').replace('Caf\xc3\xa9','')   
             return_list.append([id_places[i], nwords])
-            final=list(set(list_tags2))
+            final=return_list
             del final[0]
-            
+    print(return_list)
     with open('../data/tags.csv', 'w') as f:
         wr = csv.writer(f, delimiter='\n')
         wr.writerows([final])
@@ -287,7 +284,6 @@ def getTypes():
 #Une Place est associée par son id aux id de Tags
 def placeTags(path_file, return_file):
     associations=getTypes()
-    #print(StringIO(associations))
     tags = np.genfromtxt(path_file, dtype = None)
     print(tags)
     nSize=len(tags)

@@ -63,6 +63,4 @@ def placeTypesToDf():
     connexion=db.init_db()
     results=pd.read_sql('SELECT placeTypes.place_id, placeTypes.word FROM placeTypes', connexion)
     return results
-
-print(paramsToDf("'driving'"))
 ###############################################################################

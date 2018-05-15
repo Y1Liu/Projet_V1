@@ -17,7 +17,44 @@
 import data_mining as dm
 import dataframes as dtf
 import pandas as pd
-import time
+import numpy as np
+from pyspark.sql.session import SparkSession
+import pyspark
+###############################################################################
+
+
+###############################################################################
+#Création du spark context
+###############################################################################
+sc = pyspark.SparkContext.getOrCreate()
+conf = pyspark.SparkConf()
+conf.setAppName("SmartPlanner")
+conf.setMaster('spark://10.2.68.52:7077')
+conf.set('spark.executor.memory', '8g')
+conf.set('spark.executor.cores', '3')
+conf.set('spark.cores.max', '20')
+conf.set('spark.logConf', True)
+sc.stop()
+sc = pyspark.SparkContext(conf=conf)
+spark = SparkSession(sc)
+###############################################################################
+
+
+###############################################################################
+#IMPORT DES MATRICES DE DONNEES SOUS FORME DE DataFrames
+###############################################################################
+#Récupération de la matrice de types sous forme de dataframe
+df_types=dtf.typesToDf()
+#Spark DataFrame
+df_types=spark.createDataFrame(df_types)
+#Récupération de la matrice de similarité sous forme de dataframe
+df_similarities=dtf.similaritiesToDf()
+#Spark DataFrame
+df_similarities=spark.createDataFrame(df_similarities)
+#Récupération de la matrice de placeTypes sous forme de dataframe
+df_placeTypes=dtf.placeTypesToDf()
+#Spark DataFrame
+df_placeTypes=spark.createDataFrame(df_placeTypes)
 ###############################################################################
 
 
@@ -67,10 +104,43 @@ def computeDepArr(df, addDep, addArr, wayPoints, mode):
     df1=pd.DataFrame(rows)
     #Retourne la nouvelle DataFrame
     return(df1)
+
+
+#Fonction permettant de mesurer la similarité entre 2 places
+def getSimilarity(id_place1, id_place2):
+    score=0.0
+    #Récupération des tag_id de chaque place
+    words1=df_placeTypes.filter(df_placeTypes["place_id"]==id_place1).select("word")
+    words1.show()
+    words2=df_placeTypes.filter(df_placeTypes["place_id"]==id_place2).select("word")
+    words2.show()
+    #Récupération du nombre de tag par id 
+    nb_ind=words1.count()+words2.count()
+    print(nb_ind)
+    #Calcul des similarités croisées 
+    for row1 in words1:
+        for row2 in words2:
+            #result=spark.sql("SELECT similarity FROM similarity WHERE type_id1='"+row1+"' AND type_id2='"+row2+"' OR type_id1='"+row2+"' AND type_id2='"+row1)
+            result=df_similarities.filter((df_similarities["type_id1"]==row1 & df_similarities["type_id2"]==row2) | (df_similarities["type_id2"]==row1 & df_similarities["type_id1"]==row2))
+            score=score+result["similarity"]
+    return score/nb_ind
+
+
+#Fonction créant la matrice de similarité entre les évenements
+def placesSimilarities():
+    #Création de la DataFrame carrée avec des similarités de 0
+    temp=df_placeTypes.toPandas()['place_id'].unique()
+    print(len(temp))
+    df_sim=pd.DataFrame(np.zeros((len(temp),len(temp))), columns=list(temp), index=list(temp))
+    #Boucle peuplant la matrice avec les similarités calculées
     
-    
-t1=time.time()
-test=computeDepArr(dtf.paramsToDf("'driving'"), "Aumetz, France", "Limoges, France", ["Censier Daubenton, Paris"], "driving")
-t2=time.time()-t1
-print(t2)
+
+#Fonction permettant de lire les Tags données par l'utilisateur 
+#Retourne la liste des villes triées selon les gôuts de l'utilisateur 
+def computeRecommandation(tab_tags):
+    #Nombre de tags saisis par l'utilisateur
+    #CONSTRUCTION DE LA MATRICE DE SIMILARITE ENTRE LES EVENEMENTS
+    #Récupération de toutes les place_id
+    temp=df_placeTypes.toPandas()['place_id'].unique()
+    nPlaces=len(temp)
 ###############################################################################

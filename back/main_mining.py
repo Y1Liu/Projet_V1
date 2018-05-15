@@ -14,18 +14,11 @@
 #LIBRAIRIES
 ###############################################################################
 import data_mining as dm
-import random
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-#import pyspark
-import os
-import time
 import place as p
-import db
-import csv
-#from pyspark import *
-#from pyspark.sql.session import SparkSession
+import computing as cp
 ###############################################################################
 
 
@@ -33,17 +26,13 @@ import csv
 #MAIN
 ###############################################################################
 if __name__ == '__main__':
-
-    #Création du spark context
-    #conf = pyspark.SparkConf().setAll([('spark.executor.memory', '2g'), ('spark.executor.cores', '4'),("spark.cores.max", "8"), ('spark.driver.memory','4g')])
-    #sc = pyspark.SparkContext.getOrCreate()
-    #sc.stop()
-    #sc = pyspark.SparkContext(master='local[*]', appName='SchedulerJob',conf=conf)
-    #spark = SparkSession(sc)
-    
     #db.placesToCsv()
     #dm.getTypes()
     #dm.placeTags("../data/tags.csv", "../data/placeTags.csv")
     #dm.paramsToCsv("../data/cities.csv", "../data/params_final.csv")
-    dm.clearParams()
+    #dm.clearParams()
+    cp.placesSimilarities()
+    result=cp.getSimilarity('4cd5555fa5b34688a1248d50','4adcda10f964a520af3521e3')
+    print(result)
+    #cp.computeRecommandation(["Rock","Art","Museum"], spark)
 ###############################################################################
