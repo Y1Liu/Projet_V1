@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		{% if title %}
-		<title>{{ title }} - Interface</title>
-		{% else %}
-		<title>Interface de renseignements</title>
-		{% endif %}
-	</head>
-	<body>
+<html style="padding-left: 30px;">
+{% extends 'bootstrap/base.html' %}
+
+
+{% block title %}
+    {% if title %}{{ title }} - Planificateur Intelligent{% else %}Planificateur Intelligent{% endif %}
+{% endblock %}
+
+    {% block navbar %}
 		<div> 
 			<a href="/index">Accueil</a>
 			<a href="/form">Formulaire</a>
-			<a href="/response">Response</a>
 		</div>
+	{% endblock %}
 		<hr>
+		{% block content %}
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>
@@ -23,6 +24,7 @@
         </ul>
         {% endif %}
         {% endwith %}
-		{% block content %}{% endblock %}
-	</body>
+		{% block app_content %}{% endblock %}
+		{% endblock %}
+    
 </html>

@@ -1,73 +1,16 @@
 <!DOCTYPE html>
 <html>
 
-	{% extends "base.html" %}
+    {% extends "base.html" %}
+    {% import 'bootstrap/wtf.html' as wtf %}
 
-	{% block content %}
+	{% block app_content %}
 		<h1> Formulaire de renseignement</h1>
-		<form action="" method="post">
-			<p>
-				{{ form.depart.label }}
-				{{ form.depart(size=16) }}
-			</p>
-			<p>
-				{{ form.arrivee.label }}
-				{{ form.arrivee(size=16) }}
-			</p>
-			<p>
-				
-			<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-			<script type="text/javascript">
-    			$(function () {
-        			$("#chkEscales").click(function () {
-            			if ($(this).is(":checked")) {
-                			$("#dvEscales").show();
-            			} else {
-                			$("#dvEscales").hide();
-            			}
-        			});
-    			});
-			</script>
-			<label for="chkEscales">
-    		<input type="checkbox" id="chkEscales" />
-    			{{ form.escales.label }}
-    			
-    			
-			</label>
-			
-			<div id="dvEscales" style="display: none">
-    			{{ form.choix_escales.label }}
-    			{{ form.choix_escales() }}
-			</div>
-
-				
-			</p>
-			<p>
-				{{ form.mode.label }}
-				{{ form.mode() }}
-			</p>
-			<p>
-				{{ form.pause_voyage.label }}
-				{{ form.pause_voyage() }}
-			</p>
-			<p>
-				{{ form.tps_repas.label }}
-				{{ form.tps_repas() }}
-			</p>
-
-			<p>  
-				{{ form.tags.label }}
-				{{ form.tags() }}
-			</p>
-
-			<p>
-				{{ form.submit() }}
-				{{ form.csrf_token }}
-    			<!--{{ form.name }}
-    			<input type=submit><!-->
-			</p>
-
-		</form>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
 	{% endblock %}
 
 </html>

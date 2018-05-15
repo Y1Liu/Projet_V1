@@ -35,4 +35,5 @@ if __name__ == '__main__':
     result=cp.getSimilarity('4cd5555fa5b34688a1248d50','4adcda10f964a520af3521e3')
     print(result)
     #cp.computeRecommandation(["Rock","Art","Museum"], spark)
+    #dm.paramsToCsv("../data/cities.csv", "../data/params.csv")
 ###############################################################################

@@ -16,7 +16,6 @@
 from flask import render_template, flash, redirect, Markup, request
 from app import app
 from app.forms import TrajectForm
-import sys
 from werkzeug.contrib.cache import SimpleCache
 
 
@@ -46,7 +45,6 @@ class cached(object):
 			return response
 		return decorator
 
-
 #Fonction créant une page d'accueil
 @app.route('/')
 @app.route('/index')
@@ -63,16 +61,9 @@ def form():
 	form = TrajectForm()
 	Result=[]
 	if form.validate_on_submit():
-		reload(sys)
-		sys.setdefaultencoding('utf8')
-		#flash(Markup('Ville de départ : <b>{}</b>'.format(form.depart.data)))
-		#flash(Markup('Ville d arrivee : <b>{}</b>'.format(form.arrivee.data)))
-		#flash(Markup('Escale(s): <b>{}</b>'.format(form.choix_escales.data)))
-		#flash(Markup('Moyen de transport : <b>{}</b>'.format(form.mode.data)))
-		#flash(Markup('Temps maximal de trajet : <b>{}</b>'.format(form.pause_voyage.data)))
-		#flash(Markup('Durée maximale du repas : <b>{}</b>'.format(form.tps_repas.data)))
-		#flash(Markup('Tags : <b>{}</b>'.format(form.tags.data)))
 		Result.append(form.depart.data)
+		Result.append(form.start_date_time.data.strftime('%d/%m/%Y %H:%M'))
+		#Result.append(form.start_time.data)
 		Result.append(form.arrivee.data)
 		Result.append(form.choix_escales.data)
 		Result.append(form.mode.data)
@@ -80,12 +71,22 @@ def form():
 		Result.append(form.tps_repas.data)
 		Result.append(form.tags.data)
 		flash(Result)
-		return redirect('/response')
+		return redirect('/map')
 	return render_template('forms.html', title='Formulaire', form=form)
 
 
 @app.route('/response')
 def response():
 	return render_template('response.html', title='response')
+
+
+@app.route('/loading')
+def loading():
+    return render_template('loading.html', title='loading')
+           
+
+@app.route('/map')
+def map():
+    return render_template('map.html', title='Map')
 
 

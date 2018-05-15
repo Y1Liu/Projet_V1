@@ -1,3 +1,4 @@
+INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('driving',26568,779219,663230.5167525731,1,2);
 INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('walking',562543,752703,663230.5167525731,1,2);
 INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('transit',14111,755558,663230.5167525731,1,2);
 INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('driving',16399,467387,395490.190128091,1,3);
@@ -9007,4 +9008,4 @@ INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('w
 INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('transit',37859,680187,484674.3541134415,79,81);
 INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('driving',28508,855481,700737.8366132027,80,81);
 INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('walking',610248,816098,700737.8366132027,80,81);
-INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('transit',20863,844866,700737.8366132027,80,8);
+INSERT INTO param(mode,time,distance,heuristic,cityDep_id,cityArr_id) VALUES ('transit',20863,844866,700737.8366132027,80,81);

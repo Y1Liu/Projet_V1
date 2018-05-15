@@ -256,35 +256,29 @@ def getTypes():
     nSize=len(df)
     types = df.type
     id_places=df.id
-    return_list=[]
     #Premiere boucle pour supprimer les # entre les mots
     for i in range(0,nSize):
         data = types[i].split()
         for words in data:
-            nwords = words.replace('#',' ')   
-            list_tags.append(nwords)
-            tags_doublons=list(set(list_tags))
-    #Deuxieme boucle permettant de supprimer les caracteres indesirables et d'écrire chaque tags unique dans un fichier csv
-    listSize=len(tags_doublons)
-    for i in range(0,listSize):
-        data2 = tags_doublons[i].split()
-        for words in data2:
-            nwords = words.replace(',', '').replace('[', '').replace(']', '').replace("'", "").replace('/', '').replace('&','').replace('or','').replace('Caf\xc3\xa9','')   
-            return_list.append([id_places[i], nwords])
-            final=return_list
-            del final[0]
-    print(return_list)
-    with open('../data/tags.csv', 'w') as f:
+            nwords = words.replace('#',' ')
+            #Ajout des ID des places et des tags associes                       
+            list_tags.append([id_places[i], nwords.rsplit(None, 1)[-1].replace('[', '').replace(']', '').replace("'", "").replace('/', '').replace('&','').replace('or','').replace('Caf\xc3\xa9','') ])
+            final=list_tags
+    #Ecrit tous les Id et les tags dans un CSV        
+    with open('../data/list_tag_places_2.csv', 'w') as f:
         wr = csv.writer(f, delimiter='\n')
         wr.writerows([final])
-    return return_list    
+    return final    
     
 
 #Création du csv permettant de peupler la table d'association tag, place 
-#Une Place est associée par son id aux id de Tags
+#Une Place est associee par son id aux id de Tags
 def placeTags(path_file, return_file):
     associations=getTypes()
     tags = np.genfromtxt(path_file, dtype = None)
+    print(associations)
+    #print(StringIO(associations))
+    tags = np.genfromtxt(path_file, dtype = None, encoding='utf8')
     print(tags)
     nSize=len(tags)
     print(nSize)
@@ -294,7 +288,10 @@ def placeTags(path_file, return_file):
         for i in range(0,ySize):
             for j in range(0,nSize):
                 if(associations[i][1]==tags[j]):
+                    print(associations[i][0])
+                    print(j)
                     wr.writerow([associations[i][0], j])
+                    
 
 
 #Récupération des paramètres de distance, durée et heuristique
