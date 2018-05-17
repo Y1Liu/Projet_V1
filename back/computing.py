@@ -28,11 +28,12 @@ import pyspark
 ###############################################################################
 sc = pyspark.SparkContext.getOrCreate()
 conf = pyspark.SparkConf()
-conf.setAppName("SmartPlanner")
+conf.setAppName('SmartPlanner')
 conf.setMaster('spark://10.2.68.52:7077')
+#conf.setMaster('local[*]')
 conf.set('spark.executor.memory', '8g')
 conf.set('spark.executor.cores', '3')
-conf.set('spark.cores.max', '20')
+conf.set('spark.cores.max', '9')
 conf.set('spark.logConf', True)
 sc.stop()
 sc = pyspark.SparkContext(conf=conf)
@@ -46,15 +47,15 @@ spark = SparkSession(sc)
 #Récupération de la matrice de types sous forme de dataframe
 df_types=dtf.typesToDf()
 #Spark DataFrame
-df_types=spark.createDataFrame(df_types)
+#df_types=spark.createDataFrame(df_types)
 #Récupération de la matrice de similarité sous forme de dataframe
 df_similarities=dtf.similaritiesToDf()
 #Spark DataFrame
-df_similarities=spark.createDataFrame(df_similarities)
+#df_similarities=spark.createDataFrame(df_similarities)
 #Récupération de la matrice de placeTypes sous forme de dataframe
 df_placeTypes=dtf.placeTypesToDf()
 #Spark DataFrame
-df_placeTypes=spark.createDataFrame(df_placeTypes)
+#df_placeTypes=spark.createDataFrame(df_placeTypes)
 ###############################################################################
 
 
@@ -109,30 +110,40 @@ def computeDepArr(df, addDep, addArr, wayPoints, mode):
 #Fonction permettant de mesurer la similarité entre 2 places
 def getSimilarity(id_place1, id_place2):
     score=0.0
-    #Récupération des tag_id de chaque place
-    words1=df_placeTypes.filter(df_placeTypes["place_id"]==id_place1).select("word")
-    words1.show()
-    words2=df_placeTypes.filter(df_placeTypes["place_id"]==id_place2).select("word")
-    words2.show()
+    #Récupération des tag_id de chaque place    
+    words1=df_placeTypes[df_placeTypes.place_id==id_place1]['word']
+    words2=df_placeTypes[df_placeTypes.place_id==id_place2]['word']
     #Récupération du nombre de tag par id 
-    nb_ind=words1.count()+words2.count()
-    print(nb_ind)
-    #Calcul des similarités croisées 
-    for row1 in words1:
-        for row2 in words2:
-            #result=spark.sql("SELECT similarity FROM similarity WHERE type_id1='"+row1+"' AND type_id2='"+row2+"' OR type_id1='"+row2+"' AND type_id2='"+row1)
-            result=df_similarities.filter((df_similarities["type_id1"]==row1 & df_similarities["type_id2"]==row2) | (df_similarities["type_id2"]==row1 & df_similarities["type_id1"]==row2))
-            score=score+result["similarity"]
+    nb1=len(words1)
+    nb2=len(words2)
+    #print(words1)
+    #print(words2)
+    nb_ind=nb1+nb2
+    for i in range(0,nb1):
+        for j in range(0, nb2):
+            result=df_similarities[((df_similarities.type_id1==words1.iloc[i]) & (df_similarities.type_id2==words2.iloc[j]))^((df_similarities.type_id1==words2.iloc[j]) & (df_similarities.type_id2==words1.iloc[i]))]['similarity']
+            if(words1.iloc[i]!=words2.iloc[j]):
+                score=score+result.iloc[0]
+            else:
+                score=score+1
+            #print(score)
     return score/nb_ind
 
 
 #Fonction créant la matrice de similarité entre les évenements
 def placesSimilarities():
     #Création de la DataFrame carrée avec des similarités de 0
-    temp=df_placeTypes.toPandas()['place_id'].unique()
+    temp=df_placeTypes['place_id'].unique()
     print(len(temp))
     df_sim=pd.DataFrame(np.zeros((len(temp),len(temp))), columns=list(temp), index=list(temp))
     #Boucle peuplant la matrice avec les similarités calculées
+    for i in range(1, len(temp)):
+        for j in range(1, len(temp)):
+            #évite de recommander le même point d'intéret
+            if(i!=j):
+                print(temp[i]+", "+temp[j]+" : "+str(getSimilarity(temp[i], temp[j])))
+                df_sim.loc[[temp[i]],[temp[j]]]=getSimilarity(temp[i], temp[j])
+    return(df_sim)
     
 
 #Fonction permettant de lire les Tags données par l'utilisateur 
@@ -141,6 +152,7 @@ def computeRecommandation(tab_tags):
     #Nombre de tags saisis par l'utilisateur
     #CONSTRUCTION DE LA MATRICE DE SIMILARITE ENTRE LES EVENEMENTS
     #Récupération de toutes les place_id
-    temp=df_placeTypes.toPandas()['place_id'].unique()
-    nPlaces=len(temp)
+    #temp=df_placeTypes.toPandas()['place_id'].unique()
+    #nPlaces=len(temp)
+    return 0
 ###############################################################################
