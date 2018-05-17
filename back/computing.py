@@ -19,6 +19,8 @@ import dataframes as dtf
 import pandas as pd
 import numpy as np
 from pyspark.sql.session import SparkSession
+from pyspark.sql.functions import monotonically_increasing_id
+from pyspark.sql.types import IntegerType
 import pyspark
 ###############################################################################
 
@@ -30,7 +32,6 @@ sc = pyspark.SparkContext.getOrCreate()
 conf = pyspark.SparkConf()
 conf.setAppName('SmartPlanner')
 conf.setMaster('spark://10.2.68.52:7077')
-#conf.setMaster('local[*]')
 conf.set('spark.executor.memory', '8g')
 conf.set('spark.executor.cores', '3')
 conf.set('spark.cores.max', '9')
@@ -56,6 +57,9 @@ df_similarities=dtf.similaritiesToDf()
 df_placeTypes=dtf.placeTypesToDf()
 #Spark DataFrame
 #df_placeTypes=spark.createDataFrame(df_placeTypes)
+#Récupération de la matrice de placesSimilarity sous forme de dataframe
+#Spark DataFrame
+placesSimilarities=spark.read.format('csv').option('header', 'true').load('../data/placesSimilarities.csv')
 ###############################################################################
 
 
@@ -144,15 +148,18 @@ def placesSimilarities():
                 print(temp[i]+", "+temp[j]+" : "+str(getSimilarity(temp[i], temp[j])))
                 df_sim.loc[[temp[i]],[temp[j]]]=getSimilarity(temp[i], temp[j])
     return(df_sim)
-    
+
 
 #Fonction permettant de lire les Tags données par l'utilisateur 
-#Retourne la liste des villes triées selon les gôuts de l'utilisateur 
+#Retourne la liste des meilleurs events pour chaque tag
 def computeRecommandation(tab_tags):
+    #Passage en SparkDataframes
     #Nombre de tags saisis par l'utilisateur
+    user_tags=[]
+    nSize=len(tab_tags)
     #CONSTRUCTION DE LA MATRICE DE SIMILARITE ENTRE LES EVENEMENTS
-    #Récupération de toutes les place_id
-    #temp=df_placeTypes.toPandas()['place_id'].unique()
-    #nPlaces=len(temp)
+    #Récupération des id de tags choisis par l'utilisateur
+    for i in range(0, nSize):
+        user_tags.append(int(df_types.index[df_types.name==tab_tags[i]].get_values()[0]))
     return 0
 ###############################################################################
