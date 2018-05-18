@@ -13,11 +13,11 @@
 ###############################################################################
 #LIBRAIRIES
 ###############################################################################
-from flask import render_template, flash, redirect, Markup, request
+from flask import render_template, flash, redirect, Markup, request, url_for, session
 from app import app
 from app.forms import TrajectForm
 from werkzeug.contrib.cache import SimpleCache
-
+import win32api
 
 ###############################################################################
 #CONSTANTES
@@ -49,8 +49,8 @@ class cached(object):
 @app.route('/')
 @app.route('/index')
 def index():
-	user = {'username': 'Arnaud'}
-	return render_template('index.html', title='Home', user=user)
+	#user = {'username': 'Arnaud'}
+	return render_template('index.html', title='Home')
 
 #Fonction créant la page du formulaire de renseignements
 #Renvoie les choix de l'utilisateur sous forme de liste après soumission du formulaire
@@ -60,17 +60,45 @@ def index():
 def form():
 	form = TrajectForm()
 	Result=[]
-	if form.validate_on_submit():
+	
+	if form.addEscales.data:
+		try:
+			form.choix_escales.append_entry()
+		except AssertionError:
+			win32api.MessageBox(0, 'Vous ne pouvez pas ajouter plus de 3 escales', 'Nombre max d\'escales atteinte')
+    
+	elif form.deleteEscales.data:
+		try:
+			form.choix_escales.pop_entry()
+		except IndexError:
+			win32api.MessageBox(0, 'Vous n\'avez plus d\'escale à supprimer', 'Plus d\'escale')
+
+	elif form.validate_on_submit():
 		Result.append(form.depart.data)
+		depart=form.depart.data
+
 		Result.append(form.start_date_time.data.strftime('%d/%m/%Y %H:%M'))
-		#Result.append(form.start_time.data)
+        
 		Result.append(form.arrivee.data)
+		arrivee=form.arrivee.data    
+        
 		Result.append(form.choix_escales.data)
+		#flash(form.choix_escales.data)
+		escales=form.choix_escales.data
+		
 		Result.append(form.mode.data)
+        
 		Result.append(form.pause_voyage.data)
+        
 		Result.append(form.tps_repas.data)
+        
 		Result.append(form.tags.data)
-		flash(Result)
+        
+		session["depart"]=depart
+		session["arrivee"]=arrivee
+		session["escales"]=escales    
+
+		#flash(Result)
 		return redirect('/map')
 	return render_template('forms.html', title='Formulaire', form=form)
 
@@ -87,6 +115,10 @@ def loading():
 
 @app.route('/map')
 def map():
-    return render_template('map.html', title='Map')
+    depart=session.get("depart",None)
+    arrivee=session.get("arrivee", None)
+    escales=session.get("escales", None)
+	
+    return render_template('map.html', title='Map', depart=depart, arrivee=arrivee, escales=escales)
 
 

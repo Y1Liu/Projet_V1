@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Travel modes in directions</title>
+    <title>Planificateur Intelligent - Trajet</title>
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -16,50 +16,24 @@
         margin: 0;
         padding: 0;
       }
-      #floating-panel {
-        position: absolute;
-        top: 10px;
-        left: 25%;
-        z-index: 5;
-        background-color: #fff;
-        padding: 5px;
-        border: 1px solid #999;
-        text-align: center;
-        font-family: 'Roboto','sans-serif';
-        line-height: 30px;
-        padding-left: 10px;
-      }
+ 
       
     </style>
   </head>
   <body>
-    <div id="floating-panel">
-    <b>Mode of Travel: </b>
-    <select id="mode">
-      <option value="DRIVING">Driving</option>
-      <option value="WALKING">Walking</option>
-      <option value="BICYCLING">Bicycling</option>
-      <option value="TRANSIT">Transit</option>
-    </select>
-    </div>
+    
     <div id="loading"></div>
     <div id="map"></div>
     <script>
     
-function preloader(){
-    document.getElementById("loading").style.display = "none";
-    setTimeout(function(){
-        initMap()
-    }, 5000);
-}//preloader
-//window.onload = preloader;
+
 
 
 
 function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
-          center: ('Lyon, France')  // Australia.
+          //center: ('Amiens, France')
         });
 
         var directionsService = new google.maps.DirectionsService;
@@ -70,20 +44,32 @@ function initMap() {
         });
 
         directionsDisplay.addListener('directions_changed', function() {
-          computeTotalDistance(directionsDisplay.getDirections());
         });
 
-        displayRoute('Lille, France', 'Paris, France', directionsService,
+        displayRoute('{{ depart }}', '{{ arrivee }}', directionsService,
             directionsDisplay);
       }
-
+    
       function displayRoute(origin, destination, service, display) {
+          var waypts=[];
+          var esc=['{{ escales[0] }}', '{{ escales[1] }}', '{{ escales[2] }}', '{{ escales[3] }}'];
+
+          for (var i = 0; i < esc.length ; i++) { 
+            if (!esc[i]) {
+                waypts=waypts;
+            } else {
+                waypts.push({
+                    location: esc[i]
+                });
+            }         
+          }
         service.route({
           origin: origin,
           destination: destination,
-          waypoints: [{location: 'Amiens, France'}],
+          waypoints: waypts,
           travelMode: 'DRIVING',
-          avoidTolls: true
+          avoidTolls: true,
+          optimizeWaypoints: true
         }, function(response, status) {
           if (status === 'OK') {
             display.setDirections(response);
@@ -92,21 +78,9 @@ function initMap() {
           }
         });
       }
-
-      function computeTotalDistance(result) {
-        var total = 0;
-        var myroute = result.routes[0];
-        for (var i = 0; i < myroute.legs.length; i++) {
-          total += myroute.legs[i].distance.value;
-        }
-        total = total / 1000;
-        document.getElementById('total').innerHTML = total + ' km';
-      }
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8pxsl2jFQSwshMT2I5Weue8CKLgxalY8&callback=initMap">
-
-    //src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8pxsl2jFQSwshMT2I5Weue8CKLgxalY8&language=fr&region=FR&callback=initMap", 'idle'>
     </script>
   </body>
 </html>
