@@ -60,7 +60,7 @@ def index():
 def form():
 	form = TrajectForm()
 	Result=[]
-	
+	escales=[]
 	if form.addEscales.data:
 		try:
 			form.choix_escales.append_entry()
@@ -83,9 +83,14 @@ def form():
 		arrivee=form.arrivee.data    
         
 		Result.append(form.choix_escales.data)
-		#flash(form.choix_escales.data)
-		escales=form.choix_escales.data
-		
+		#flash(form.choix_escales[1]['escales'].data)
+		for i in range(0,len(form.choix_escales.data)):
+			try:
+				escales.append(form.choix_escales[i]['escales'].data)
+			except IndexError:
+				escales=escales
+		#escales=form.choix_escales.data
+		flash(escales)
 		Result.append(form.mode.data)
         
 		Result.append(form.pause_voyage.data)

@@ -26,8 +26,22 @@
     <div id="map"></div>
     <script>
     
-
-
+// on crée un tableau avec tous les points du voyage du départ à l'arrivee avec toutes les escales
+var voyage=['{{ depart }}'];
+var esc=['{{ escales[0] }}', '{{ escales[1] }}', '{{ escales[2] }}', '{{ escales[3] }}'];
+        
+// Ajout des escales dans le tableau au bon format {location : 'Ville'}
+for (var i = 0; i < esc.length ; i++) { 
+    if (!esc[i]) {
+    // si l'escale n'existe pas on n'ajoute rien a waypts
+        voyage=voyage;
+    } else {
+        voyage.push(
+            esc[i]
+        );
+    }         
+}
+voyage.push('{{ arrivee }}');    
 
 
 function initMap() {
@@ -35,12 +49,13 @@ function initMap() {
           zoom: 4,
           //center: ('Amiens, France')
         });
-
+        
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer({
           draggable: true,
           map: map,
-          panel: document.getElementById('right-panel')
+          panel: document.getElementById('right-panel'),
+          suppressMarkers : true
         });
 
         directionsDisplay.addListener('directions_changed', function() {
@@ -48,14 +63,67 @@ function initMap() {
 
         displayRoute('{{ depart }}', '{{ arrivee }}', directionsService,
             directionsDisplay);
+                
+        
+        geocoder = new google.maps.Geocoder();
+        for (var i = 0; i < voyage.length; i++) {
+            codeAddress(geocoder, map, voyage[i]);
+       }
+}
+      
+      function codeAddress(geocoder, map, address) {
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+            map.setCenter(results[0].geometry.location);
+            
+            switch(address) {
+                case '{{ depart }}':
+                    color = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+                    content = address;
+                    break;
+                case '{{ arrivee }}':
+                    color = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+                    content = address;
+                    break;
+                default:
+                    color = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
+                    content = address;
+            }            
+            var infowindow = new google.maps.InfoWindow({
+              content: content
+            });
+            
+            var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location,
+              icon : color
+            });
+            marker.addListener('click', function() {
+                infowindow.open(map, marker);
+            });
+            
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
       }
     
       function displayRoute(origin, destination, service, display) {
           var waypts=[];
+          //var esc=[];
+          //for (var i = 0; i < 4; i++) {
+              //esc.push('{{ escales[i] }}');
+            //} 
+            //alert(esc);
+          // Ne marche pas en utilisant '{{ escales[i] }}' : rien ne s'ajoute au tableau esc
+          // oblige a rentrer les escales manuellement pour les reutiliser dans waypts
+           
           var esc=['{{ escales[0] }}', '{{ escales[1] }}', '{{ escales[2] }}', '{{ escales[3] }}'];
 
+          // Ajout des escales dans le tableau au bon format {location : 'Ville'}
           for (var i = 0; i < esc.length ; i++) { 
             if (!esc[i]) {
+                // si l'escale n'existe pas on n'ajoute rien a waypts
                 waypts=waypts;
             } else {
                 waypts.push({
@@ -63,6 +131,7 @@ function initMap() {
                 });
             }         
           }
+          
         service.route({
           origin: origin,
           destination: destination,
