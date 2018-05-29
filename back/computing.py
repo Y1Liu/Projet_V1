@@ -14,16 +14,20 @@
 ###############################################################################
 #LIBRAIRIES
 ###############################################################################
-import data_mining as dm
-import dataframes as dtf
 import pandas as pd
 import numpy as np
+import data_mining as dm
 from pyspark.sql.session import SparkSession
 from pyspark.sql.functions import monotonically_increasing_id
 from pyspark.sql.types import IntegerType
+from pyspark.sql.types import FloatType
 from pyspark.sql.window import Window
 from pyspark.sql import functions as F
+from pyspark.sql.functions import udf
+from math import log
 import pyspark
+import pyodbc
+import dataframes as dtf
 ###############################################################################
 
 
@@ -34,13 +38,23 @@ sc = pyspark.SparkContext.getOrCreate()
 conf = pyspark.SparkConf()
 conf.setAppName('SmartPlanner')
 conf.setMaster('spark://10.2.68.52:7077')
-conf.set('spark.executor.memory', '5g')
-conf.set('spark.executor.cores', '2')
-conf.set('spark.cores.max', '6')
+#conf.setMaster('local[*]')
+conf.set('spark.executor.memory', '10g')
+conf.set('spark.executor.cores', '3')
+conf.set('spark.cores.max', '9')
 conf.set('spark.logConf', True)
 sc.stop()
 sc = pyspark.SparkContext(conf=conf)
 spark = SparkSession(sc)
+spark.catalog.clearCache()
+###############################################################################
+
+
+###############################################################################
+#TESTS
+###############################################################################
+MAX_VISITS = 288743
+tab_tags=['Art', 'Music', 'Rock', 'Museum']
 ###############################################################################
 
 
@@ -48,20 +62,44 @@ spark = SparkSession(sc)
 #IMPORT DES MATRICES DE DONNEES SOUS FORME DE DataFrames
 ###############################################################################
 #Récupération de la matrice de types sous forme de dataframe
-df_types=dtf.typesToDf()
+#df_types=dtf.typesToDf()
 #Spark DataFrame
 #df_types=spark.createDataFrame(df_types)
 #Récupération de la matrice de similarité sous forme de dataframe
-df_similarities=dtf.similaritiesToDf()
+#df_similarities=dtf.similaritiesToDf()
 #Spark DataFrame
-df_similarities=spark.createDataFrame(df_similarities)
+#df_similarities=spark.createDataFrame(df_similarities)
 #Récupération de la matrice de placeTypes sous forme de dataframe
-df_placeTypes=dtf.placeTypesToDf()
+#df_placeTypes=dtf.placeTypesToDf()
 #Spark DataFrame
 #df_placeTypes=spark.createDataFrame(df_placeTypes)
 #Récupération de la matrice de placesSimilarity sous forme de dataframe
 #Spark DataFrame
 placesSimilarities=spark.read.format('csv').option('header', 'true').load('../data/placesSimilarities.csv')
+windowSpec = Window.orderBy("ind")
+df_types=dtf.typesToDf()
+df_placeTypes=dtf.placeTypesToDf()
+df_similarities=dtf.similaritiesToDf()
+df_places=dtf.placesToDf()
+sc_places=spark.createDataFrame(df_places)
+user_tags=[]
+d={'Visits':[]}
+df_visits=pd.DataFrame(data=d)
+d={'City_id':[]}
+df_city=pd.DataFrame(data=d)
+df_types=dtf.typesToDf()
+n=len(tab_tags)
+n_pT=len(df_placeTypes)
+#Ajout des city_id à la matrice
+#Ajout du nombre de visites à la matrice
+for i in range(0,n_pT):
+    place_id=df_placeTypes.iloc[i]['place_id']
+    city_id=df_places.loc[place_id, 'city_id']
+    df_city=df_city.append({'City_id': city_id}, ignore_index=True)
+    visits=df_places.loc[place_id, 'visits']
+    df_visits=df_visits.append({'Visits': visits}, ignore_index=True)
+df_placeTypes=pd.concat([df_placeTypes, df_city], axis=1)
+df_placeTypes=pd.concat([df_placeTypes, df_visits], axis=1)
 ###############################################################################
 
 
@@ -136,35 +174,25 @@ def getSimilarity(id_place1, id_place2):
 
 #Fonction permettant de mesurer la similarité entre les TAGS UTILISATEURS ET TOUTES LES PLACES
 def getSimilarityUsersPlaces(df_tags, df_placesTypes_ind):
-    #score=0.0
     list_final=[]
     for i in range(1, df_tags.count()+1):
+        #Select tag_id 
+        tag_user=df_tags.where(df_tags.id==i).select('value').collect()
         for j in range(1, df_placesTypes_ind.count()+1):
-            df_similarities.show()
-            #df_placesTypes_ind.show()
-            #Select tag_id 
-            #df_tags.show()
-            tag_user=df_tags.where(df_tags.id==i).select('value').collect()
             #Select place id
             event_id=df_placesTypes_ind.where(df_placesTypes_ind.ind==j).select('place_id').collect()[0]
             #Select Tags for each place
             tags_place=df_placesTypes_ind.where(df_placesTypes_ind.place_id==event_id['place_id']).select('word')
-            #tag_user.show()
-            #tags_place.show()
             tags_place=tags_place.withColumn('id', monotonically_increasing_id())
             windowSpec = Window.orderBy("id")
             tags_place=tags_place.withColumn("id", F.row_number().over(windowSpec))
-            #tags_place.show()
             #Créer une dataframe avec la similarité de chaque event avec chaque tag
-            simi=0.0
             score=0.0
             for k in range (1, tags_place.count()+1):
                 temp=tags_place.where(tags_place.id==k).select('word').collect()
-                print(str(tag_user[0][0]) +" | "+ str(temp[0][0]))
-                simi=df_similarities.where(df_similarities.type_id1==tag_user[0][0] & df_similarities.type_id2==temp[0][0] ^ df_similarities.type_id2==tag_user[0][0] & df_similarities.type_id1==temp[0][0])
-                score=score+simi[0][0]
-                print(score)
-            list_final.append([tag_user, event_id['place_id'], score])
+                simi=df_similarities.where(((df_similarities.type_id1==tag_user[0][0])&(df_similarities.type_id2==temp[0][0]))|((df_similarities.type_id2==tag_user[0][0])&(df_similarities.type_id1==temp[0][0]))).select('similarity').collect()
+                score=score+simi[0]['similarity']
+            list_final.append([tag_user, event_id['place_id'], score/df_tags.count()])    
     return 0
 
 
@@ -210,4 +238,62 @@ def computeRecommandation(tab_tags):
     df_placeTypes_ind.cache()
     getSimilarityUsersPlaces(user_tags_df,df_placeTypes_ind)
     return 0
+
+#Fonction utilisée pour UDF matrix
+#Score = similarité + log(nombre de visites)
+def scoreTotal(simi, visits):
+    if(visits >= 1):
+        return(simi + log(visits))
+    else:
+        return(simi)
+#Définition
+udfScoreTotal=udf(scoreTotal, FloatType())
+
+
+#CONSTRUCTION DE LA MATRICE DE SIMILARITE ENTRE LES EVENEMENTS
+#Récupération des id de tags choisis par l'utilisateur
+def getClassement(df_placeTypes):
+    #Mesure de similarités avec les points d'intérêts
+    for i in range(0, n):
+        user_tags.append(int(df_types.index[df_types.name==tab_tags[i]].get_values()[0]))
+    for i in range(0, n):
+        d={tab_tags[i]:[]}
+        df=pd.DataFrame(data=d)
+        #Select tag_id 
+        tag_user=user_tags[i]
+        #Création d'une dataframe d'une seule colonne de nom tag_id
+        for j in range(0, n_pT):   
+            #Ajouter une colonne de calcul de similarité pour chaque tag 
+            temp=int(df_placeTypes.loc[j]['word'])
+            if(tag_user<temp):
+                simi=df_similarities.loc[(df_similarities['type_id1']==tag_user)&(df_similarities['type_id2']==temp), 'similarity'].values[0]
+            elif(tag_user==temp):
+                simi=1.0
+            elif(tag_user>temp):
+                simi=df_similarities.loc[(df_similarities['type_id2']==tag_user)&(df_similarities['type_id1']==temp), 'similarity'].values[0]
+            df=df.append({tab_tags[i]: simi}, ignore_index=True)
+        df_placeTypes=pd.concat([df_placeTypes, df], axis=1)
+    #Computation du classement des villes  
+    sc_placeTypes=spark.createDataFrame(df_placeTypes)
+    scoreTable=[]
+    for i in range(0,n):
+        col=tab_tags[i]
+        temp=sc_placeTypes.groupBy('place_id', 'City_id', 'Visits').agg({col: 'mean'})
+        temp=temp.withColumn('Score',udfScoreTotal('avg('+col+')', 'Visits'))
+        temp=temp.groupBy('City_id').agg({'Score': 'mean'})
+        temp.orderBy('avg(Score)', ascending=False)
+        #Liste de dataframe où sont conservés les classements par score
+        scoreTable.append(temp)
+        #Matrice du Score total obtenu par chaque ville
+        if(i==0):
+            overallScore=temp
+        elif(i>0):
+            overallScore=overallScore.union(temp)
+    overallScore=overallScore.groupBy('City_id').agg({'avg(Score)': 'mean'})
+    overallScore=overallScore.orderBy('avg(avg(Score))', ascending=False)
+    #retourne le classement des villes
+    return overallScore
 ###############################################################################
+    
+test=getClassement(df_placeTypes)
+test.show()
