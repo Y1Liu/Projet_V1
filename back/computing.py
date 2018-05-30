@@ -292,8 +292,6 @@ def getClassement(df_placeTypes):
     overallScore=overallScore.groupBy('City_id').agg({'avg(Score)': 'mean'})
     overallScore=overallScore.orderBy('avg(avg(Score))', ascending=False)
     #retourne le classement des villes
-    return overallScore
-###############################################################################
-    
-test=getClassement(df_placeTypes)
-test.show()
+    return [overallScore, scoreTable]
+###############################################################################    
+test=getClassement(df_placeTypes)[0]
