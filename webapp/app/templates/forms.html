@@ -1,50 +1,43 @@
 <!DOCTYPE html>
 <html>
-
     {% extends "base.html" %}
     {% import 'bootstrap/wtf.html' as wtf %}
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.js"></script>
   
 	{% block app_content %}
-		<h1> Formulaire de renseignement</h1>
+	<h1>Formulaire de renseignement</h1>
     <div class="row">
-        <div class="col-md-4">
-            
+        <div class="col-md-4">     
             <form class="form form-horizontal" method="post" role="form">
-              {{ form.hidden_tag() }}
               {{ wtf.form_errors(form, hiddens="only") }}
               {{ wtf.form_field(form.depart) }}
-                             
               {{ wtf.form_field(form.start_date_time) }}
               {{ wtf.form_field(form.arrivee) }}
-
               {{ wtf.form_field(form.mode) }}
               {{ wtf.form_field(form.pause_voyage) }}
               {{ wtf.form_field(form.tps_repas) }}
               {{ wtf.form_field(form.tags) }}
-              {{ wtf.form_field(form.submit) }}
-            
-        </div>
-        
-        <div class="col-md-2">
+			          <div class="col-md-2">
             <div class="escales">
             {{ wtf.form_field(form.choix_escales) }}
             </div>
         </div>
+		
         <div class="row">
-        <div class="col-md-1">
-            {{ wtf.form_field(form.addEscales) }}
-            {{ wtf.form_field(form.deleteEscales) }}
-            </form>
-            </div>
-            </div>
-          
-        </div>
-    </div>
+			<div class="col-md-1">
+				{{ wtf.form_field(form.addEscales) }}
+				{{ wtf.form_field(form.deleteEscales) }}	
+			<div>
+				<button type="submit" class="btn btn-success">Soumettre</button>
+			</div>
+		</div>
+		</div>
+			</form>
+		</div>
+	</div>
+
 	{% endblock %}
-	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDF3iPCXxiaqVnUKBmHB-OxWo3fDd6tIXU&libraries=places&callback=initAutocomplete"
-        async defer></script>  
 </html>
 
