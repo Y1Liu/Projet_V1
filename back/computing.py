@@ -53,8 +53,10 @@ spark.catalog.clearCache()
 ###############################################################################
 #TESTS
 ###############################################################################
-MAX_VISITS = 288743
 tab_tags=['Art', 'Music', 'Rock', 'Museum']
+waypoint=['Amiens']
+add_dep='Lille'
+add_arr='Marseille'
 ###############################################################################
 
 
@@ -107,7 +109,7 @@ df_placeTypes=pd.concat([df_placeTypes, df_visits], axis=1)
 #FONCTIONS
 ###############################################################################
 #Fonction permettant de retourner une Dataframe avec les distances, temps entre les villes avec le lieu de départ et d'arrivée de l'utilisateur
-def computeDepArr(df, addDep, addArr, wayPoints, mode): 
+def computeDepArr(addDep, addArr, wayPoints, mode): 
     #Récupération des coordonnées depuis les adresses fournies
     coordDep=dm.getGps(addDep)
     coordArr=dm.getGps(addArr)
@@ -146,7 +148,7 @@ def computeDepArr(df, addDep, addArr, wayPoints, mode):
     #Calcul des paramètres entre le départ et l'arrivée
     distDuree=dm.getDistance_Duree(coordDep[0], coordDep[1], coordArr[0], coordArr[1], mode)
     rows.append([distDuree[1], distDuree[2], distDuree[3], 1000, 10000])
-    df1=pd.DataFrame(rows)
+    df1=pd.DataFrame(rows, columns=['time', 'distance', 'heuristic', 'cityDep_id', 'cityArr_id'])
     #Retourne la nouvelle DataFrame
     return(df1)
 
@@ -246,13 +248,12 @@ def scoreTotal(simi, visits):
         return(simi + log(visits))
     else:
         return(simi)
-#Définition
-udfScoreTotal=udf(scoreTotal, FloatType())
-
 
 #CONSTRUCTION DE LA MATRICE DE SIMILARITE ENTRE LES EVENEMENTS
 #Récupération des id de tags choisis par l'utilisateur
 def getClassement(df_placeTypes):
+    #Init fonction udf
+    udfScoreTotal=udf(scoreTotal, FloatType())
     #Mesure de similarités avec les points d'intérêts
     for i in range(0, n):
         user_tags.append(int(df_types.index[df_types.name==tab_tags[i]].get_values()[0]))
@@ -273,6 +274,7 @@ def getClassement(df_placeTypes):
                 simi=df_similarities.loc[(df_similarities['type_id2']==tag_user)&(df_similarities['type_id1']==temp), 'similarity'].values[0]
             df=df.append({tab_tags[i]: simi}, ignore_index=True)
         df_placeTypes=pd.concat([df_placeTypes, df], axis=1)
+        
     #Computation du classement des villes  
     sc_placeTypes=spark.createDataFrame(df_placeTypes)
     scoreTable=[]
@@ -294,4 +296,41 @@ def getClassement(df_placeTypes):
     #retourne le classement des villes
     return [overallScore, scoreTable]
 ###############################################################################    
-test=getClassement(df_placeTypes)[0]
+    
+#df_test=computeDepArr(add_dep, add_arr, waypoint, 'driving')
+df_test=pd.read_csv('../data/trajet_temoin.csv').astype(int)
+df_params=dtf.paramsToDf("'driving'")
+df_params=pd.concat([df_params, df_test], axis=0)
+df_params.append(df_test)
+#Spark Dataframe avec le score de chaque ville
+overallScore=getClassement(df_placeTypes)[0]
+#Boucle dans chaque ligne pour affilier un score à chaque ville
+df_overallScore=overallScore.toPandas()
+df_overallScore
+list_scoreDep=[]
+list_scoreArr=[]
+for index, row in df_params.iterrows():
+    cityDep_id=row['cityDep_id']
+    cityArr_id=row['cityArr_id']
+    #Recherche du score sur la ville de départ
+    if(cityDep_id==1000 or cityDep_id==10000 or cityDep_id==100000):
+        list_scoreDep.append(0)
+    else:
+        score=df_overallScore.loc[(df_overallScore['City_id']==cityDep_id), 'avg(avg(Score))']
+        if(list(score) != []):
+            list_scoreDep.append(list(score)[0])
+        else:
+            list_scoreDep.append(0)
+    #Recherche du score sur la ville d'arrivée
+    if(cityArr_id==1000 or cityArr_id==10000 or cityArr_id==100000):
+        list_scoreArr.append(0)
+    else:
+        score=df_overallScore.loc[(df_overallScore['City_id']==cityArr_id), 'avg(avg(Score))']
+        if(list(score) != []):
+            list_scoreArr.append(list(score)[0])
+        else:
+            list_scoreArr.append(0)
+df_scoreDep=pd.DataFrame(list_scoreDep, columns=['ScoreCity1'])
+df_scoreArr=pd.DataFrame(list_scoreArr, columns=['ScoreCity2'])
+df_params=pd.concat([df_params, df_scoreDep, df_scoreArr], axis=1, ignore_index=True)
+df_params
