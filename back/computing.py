@@ -26,7 +26,6 @@ from pyspark.sql import functions as F
 from pyspark.sql.functions import udf
 from math import log
 import pyspark
-import pyodbc
 import dataframes as dtf
 ###############################################################################
 
@@ -294,43 +293,51 @@ def getClassement(df_placeTypes):
     overallScore=overallScore.groupBy('City_id').agg({'avg(Score)': 'mean'})
     overallScore=overallScore.orderBy('avg(avg(Score))', ascending=False)
     #retourne le classement des villes
-    return [overallScore, scoreTable]
-###############################################################################    
+    return [overallScore, scoreTable]  
     
-#df_test=computeDepArr(add_dep, add_arr, waypoint, 'driving')
-df_test=pd.read_csv('../data/trajet_temoin.csv').astype(int)
-df_params=dtf.paramsToDf("'driving'")
-df_params=pd.concat([df_params, df_test], axis=0)
-df_params.append(df_test)
-#Spark Dataframe avec le score de chaque ville
-overallScore=getClassement(df_placeTypes)[0]
-#Boucle dans chaque ligne pour affilier un score à chaque ville
-df_overallScore=overallScore.toPandas()
-df_overallScore
-list_scoreDep=[]
-list_scoreArr=[]
-for index, row in df_params.iterrows():
-    cityDep_id=row['cityDep_id']
-    cityArr_id=row['cityArr_id']
-    #Recherche du score sur la ville de départ
-    if(cityDep_id==1000 or cityDep_id==10000 or cityDep_id==100000):
-        list_scoreDep.append(0)
-    else:
-        score=df_overallScore.loc[(df_overallScore['City_id']==cityDep_id), 'avg(avg(Score))']
-        if(list(score) != []):
-            list_scoreDep.append(list(score)[0])
-        else:
+
+#CONSTRUCTION DE LA MATRICE PERMETTANT DE CALCULER LES GRAPHES
+# time | distance | heuristic | cityDep_id | cityArr_id | ScoreCity1 | ScoreCity2
+def getGraphMatrix(add_dep, add_arr, waypoint, mode):
+    #df_test=computeDepArr(add_dep, add_arr, waypoint, 'driving')
+    df_test=pd.read_csv('../data/trajet_temoin.csv').astype(int)
+    df_params=dtf.paramsToDf("'driving'")
+    df_params=pd.concat([df_params, df_test], axis=0)
+    df_params.append(df_test)
+    #Spark Dataframe avec le score de chaque ville
+    overallScore=getClassement(df_placeTypes)[0]
+    #Boucle dans chaque ligne pour affilier un score à chaque ville
+    df_overallScore=overallScore.toPandas()
+    df_overallScore
+    list_scoreDep=[]
+    list_scoreArr=[]
+    for index, row in df_params.iterrows():
+        cityDep_id=row['cityDep_id']
+        cityArr_id=row['cityArr_id']
+        #Recherche du score sur la ville de départ
+        if(cityDep_id==1000 or cityDep_id==10000 or cityDep_id==100000):
             list_scoreDep.append(0)
-    #Recherche du score sur la ville d'arrivée
-    if(cityArr_id==1000 or cityArr_id==10000 or cityArr_id==100000):
-        list_scoreArr.append(0)
-    else:
-        score=df_overallScore.loc[(df_overallScore['City_id']==cityArr_id), 'avg(avg(Score))']
-        if(list(score) != []):
-            list_scoreArr.append(list(score)[0])
         else:
+            score=df_overallScore.loc[(df_overallScore['City_id']==cityDep_id), 'avg(avg(Score))']
+            if(list(score) != []):
+                list_scoreDep.append(list(score)[0])
+            else:
+                list_scoreDep.append(0)
+        #Recherche du score sur la ville d'arrivée
+        if(cityArr_id==1000 or cityArr_id==10000 or cityArr_id==100000):
             list_scoreArr.append(0)
-df_scoreDep=pd.DataFrame(list_scoreDep, columns=['ScoreCity1'])
-df_scoreArr=pd.DataFrame(list_scoreArr, columns=['ScoreCity2'])
-df_params=pd.concat([df_params, df_scoreDep, df_scoreArr], axis=1, ignore_index=True)
-df_params
+        else:
+            score=df_overallScore.loc[(df_overallScore['City_id']==cityArr_id), 'avg(avg(Score))']
+            if(list(score) != []):
+                list_scoreArr.append(list(score)[0])
+            else:
+                list_scoreArr.append(0)
+    df_scoreDep=pd.DataFrame(list_scoreDep, columns=['ScoreCity1'])
+    df_scoreArr=pd.DataFrame(list_scoreArr, columns=['ScoreCity2'])
+    df_params=df_params.reset_index(drop=True)
+    df_scoreDep=df_scoreDep.reset_index(drop=True)
+    df_scoreArr=df_scoreArr.reset_index(drop=True)
+    df_params=pd.concat([df_params, df_scoreDep, df_scoreArr], axis=1, join='inner')
+    sc_params=spark.createDataFrame(df_params)
+    return sc_params
+###############################################################################  
