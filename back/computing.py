@@ -240,6 +240,7 @@ def computeRecommandation(tab_tags):
     getSimilarityUsersPlaces(user_tags_df,df_placeTypes_ind)
     return 0
 
+
 #Fonction utilisée pour UDF matrix
 #Score = similarité + log(nombre de visites)
 def scoreTotal(simi, visits):
@@ -248,8 +249,17 @@ def scoreTotal(simi, visits):
     else:
         return(simi)
 
+
 #CONSTRUCTION DE LA MATRICE DE SIMILARITE ENTRE LES EVENEMENTS
 #Récupération des id de tags choisis par l'utilisateur
+"""
+_________________________
+City_id | avg(avg(Score))
+________|________________"""
+"""
+_________________________
+place_id | avg(avg(Score))
+_________|_______________"""
 def getClassement(df_placeTypes):
     #Init fonction udf
     udfScoreTotal=udf(scoreTotal, FloatType())
@@ -297,7 +307,10 @@ def getClassement(df_placeTypes):
     
 
 #CONSTRUCTION DE LA MATRICE PERMETTANT DE CALCULER LES GRAPHES
-# time | distance | heuristic | cityDep_id | cityArr_id | ScoreCity1 | ScoreCity2
+"""
+_______________________________________________________________________________
+time | distance | heuristic | cityDep_id | cityArr_id | ScoreCity1 | ScoreCity2
+_____|__________|___________|____________|____________|____________|___________"""
 def getGraphMatrix(add_dep, add_arr, waypoint, mode):
     #df_test=computeDepArr(add_dep, add_arr, waypoint, 'driving')
     df_test=pd.read_csv('../data/trajet_temoin.csv').astype(int)
@@ -340,4 +353,6 @@ def getGraphMatrix(add_dep, add_arr, waypoint, mode):
     df_params=pd.concat([df_params, df_scoreDep, df_scoreArr], axis=1, join='inner')
     sc_params=spark.createDataFrame(df_params)
     return sc_params
-###############################################################################  
+###############################################################################
+    
+sc_params=getGraphMatrix(add_dep, add_arr, waypoint, 'driving')
