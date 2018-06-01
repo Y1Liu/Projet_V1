@@ -28,9 +28,9 @@ class EscalesForm(FlaskForm):
 
 
 class TrajectForm(FlaskForm):
-	depart = StringField('Adresse de depart', validators=[DataRequired()])
+	depart = StringField('', validators=[DataRequired()])
 	start_date_time = DateTimeField('Jour et heure de départ (format JJ/MM/AAAA HH:MM)',format='%d/%m/%Y %H:%M')
-	arrivee = StringField('Adresse d\'arrivee', validators=[DataRequired()])
+	arrivee = StringField('', validators=[DataRequired()])
 	#♣escales = BooleanField('Voulez-vous ajouter des escales ?')
 	#choix_escales = StringField('Choix des escales ')
 	choix_escales = FieldList(FormField(EscalesForm), min_entries=0, max_entries=3)

@@ -21,28 +21,34 @@
     </style>
   </head>
   <body>
-    
-    <div id="loading"></div>
     <div id="map"></div>
     <script>
     
-// on crée un tableau avec tous les points du voyage du départ à l'arrivee avec toutes les escales
-var voyage=['{{ depart }}'];
-var esc=['{{ escales[0] }}', '{{ escales[1] }}', '{{ escales[2] }}', '{{ escales[3] }}'];
-        
-// Ajout des escales dans le tableau au bon format {location : 'Ville'}
-for (var i = 0; i < esc.length ; i++) { 
-    if (!esc[i]) {
-    // si l'escale n'existe pas on n'ajoute rien a waypts
-        voyage=voyage;
-    } else {
-        voyage.push(
-            esc[i]
-        );
-    }         
-}
-voyage.push('{{ arrivee }}');    
+// on crée un tableau avec tous les points du voyage du départ à l'arrivee avec toutes les escales 
+var urlParams;
+(window.onpopstate = function () {
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
 
+    urlParams = {};
+    while (match = search.exec(query))
+       urlParams[decode(match[1])] = decode(match[2]);
+})();
+
+var esca=[];
+var dep = urlParams["depart"];
+var arr = urlParams["arrivee"];
+var esc = urlParams["escales"],
+  wordArray = esc.split(',');
+
+var voyage=[dep];
+for (var i=0; i<esc.length;i++) {
+  voyage.push(wordArray[i])
+}
+voyage.push(arr); 
 
 function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -55,33 +61,33 @@ function initMap() {
           draggable: true,
           map: map,
           panel: document.getElementById('right-panel'),
-          suppressMarkers : true
+          suppressMarkers : false
         });
-
+  
         directionsDisplay.addListener('directions_changed', function() {
         });
 
-        displayRoute('{{ depart }}', '{{ arrivee }}', directionsService,
+        displayRoute(dep, arr, directionsService,
             directionsDisplay);
                 
         
-        geocoder = new google.maps.Geocoder();
+        /*geocoder = new google.maps.Geocoder();
         for (var i = 0; i < voyage.length; i++) {
             codeAddress(geocoder, map, voyage[i]);
-       }
+       }*/
 }
       
-      function codeAddress(geocoder, map, address) {
+      /*function codeAddress(geocoder, map, address) {
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === 'OK') {
             map.setCenter(results[0].geometry.location);
             
             switch(address) {
-                case '{{ depart }}':
+                case dep:
                     color = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
                     content = address;
                     break;
-                case '{{ arrivee }}':
+                case arr:
                     color = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
                     content = address;
                     break;
@@ -106,28 +112,17 @@ function initMap() {
             alert('Geocode was not successful for the following reason: ' + status);
           }
         });
-      }
+      }*/
     
       function displayRoute(origin, destination, service, display) {
           var waypts=[];
-          //var esc=[];
-          //for (var i = 0; i < 4; i++) {
-              //esc.push('{{ escales[i] }}');
-            //} 
-            //alert(esc);
-          // Ne marche pas en utilisant '{{ escales[i] }}' : rien ne s'ajoute au tableau esc
-          // oblige a rentrer les escales manuellement pour les reutiliser dans waypts
-           
-          var esc=['{{ escales[0] }}', '{{ escales[1] }}', '{{ escales[2] }}', '{{ escales[3] }}'];
-
-          // Ajout des escales dans le tableau au bon format {location : 'Ville'}
-          for (var i = 0; i < esc.length ; i++) { 
-            if (!esc[i]) {
+          for (var i = 0; i < wordArray.length ; i++) { 
+            if (!wordArray[i]) {
                 // si l'escale n'existe pas on n'ajoute rien a waypts
                 waypts=waypts;
             } else {
                 waypts.push({
-                    location: esc[i]
+                    location: wordArray[i]
                 });
             }         
           }

@@ -60,24 +60,24 @@ def index():
 def form():
 	form = TrajectForm()
 	Result=[]
-	escales=[]
-	if form.addEscales.data:
-		try:
-			form.choix_escales.append_entry()
-		except AssertionError:
-			win32api.MessageBox(0, 'Vous ne pouvez pas ajouter plus de 3 escales', 'Nombre max d\'escales atteinte')
+	#escales=[]
+	#if form.addEscales.data:
+	#	try:
+	#		form.choix_escales.append_entry()
+	#	except AssertionError:
+	#		win32api.MessageBox(0, 'Vous ne pouvez pas ajouter plus de 3 escales', 'Nombre max d\'escales atteinte')
     
-	elif form.deleteEscales.data:
-		try:
-			form.choix_escales.pop_entry()
-		except IndexError:
-			win32api.MessageBox(0, 'Vous n\'avez plus d\'escale à supprimer', 'Plus d\'escale')
+	#elif form.deleteEscales.data:
+	#	try:
+	#		form.choix_escales.pop_entry()
+	#	except IndexError:
+	#		win32api.MessageBox(0, 'Vous n\'avez plus d\'escale à supprimer', 'Plus d\'escale')
 
-	elif form.validate_on_submit():
+	if form.validate_on_submit():
 		Result.append(form.depart.data)
 		depart=form.depart.data
 
-		Result.append(form.start_date_time.data.strftime('%d/%m/%Y %H:%M'))
+		#Result.append(form.start_date_time.data.strftime('%d/%m/%Y %H:%M'))
         
 		Result.append(form.arrivee.data)
 		arrivee=form.arrivee.data    
@@ -89,23 +89,22 @@ def form():
 				escales.append(form.choix_escales[i]['escales'].data)
 			except IndexError:
 				escales=escales
-		#escales=form.choix_escales.data
-		flash(escales)
-		Result.append(form.mode.data)
+		escales=form.choix_escales.data
+		#flash(escales)
+		#Result.append(form.mode.data)
         
-		Result.append(form.pause_voyage.data)
+		#Result.append(form.pause_voyage.data)
         
-		Result.append(form.tps_repas.data)
+		#Result.append(form.tps_repas.data)
         
-		Result.append(form.tags.data)
+		#Result.append(form.tags.data)
         
 		session["depart"]=depart
 		session["arrivee"]=arrivee
 		session["escales"]=escales    
-
 		#flash(Result)
 		return redirect('/map')
-	return render_template('forms.html', title='Formulaire', form=form)
+	return render_template('form2.html', title='Formulaire', form=form)
 
 
 @app.route('/response')
@@ -113,9 +112,9 @@ def response():
 	return render_template('response.html', title='response')
 
 
-@app.route('/loading')
+@app.route('/test')
 def loading():
-    return render_template('loading.html', title='loading')
+    return render_template('test.html', title='test')
            
 
 @app.route('/map')
