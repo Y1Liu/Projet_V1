@@ -18,6 +18,7 @@ from app import app
 from app.forms import TrajectForm
 from werkzeug.contrib.cache import SimpleCache
 import win32api
+from .tags import *
 
 ###############################################################################
 #CONSTANTES
@@ -113,8 +114,9 @@ def response():
 
 
 @app.route('/test')
-def loading():
-    return render_template('test.html', title='test')
+def test():
+    test = ['Paris', 'Neuilly-sur-Seine']
+    return render_template('test.html', title='test', test=test)
            
 
 @app.route('/map')

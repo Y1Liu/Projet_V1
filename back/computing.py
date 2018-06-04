@@ -267,7 +267,7 @@ ________|________________"""
 _________________________
 place_id | avg(avg(Score))
 _________|_______________"""
-def getClassement(df_placeTypes):
+def getClassement(df_placeTypes, tab_tags):
     #Init fonction udf
     udfScoreTotal=udf(scoreTotal, FloatType())
     #Mesure de similarités avec les points d'intérêts
@@ -314,7 +314,7 @@ def getClassement(df_placeTypes):
 
 
 #Renvoi de la liste de villes recommandée en fonction des choix de l'utilisateur
-def getWay(df_overallScore, n):
+def getWay(tab_tags, df_overallScore, n):
     list_steps=[]
     for i in range(0,n):
         city_id=df_overallScore.iloc[i , 0]
@@ -323,8 +323,8 @@ def getWay(df_overallScore, n):
     return list_steps
 
 
-t=getClassement(df_placeTypes)[0].toPandas()
-test=getWay(t, 5)
+#t=getClassement(df_placeTypes, tab_tags)[0].toPandas()
+test=getWay(tab_tags, getClassement(df_placeTypes, tab_tags)[0].toPandas(), 5)
 print(test)
     
 
