@@ -52,7 +52,7 @@ spark.catalog.clearCache()
 ###############################################################################
 #TESTS
 ###############################################################################
-tab_tags=['Art', 'Music', 'Rock', 'Museum']
+tab_tags=['Art', 'Site', 'Museum', 'Gallery']
 waypoint=['Amiens']
 add_dep='Lille'
 add_arr='Marseille'
@@ -76,8 +76,9 @@ add_arr='Marseille'
 #df_placeTypes=spark.createDataFrame(df_placeTypes)
 #Récupération de la matrice de placesSimilarity sous forme de dataframe
 #Spark DataFrame
-placesSimilarities=spark.read.format('csv').option('header', 'true').load('../data/placesSimilarities.csv')
+#placesSimilarities=spark.read.format('csv').option('header', 'true').load('../data/placesSimilarities.csv')
 windowSpec = Window.orderBy("ind")
+df_cities=dtf.citiesToDf()
 df_types=dtf.typesToDf()
 df_placeTypes=dtf.placeTypesToDf()
 df_similarities=dtf.similaritiesToDf()
@@ -151,7 +152,7 @@ def computeDepArr(addDep, addArr, wayPoints, mode):
     #Retourne la nouvelle DataFrame
     return(df1)
 
-
+"""
 #Fonction permettant de mesurer la similarité entre 2 places
 def getSimilarity(id_place1, id_place2):
     score=0.0
@@ -171,14 +172,16 @@ def getSimilarity(id_place1, id_place2):
                 score=score+1
             #print(score)
     return score/nb_ind
+"""
 
-
+"""
 #Fonction permettant de mesurer la similarité entre les TAGS UTILISATEURS ET TOUTES LES PLACES
 def getSimilarityUsersPlaces(df_tags, df_placesTypes_ind):
     list_final=[]
     for i in range(1, df_tags.count()+1):
         #Select tag_id 
         tag_user=df_tags.where(df_tags.id==i).select('value').collect()
+        print("TAG USER : "+tag_user)
         for j in range(1, df_placesTypes_ind.count()+1):
             #Select place id
             event_id=df_placesTypes_ind.where(df_placesTypes_ind.ind==j).select('place_id').collect()[0]
@@ -191,12 +194,15 @@ def getSimilarityUsersPlaces(df_tags, df_placesTypes_ind):
             score=0.0
             for k in range (1, tags_place.count()+1):
                 temp=tags_place.where(tags_place.id==k).select('word').collect()
+                print("TAG PLACE : "+temp)
                 simi=df_similarities.where(((df_similarities.type_id1==tag_user[0][0])&(df_similarities.type_id2==temp[0][0]))|((df_similarities.type_id2==tag_user[0][0])&(df_similarities.type_id1==temp[0][0]))).select('similarity').collect()
                 score=score+simi[0]['similarity']
+            print("SCORE : "+ score)
             list_final.append([tag_user, event_id['place_id'], score/df_tags.count()])    
     return 0
+"""
 
-
+"""
 #Fonction créant la matrice de similarité entre les évenements
 def placesSimilarities():
     #Création de la DataFrame carrée avec des similarités de 0
@@ -212,10 +218,10 @@ def placesSimilarities():
                 df_sim.loc[[temp[i]],[temp[j]]]=getSimilarity(temp[i], temp[j])
     df_sim.to_csv('../data/placesSimilarities.csv', sep=',', encoding='utf-8')
     return(df_sim)
+"""
 
-
+"""
 #Fonction permettant de lire les Tags données par l'utilisateur 
-#Retourne la liste des meilleurs events pour chaque tag
 def computeRecommandation(tab_tags):
     #Passage en SparkDataframes
     #Nombre de tags saisis par l'utilisateur
@@ -239,13 +245,14 @@ def computeRecommandation(tab_tags):
     df_placeTypes_ind.cache()
     getSimilarityUsersPlaces(user_tags_df,df_placeTypes_ind)
     return 0
+"""
 
 
 #Fonction utilisée pour UDF matrix
 #Score = similarité + log(nombre de visites)
 def scoreTotal(simi, visits):
     if(visits >= 1):
-        return(simi + log(visits))
+        return(simi + (log(visits)/2))
     else:
         return(simi)
 
@@ -283,7 +290,6 @@ def getClassement(df_placeTypes):
                 simi=df_similarities.loc[(df_similarities['type_id2']==tag_user)&(df_similarities['type_id1']==temp), 'similarity'].values[0]
             df=df.append({tab_tags[i]: simi}, ignore_index=True)
         df_placeTypes=pd.concat([df_placeTypes, df], axis=1)
-        
     #Computation du classement des villes  
     sc_placeTypes=spark.createDataFrame(df_placeTypes)
     scoreTable=[]
@@ -302,8 +308,24 @@ def getClassement(df_placeTypes):
             overallScore=overallScore.union(temp)
     overallScore=overallScore.groupBy('City_id').agg({'avg(Score)': 'mean'})
     overallScore=overallScore.orderBy('avg(avg(Score))', ascending=False)
+    overallScore=overallScore.filter(overallScore.City_id <= 60)
     #retourne le classement des villes
     return [overallScore, scoreTable]  
+
+
+#Renvoi de la liste de villes recommandée en fonction des choix de l'utilisateur
+def getWay(df_overallScore, n):
+    list_steps=[]
+    for i in range(0,n):
+        city_id=df_overallScore.iloc[i , 0]
+        city_name=df_cities.loc[[city_id], 'name']
+        list_steps.append([city_name.values[0], df_overallScore.loc[[i], 'avg(avg(Score))'].values[0]])
+    return list_steps
+
+
+t=getClassement(df_placeTypes)[0].toPandas()
+test=getWay(t, 5)
+print(test)
     
 
 #CONSTRUCTION DE LA MATRICE PERMETTANT DE CALCULER LES GRAPHES
@@ -355,4 +377,4 @@ def getGraphMatrix(add_dep, add_arr, waypoint, mode):
     return sc_params
 ###############################################################################
     
-sc_params=getGraphMatrix(add_dep, add_arr, waypoint, 'driving')
+#sc_params=getGraphMatrix(add_dep, add_arr, waypoint, 'driving')

@@ -39,16 +39,17 @@ def similaritiesToCsv(path_file, return_file):
     #Récupération du fichier des villes
     tags=np.genfromtxt(path_file, dtype=str)
     nSize=len(tags)
-    print(tags)
     #écriture dans le fichier contenant ID_tag1 | ID_Tag2 | Similarity
     with open(return_file, 'w') as csv_file:
         wr=csv.writer(csv_file)
         for i in range(0,nSize):
             for j in range(0,nSize):
                 if(i <= j):
-                    print(tags[i], tags[j])
+                    print(tags[i] + " "+ tags[j])
+                    print(str(i) + " " + str(j) + " " + str(getSimilarity(tags[i], tags[j])))
                     wr.writerow([i, j, getSimilarity(tags[i], tags[j])])
    
     
+#similaritiesToCsv('../data/tags.csv','../data/similaritiesTags.csv')
 similaritiesToCsv('../data/tags.csv','../data/similaritiesTags.csv')
 ###############################################################################
