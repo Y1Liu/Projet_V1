@@ -52,10 +52,10 @@ spark.catalog.clearCache()
 ###############################################################################
 #TESTS
 ###############################################################################
-tab_tags=['Art', 'Site', 'Museum', 'Gallery']
-waypoint=['Amiens']
-add_dep='Lille'
-add_arr='Marseille'
+#tab_tags=['Art', 'Site', 'Museum', 'Gallery']
+#waypoint=['Amiens']
+#add_dep='Lille'
+#add_arr='Marseille'
 ###############################################################################
 
 
@@ -90,7 +90,7 @@ df_visits=pd.DataFrame(data=d)
 d={'City_id':[]}
 df_city=pd.DataFrame(data=d)
 df_types=dtf.typesToDf()
-n=len(tab_tags)
+#n=len(tab_tags)
 n_pT=len(df_placeTypes)
 #Ajout des city_id à la matrice
 #Ajout du nombre de visites à la matrice
@@ -269,6 +269,7 @@ place_id | avg(avg(Score))
 _________|_______________"""
 def getClassement(df_placeTypes, tab_tags):
     #Init fonction udf
+    n=len(tab_tags)
     udfScoreTotal=udf(scoreTotal, FloatType())
     #Mesure de similarités avec les points d'intérêts
     for i in range(0, n):
@@ -324,8 +325,8 @@ def getWay(tab_tags, df_overallScore, n):
 
 
 #t=getClassement(df_placeTypes, tab_tags)[0].toPandas()
-test=getWay(tab_tags, getClassement(df_placeTypes, tab_tags)[0].toPandas(), 5)
-print(test)
+#test=getWay(tab_tags, getClassement(df_placeTypes, tab_tags)[0].toPandas(), 5)
+#print(test)
     
 
 #CONSTRUCTION DE LA MATRICE PERMETTANT DE CALCULER LES GRAPHES

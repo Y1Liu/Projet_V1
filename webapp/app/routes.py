@@ -18,7 +18,10 @@ from app import app
 from app.forms import TrajectForm
 from werkzeug.contrib.cache import SimpleCache
 import win32api
-from .tags import *
+import importlib.util
+spec = importlib.util.spec_from_file_location("computing.py", "../back/computing.py")
+computing = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(computing)
 
 ###############################################################################
 #CONSTANTES
@@ -116,6 +119,7 @@ def response():
 @app.route('/test')
 def test():
     test = ['Paris', 'Neuilly-sur-Seine']
+    test=computing.getWay(tab_tags, computing.getClassement(computing.df_placeTypes, tab_tags)[0].toPandas(), 5)
     return render_template('test.html', title='test', test=test)
            
 
