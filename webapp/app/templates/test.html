@@ -425,13 +425,13 @@
     <div class="form-group">
       <label class="control-label col-sm-2" for="pwd">Jour du départ(*)</label>
       <div class="col-sm-10">          
-        <input type="date" class="form-control" id="date_dep" name="date_dep" method="get">
+        <input type="date" class="form-control" id="date_dep" name="date_dep" method="get" >
       </div>
     </div>
 	<div class="form-group">
       <label class="control-label col-sm-2" for="pwd">Heure du départ(*)</label>
       <div class="col-sm-10">          
-        <input type="time" class="form-control" id="time_dep">
+        <input type="time" class="form-control" id="time_dep" name="time_dep" method="get" >
       </div>
     </div>
 	<div class="form-group">
@@ -445,13 +445,13 @@
 	<div class="form-group">
       <label class="control-label col-sm-2" for="pwd">Jour d'arrivée(*)</label>
       <div class="col-sm-10">          
-        <input type="date" class="form-control" id="date_arr">
+        <input type="date" class="form-control" id="date_arr" name="date_arr" method="get" >
       </div>
     </div>
 	<div class="form-group">
       <label class="control-label col-sm-2" for="pwd">Heure d'arrivée(*)</label>
       <div class="col-sm-10">          
-        <input type="time" class="form-control" id="time_arr" name=""time_arr" method="get">
+        <input type="time" class="form-control" id="time_arr" name=time_arr" method="get">
       </div>
     </div>
 
@@ -480,6 +480,8 @@
 		$('#escales').tokenfield({
 		  typeahead: [null, { source: engine.ttAdapter() }]
 		});
+
+
     </script>
     	<div class="form-group">
       <label class="control-label col-sm-2" for="email">Tags(*)</label>
@@ -499,6 +501,7 @@
 		  },
 		  showAutocompleteOnFocus: true
 		})
+
     </script>
 </div>
 </div>
@@ -542,7 +545,7 @@
 	<div class="form-group">        
       <div class="col-sm-offset-2 col-sm-10">
       	<a class="goToMap" href="map">
-        <button type="submit" id="btn btn-default" onClick="#map" style="color: #f5f5f5; background-color: #1abc9c; border-color: #1abc9c; border-radius: 5px; padding: 5px;">Soumettre</button></a>
+        <button type="submit" id="submit" onClick="#map" style="color: #f5f5f5; background-color: #1abc9c; border-color: #1abc9c; border-radius: 5px; padding: 5px;">Soumettre</button></a>
       </div>
     </div>
   </form>
@@ -650,7 +653,25 @@ voyage.push(arr);
 var tag = urlParams["tags"],
 	tags = tag.split(',');
 
-var recom = {{ test|tojson }};
+
+var data = {
+	Depart: dep,
+	Arrivee: arr,
+	Escales: wordArray,
+	tags_users: tags
+}
+
+
+     $('#submit').click(function() {
+        $.ajax({
+          type: "POST",
+          contentType: "application/json;charset=utf-8",
+          url: "/test",
+          traditional: "true",
+          data: JSON.stringify(data),
+          dataType: "json"
+          });
+    });
 
 function initMap() {
 
@@ -740,16 +761,7 @@ function initMap() {
             }         
           }
 
-           for (var i = 0; i < recom.length ; i++) { 
-            if (!recom[i]) {
-                // si l'escale n'existe pas on n'ajoute rien a waypts
-                waypts=waypts;
-            } else {
-                waypts.push({
-                    location: recom[i]
-                });
-            }         
-          }         
+         
           
         service.route({
           origin: origin,

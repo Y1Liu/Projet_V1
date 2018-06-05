@@ -18,10 +18,9 @@ from app import app
 from app.forms import TrajectForm
 from werkzeug.contrib.cache import SimpleCache
 import win32api
-import importlib.util
-spec = importlib.util.spec_from_file_location("computing.py", "../back/computing.py")
-computing = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(computing)
+import cgi
+import json
+
 
 ###############################################################################
 #CONSTANTES
@@ -70,7 +69,7 @@ def form():
 	#		form.choix_escales.append_entry()
 	#	except AssertionError:
 	#		win32api.MessageBox(0, 'Vous ne pouvez pas ajouter plus de 3 escales', 'Nombre max d\'escales atteinte')
-    
+	
 	#elif form.deleteEscales.data:
 	#	try:
 	#		form.choix_escales.pop_entry()
@@ -82,10 +81,10 @@ def form():
 		depart=form.depart.data
 
 		#Result.append(form.start_date_time.data.strftime('%d/%m/%Y %H:%M'))
-        
+		
 		Result.append(form.arrivee.data)
 		arrivee=form.arrivee.data    
-        
+		
 		Result.append(form.choix_escales.data)
 		#flash(form.choix_escales[1]['escales'].data)
 		for i in range(0,len(form.choix_escales.data)):
@@ -96,13 +95,13 @@ def form():
 		escales=form.choix_escales.data
 		#flash(escales)
 		#Result.append(form.mode.data)
-        
+		
 		#Result.append(form.pause_voyage.data)
-        
+		
 		#Result.append(form.tps_repas.data)
-        
+		
 		#Result.append(form.tags.data)
-        
+		
 		session["depart"]=depart
 		session["arrivee"]=arrivee
 		session["escales"]=escales    
@@ -111,24 +110,21 @@ def form():
 	return render_template('form2.html', title='Formulaire', form=form)
 
 
-@app.route('/response')
-def response():
-	return render_template('response.html', title='response')
-
-
-@app.route('/test')
+@app.route('/test', methods=['GET','POST'])
 def test():
-    test = ['Paris', 'Neuilly-sur-Seine']
-    test=computing.getWay(tab_tags, computing.getClassement(computing.df_placeTypes, tab_tags)[0].toPandas(), 5)
-    return render_template('test.html', title='test', test=test)
-           
+	if request.method == 'POST':
+		data = request.get_json()
+		with open('forms.json', 'w') as json_file:
+			json.dump(data, json_file, indent=4)
+	return render_template('test.html', title='test')
+		   
 
 @app.route('/map')
 def map():
-    depart=session.get("depart",None)
-    arrivee=session.get("arrivee", None)
-    escales=session.get("escales", None)
+	depart=session.get("depart",None)
+	arrivee=session.get("arrivee", None)
+	escales=session.get("escales", None)
 	
-    return render_template('map.html', title='Map', depart=depart, arrivee=arrivee, escales=escales)
+	return render_template('map.html', title='Map', depart=depart, arrivee=arrivee, escales=escales)
 
 

@@ -20,6 +20,7 @@ from flask_bootstrap import Bootstrap
 ###############################################################################
 #Creation de l'instance de l'appplication dans une variable globale
 app = Flask(__name__)
+ #app.config.from_pyfile('config.py')
 app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 
