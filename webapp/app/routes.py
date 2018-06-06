@@ -13,13 +13,10 @@
 ###############################################################################
 #LIBRAIRIES
 ###############################################################################
-from flask import render_template, flash, redirect, Markup, request, url_for, session
-from app import app
-from app.forms import TrajectForm
+from flask import Flask, render_template, flash, redirect, Markup, request, url_for, session
 from werkzeug.contrib.cache import SimpleCache
-import win32api
-import cgi
-import json
+import computing as cp
+###############################################################################
 
 
 ###############################################################################
@@ -27,6 +24,14 @@ import json
 ###############################################################################
 CACHE_TIMEOUT = 60 #Définit le timeout du cache à 60 secondes
 cache = SimpleCache()
+spark=cp.getsparkContext()
+print("SPARK CONTEXT DONE")
+tags_user=[]
+datas=cp.initMatrix(spark)
+print("GET MATRIX DONE")
+app = Flask(__name__)
+###############################################################################
+
 
 ###############################################################################
 #FONCTIONS
@@ -48,6 +53,7 @@ class cached(object):
 			return response
 		return decorator
 
+
 #Fonction créant une page d'accueil
 @app.route('/')
 @app.route('/index')
@@ -55,68 +61,19 @@ def index():
 	#user = {'username': 'Arnaud'}
 	return render_template('index.html', title='Home')
 
+
 #Fonction créant la page du formulaire de renseignements
 #Renvoie les choix de l'utilisateur sous forme de liste après soumission du formulaire
 #Utilise la classe cached pour garder les données en cache
-@app.route('/form', methods=['GET', 'POST'])
-@cached()
-def form():
-	form = TrajectForm()
-	Result=[]
-	#escales=[]
-	#if form.addEscales.data:
-	#	try:
-	#		form.choix_escales.append_entry()
-	#	except AssertionError:
-	#		win32api.MessageBox(0, 'Vous ne pouvez pas ajouter plus de 3 escales', 'Nombre max d\'escales atteinte')
-	
-	#elif form.deleteEscales.data:
-	#	try:
-	#		form.choix_escales.pop_entry()
-	#	except IndexError:
-	#		win32api.MessageBox(0, 'Vous n\'avez plus d\'escale à supprimer', 'Plus d\'escale')
-
-	if form.validate_on_submit():
-		Result.append(form.depart.data)
-		depart=form.depart.data
-
-		#Result.append(form.start_date_time.data.strftime('%d/%m/%Y %H:%M'))
-		
-		Result.append(form.arrivee.data)
-		arrivee=form.arrivee.data    
-		
-		Result.append(form.choix_escales.data)
-		#flash(form.choix_escales[1]['escales'].data)
-		for i in range(0,len(form.choix_escales.data)):
-			try:
-				escales.append(form.choix_escales[i]['escales'].data)
-			except IndexError:
-				escales=escales
-		escales=form.choix_escales.data
-		#flash(escales)
-		#Result.append(form.mode.data)
-		
-		#Result.append(form.pause_voyage.data)
-		
-		#Result.append(form.tps_repas.data)
-		
-		#Result.append(form.tags.data)
-		
-		session["depart"]=depart
-		session["arrivee"]=arrivee
-		session["escales"]=escales    
-		#flash(Result)
-		return redirect('/map')
-	return render_template('form2.html', title='Formulaire', form=form)
-
-
 @app.route('/test', methods=['GET','POST'])
 def test():
-	if request.method == 'POST':
-		data = request.get_json()
-		with open('forms.json', 'w') as json_file:
-			json.dump(data, json_file, indent=4)
-	return render_template('test.html', title='test')
+    if request.method == 'POST':
+        #data = request.get_json()
+        #tags = data['tags_users']
+        tags_user = ['Art', 'Rock']
+    tags_user = ['Art', 'Rock']
+    test=cp.getWay(tags_user, cp.getClassement(datas[2], tags_user, spark, datas[1], datas[3], datas[0])[0].toPandas(), 2, datas[0])
+    return render_template('test.html', title='test', test=test)
 		   
 
 @app.route('/map')
@@ -124,7 +81,14 @@ def map():
 	depart=session.get("depart",None)
 	arrivee=session.get("arrivee", None)
 	escales=session.get("escales", None)
-	
 	return render_template('map.html', title='Map', depart=depart, arrivee=arrivee, escales=escales)
+###############################################################################
 
+
+###############################################################################
+#MAIN
+###############################################################################
+if __name__ == '__main__':
+    app.run(debug=False)
+###############################################################################
 

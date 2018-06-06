@@ -1,29 +1,29 @@
+#!/usr/bin/env python
+# coding: utf-8 
+
 ###############################################################################
-#Fichier permettant l'initialisation de l'application
+#Fichier appelant les fonctions permettant la récupération des données au format JSON
 #Par Arnaud Duhamel et Robin Cavalieri
 #Planificateur intelligent
 #SOLUTEC Paris
-#06/04/2018
+#15/03/2018
 ###############################################################################
 
 
 ###############################################################################
 #LIBRAIRIES
 ###############################################################################
-from flask import Flask
-from config import Config
+import data_mining as dm
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+import place as p
+import computing as cp
+###############################################################################
 
-from flask_bootstrap import Bootstrap
 
 ###############################################################################
-#Initialisation de l'application
+#MAIN
 ###############################################################################
-#Creation de l'instance de l'appplication dans une variable globale
-app = Flask(__name__)
- #app.config.from_pyfile('config.py')
-app.config.from_object(Config)
-bootstrap = Bootstrap(app)
 
-
-from app import routes
-import data_mining, computing
+###############################################################################

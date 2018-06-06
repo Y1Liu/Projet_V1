@@ -591,8 +591,6 @@ $('a[href*="#"]')
   });
 </script>
 
-
-
 <div id="wrapper">
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
@@ -672,6 +670,9 @@ var data = {
           dataType: "json"
           });
     });
+
+var recom = {{ test|tojson }};
+
 
 function initMap() {
 
@@ -760,9 +761,16 @@ function initMap() {
                 });
             }         
           }
-
-         
-          
+          for (var i = 0; i < wordArray.length ; i++) { 
+            if (!recom[i]) {
+                // si l'escale n'existe pas on n'ajoute rien a waypts
+                waypts=waypts;
+            } else {
+                waypts.push({
+                    location: recom[i]
+                });
+            }         
+          }  
         service.route({
           origin: origin,
           destination: destination,
