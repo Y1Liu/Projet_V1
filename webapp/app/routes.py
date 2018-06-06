@@ -24,10 +24,8 @@ import computing as cp
 ###############################################################################
 CACHE_TIMEOUT = 60 #Définit le timeout du cache à 60 secondes
 cache = SimpleCache()
-spark=cp.getsparkContext()
-print("SPARK CONTEXT DONE")
 tags_user=[]
-datas=cp.initMatrix(spark)
+datas=cp.initMatrix()
 print("GET MATRIX DONE")
 app = Flask(__name__)
 ###############################################################################
@@ -72,7 +70,7 @@ def test():
         #tags = data['tags_users']
         tags_user = ['Art', 'Rock']
     tags_user = ['Art', 'Rock']
-    test=cp.getWay(tags_user, cp.getClassement(datas[2], tags_user, spark, datas[1], datas[3], datas[0])[0].toPandas(), 2, datas[0])
+    test=cp.getWay(tags_user, cp.getClassement(datas[2], tags_user, datas[1], datas[3], datas[0])[0], 2, datas[0])
     return render_template('test.html', title='test', test=test)
 		   
 

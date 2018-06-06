@@ -33,6 +33,7 @@ import dataframes as dtf
 ###############################################################################
 #Création du spark context
 ###############################################################################
+"""
 def getsparkContext():
     sc = pyspark.SparkContext.getOrCreate()
     conf = pyspark.SparkConf()
@@ -48,6 +49,7 @@ def getsparkContext():
     spark = SparkSession(sc)
     spark.catalog.clearCache()
     return spark
+"""
 ###############################################################################
 
 
@@ -79,7 +81,7 @@ def getsparkContext():
 #Récupération de la matrice de placesSimilarity sous forme de dataframe
 #Spark DataFrame
 #placesSimilarities=spark.read.format('csv').option('header', 'true').load('../data/placesSimilarities.csv')
-def initMatrix(spark):
+def initMatrix():
     df_cities=dtf.citiesToDf()
     df_types=dtf.typesToDf()
     df_placeTypes=dtf.placeTypesToDf()
@@ -268,12 +270,11 @@ ________|________________"""
 _________________________
 place_id | avg(avg(Score))
 _________|_______________"""
-def getClassement(df_placeTypes, tab_tags, spark, df_types, df_similarities, df_cities):
+def getClassement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities):
     #Init fonction udf
     user_tags=[]
     n_pT=len(df_placeTypes)
     n=len(tab_tags)
-    udfScoreTotal=udf(scoreTotal, FloatType())
     #Mesure de similarités avec les points d'intérêts
     for i in range(0, n):
         user_tags.append(int(df_types.index[df_types.name==tab_tags[i]].get_values()[0]))
@@ -295,25 +296,14 @@ def getClassement(df_placeTypes, tab_tags, spark, df_types, df_similarities, df_
             df=df.append({tab_tags[i]: simi}, ignore_index=True)
         df_placeTypes=pd.concat([df_placeTypes, df], axis=1)
     #Computation du classement des villes  
-    sc_placeTypes=spark.createDataFrame(df_placeTypes)
-    scoreTable=[]
-    for i in range(0,n):
-        col=tab_tags[i]
-        temp=sc_placeTypes.groupBy('place_id', 'City_id', 'Visits').agg({col: 'mean'})
-        temp=temp.withColumn('Score',udfScoreTotal('avg('+col+')', 'Visits'))
-        temp=temp.groupBy('City_id').agg({'Score': 'mean'})
-        temp.orderBy('avg(Score)', ascending=False)
-        #Liste de dataframe où sont conservés les classements par score
-        scoreTable.append(temp)
-        #Matrice du Score total obtenu par chaque ville
-        if(i==0):
-            overallScore=temp
-        elif(i>0):
-            overallScore=overallScore.union(temp)
-    overallScore=overallScore.groupBy('City_id').agg({'avg(Score)': 'mean'})
-    overallScore=overallScore.orderBy('avg(avg(Score))', ascending=False)
-    overallScore=overallScore.filter(overallScore.City_id <= 60)
-    #retourne le classement des villes
+    temp=df_placeTypes.iloc[:,4:]
+    max_val=df_placeTypes['Visits'].apply(np.log).max()
+    df_placeTypes['Score']=(temp.sum(axis=1)/n + df_placeTypes['Visits'].apply(np.log))/(max_val+1)
+    overallScore=df_placeTypes.groupby('City_id')['Score'].mean().reset_index()
+    overallScore=overallScore.sort_values('Score', ascending=False).reset_index().drop(['index'], axis=1)
+    overallScore=overallScore.iloc[:50,:]
+    scoreTable=df_placeTypes.groupby('City_id').mean().sort_values('Score', ascending=False).reset_index().drop(['word', 'Visits'], axis=1)
+    scoreTable=scoreTable.iloc[:50,:]
     return [overallScore, scoreTable]  
 
 
@@ -323,7 +313,7 @@ def getWay(tab_tags, df_overallScore, n, df_cities):
     for i in range(0,n):
         city_id=df_overallScore.iloc[i , 0]
         city_name=df_cities.loc[[city_id], 'name']
-        list_steps.append([city_name.values[0], df_overallScore.loc[[i], 'avg(avg(Score))'].values[0]])
+        list_steps.append([city_name.values[0], df_overallScore.loc[[i], 'Score'].values[0]])
     return list_steps
 
 
