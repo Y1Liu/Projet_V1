@@ -299,9 +299,8 @@ def getClassement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities)
     temp=df_placeTypes.iloc[:,4:]
     max_val=df_placeTypes['Visits'].apply(np.log).max()
     df_placeTypes['Score']=(temp.sum(axis=1)/n + df_placeTypes['Visits'].apply(np.log))/(max_val+1)
-    overallScore=df_placeTypes.groupby('City_id')['Score'].mean().reset_index()
+    overallScore=df_placeTypes.groupby('City_id')['Score'].mean().reset_index().iloc[:50,:]
     overallScore=overallScore.sort_values('Score', ascending=False).reset_index().drop(['index'], axis=1)
-    overallScore=overallScore.iloc[:50,:]
     scoreTable=df_placeTypes.groupby('City_id').mean().sort_values('Score', ascending=False).reset_index().drop(['word', 'Visits'], axis=1)
     scoreTable=scoreTable.iloc[:50,:]
     return [overallScore, scoreTable]  

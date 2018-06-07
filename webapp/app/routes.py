@@ -52,26 +52,21 @@ class cached(object):
 		return decorator
 
 
-#Fonction créant une page d'accueil
-@app.route('/')
-@app.route('/index')
-def index():
-	#user = {'username': 'Arnaud'}
-	return render_template('index.html', title='Home')
-
 
 #Fonction créant la page du formulaire de renseignements
 #Renvoie les choix de l'utilisateur sous forme de liste après soumission du formulaire
 #Utilise la classe cached pour garder les données en cache
-@app.route('/test', methods=['GET','POST'])
-def test():
+@app.route('/', methods=['GET','POST'])
+def index():
     if request.method == 'POST':
-        #data = request.get_json()
-        #tags = data['tags_users']
-        tags_user = ['Art', 'Rock']
-    tags_user = ['Art', 'Rock']
-    test=cp.getWay(tags_user, cp.getClassement(datas[2], tags_user, datas[1], datas[3], datas[0])[0], 2, datas[0])
-    return render_template('test.html', title='test', test=test)
+        data = request.get_json()
+        tags = data['tags_users']
+        tags_user=list(tags)
+        #tags_user = ['Art', 'Rock']
+    else:
+        tags_user=['Art']    
+    test=cp.getWay(tags_user, cp.getClassement(datas[2], tags_user, datas[1], datas[3], datas[0])[0], 5, datas[0])
+    return render_template('index.html', title='test', test=test)
 		   
 
 @app.route('/map')
@@ -87,6 +82,6 @@ def map():
 #MAIN
 ###############################################################################
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
 ###############################################################################
 

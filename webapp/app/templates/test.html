@@ -202,9 +202,13 @@
 	    clear: both;
 	}
 
-#map,
 #wrapper,
 #page-content-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+#map {
   height: 90%;
   width: 100%;
 }
@@ -391,7 +395,7 @@
         </hgroup>
         <br />
         <br />
-        <a class="scroll" href="#parent" title="scroll">Démarrez dès maintenant</a>
+        <a class="scroll" href="#parent"><b>Démarrez dès maintenant</b></a>
       </div>
     </div>
     <div class="item slides">
@@ -403,7 +407,7 @@
         </hgroup>  
         <br />    
         <br /> 
-        <a class="scroll" href="#parent">Démarrez dès maintenant</a>
+        <a class="scroll" href="#parent"><b>Démarrez dès maintenant</b></a>
       </div>
     </div>
   </div> 
@@ -620,6 +624,7 @@ $('a[href*="#"]')
   <!-- /#page-content-wrapper -->
 </div>
 <script>
+
     
 // on crée un tableau avec tous les points du voyage du départ à l'arrivee avec toutes les escales 
 var urlParams;
@@ -651,9 +656,15 @@ voyage.push(arr);
 var tag = urlParams["tags"],
 	tags = tag.split(',');
 
+var heure_dep = urlParams["time_dep"],
+	dep_time = heure_dep.split(',');
+var date_dep = urlParams["date_dep"];
+
 
 var data = {
 	Depart: dep,
+	depart_heure: dep_time,
+	depart_jour: date_dep,
 	Arrivee: arr,
 	Escales: wordArray,
 	tags_users: tags
@@ -672,7 +683,6 @@ var data = {
     });
 
 var recom = {{ test|tojson }};
-
 
 function initMap() {
 
@@ -761,16 +771,16 @@ function initMap() {
                 });
             }         
           }
-          for (var i = 0; i < wordArray.length ; i++) { 
-            if (!recom[i]) {
+          for (var i = 0; i < recom.length ; i++) { 
+            if (!recom[i][0]) {
                 // si l'escale n'existe pas on n'ajoute rien a waypts
                 waypts=waypts;
             } else {
                 waypts.push({
-                    location: recom[i]
+                    location: recom[i][0]
                 });
             }         
-          }  
+          } 
         service.route({
           origin: origin,
           destination: destination,
@@ -781,6 +791,7 @@ function initMap() {
         }, function(response, status) {
           if (status === 'OK') {
             display.setDirections(response);
+            alert(dep_time)
           } else {
             alert('Could not display directions due to: ' + status);
           }
