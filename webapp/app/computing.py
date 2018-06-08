@@ -33,7 +33,7 @@ import dataframes as dtf
 ###############################################################################
 #Création du spark context
 ###############################################################################
-"""
+
 def getsparkContext():
     sc = pyspark.SparkContext.getOrCreate()
     conf = pyspark.SparkConf()
@@ -49,7 +49,7 @@ def getsparkContext():
     spark = SparkSession(sc)
     spark.catalog.clearCache()
     return spark
-"""
+
 ###############################################################################
 
 

@@ -26,7 +26,6 @@ CACHE_TIMEOUT = 60 #Définit le timeout du cache à 60 secondes
 cache = SimpleCache()
 tags_user=[]
 datas=cp.initMatrix()
-print("GET MATRIX DONE")
 app = Flask(__name__)
 ###############################################################################
 
@@ -65,7 +64,7 @@ def index():
         #tags_user = ['Art', 'Rock']
     else:
         tags_user=['Art']    
-    test=cp.getWay(tags_user, cp.getClassement(datas[2], tags_user, datas[1], datas[3], datas[0])[0], 5, datas[0])
+    test=cp.getWay(tags_user, cp.getClassement(datas[2], tags_user, datas[1], datas[3], datas[0])[0], 1, datas[0])
     return render_template('index.html', title='test', test=test)
 		   
 
