@@ -1,6 +1,6 @@
 .fade-carousel {
-	position: relative;
-	height: 100vh;
+		position: relative;
+		height: 100vh;
 }
 .fade-carousel .carousel-inner .item {
 	height: 100vh;
@@ -113,6 +113,7 @@ a.scroll:focus {
 	.hero h1 { font-size: 4em; }    
 }
 
+
 html, body {
   height:100%;
   padding: 0;
@@ -121,10 +122,13 @@ html, body {
  
 }
 
+
 @font-face {
 	font-family: 'heropolice';
-	src: url('../fonts/Hero.otf');
+	src: url('Hero.otf');
 }
+
+
 
 html {
   background-size:100%;
@@ -143,6 +147,7 @@ body {
 	height: 100vh;
 }
 .container {
+	position: relative;
 	border :transparent;
 	border-radius: 12px;
 	margin-top: 100px;
@@ -168,26 +173,26 @@ body {
 	text-align: center;
 	padding-top: 8px;
 	clear: both;
+	z-index: 900;
 }
-
-#wrapper,
-#page-content-wrapper {
-  height: 100%;
-  width: 100%;
-}
+	
 
 #map {
-  height: 90%;
-  width: 100%;
+    height: 100%;
+    width: 100%;
+}
+#wrapper,
+#page-content-wrapper {
+    height: 100%;
+    width: 100%;
 }
 .container-fluid,
 .row,
 .col-lg-12 {
   height: 100%;
   width: 100%;
+  padding-bottom: 50px;
 }
-}
-/* hamburger menu pseudo element */
 
 .box-shadow-menu {
   position: relative;
@@ -196,12 +201,6 @@ body {
 .box-shadow-menu:before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0.25em;
-  width: 1em;
-  height: 0.15em;
-  background: black;
-  box-shadow: 0 0.25em 0 0 black, 0 0.5em 0 0 black;
 }
 /* hamburger menu pseudo element gradient */
 
@@ -218,6 +217,8 @@ body {
   width: 1em;
   background: linear-gradient(to bottom, black, black 20%, white 20%, white 40%, black 40%, black 60%, white 60%, white 80%, black 80%, black 100%);
 }
+
+/* Toggle Styles */
 
 .nav-tabs>li {
   float: none;
@@ -241,19 +242,21 @@ body {
 #wrapper.toggled {
   padding-left: 250px;
 }
+
 #sidebar-wrapper {
   z-index: 1000;
-  position: fixed;
+  position: absolute;
   left: 250px;
   width: 0;
-  height: 100%;
+  height: 95%;
   margin-left: -250px;
   overflow-y: auto;
-  background: #000;
+  background: #fff;
   -webkit-transition: all 0.5s ease;
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
   transition: all 0.5s ease;
+  z-index: 950;
 }
 #wrapper.toggled #sidebar-wrapper {
   width: 250px;
@@ -307,6 +310,7 @@ body {
   color: #fff;
   background: none;
 }
+
 @media(min-width:768px) {
   #wrapper {
     padding-left: 250px;
@@ -328,4 +332,8 @@ body {
     position: relative;
     margin-right: 0;
   }
+}
+
+#form {
+    z-index: 950;
 }
