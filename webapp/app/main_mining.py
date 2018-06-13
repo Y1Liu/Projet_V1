@@ -25,5 +25,6 @@ import computing as cp
 ###############################################################################
 #MAIN
 ###############################################################################
-
+test=cp.compute_depArr('Mairie de Lille, Lille', 'Vieux Port, Marseille', [], 'driving')
+test.to_csv('../../data/trajet_temoin.csv', sep=',', encoding='utf-8', index=False)
 ###############################################################################

@@ -34,7 +34,7 @@ import dataframes as dtf
 #Création du spark context
 ###############################################################################
 
-def getsparkContext():
+def get_spark_context():
     sc = pyspark.SparkContext.getOrCreate()
     conf = pyspark.SparkConf()
     conf.setAppName('SmartPlanner')
@@ -81,12 +81,12 @@ def getsparkContext():
 #Récupération de la matrice de placesSimilarity sous forme de dataframe
 #Spark DataFrame
 #placesSimilarities=spark.read.format('csv').option('header', 'true').load('../data/placesSimilarities.csv')
-def initMatrix():
-    df_cities=dtf.citiesToDf()
-    df_types=dtf.typesToDf()
-    df_placeTypes=dtf.placeTypesToDf()
-    df_similarities=dtf.similaritiesToDf()
-    df_places=dtf.placesToDf()
+def init_matrix():
+    df_cities=dtf.cities_toDf()
+    df_types=dtf.types_toDf()
+    df_placeTypes=dtf.placeTypes_toDf()
+    df_similarities=dtf.similarities_toDf()
+    df_places=dtf.places_toDf()
     d={'Visits':[]}
     df_visits=pd.DataFrame(data=d)
     d={'City_id':[]}
@@ -112,44 +112,44 @@ def initMatrix():
 #FONCTIONS
 ###############################################################################
 #Fonction permettant de retourner une Dataframe avec les distances, temps entre les villes avec le lieu de départ et d'arrivée de l'utilisateur
-def computeDepArr(addDep, addArr, wayPoints, mode): 
+def compute_depArr(addDep, addArr, wayPoints, mode): 
     #Récupération des coordonnées depuis les adresses fournies
-    coordDep=dm.getGps(addDep)
-    coordArr=dm.getGps(addArr)
+    coordDep=dm.get_gps(addDep)
+    coordArr=dm.get_gps(addArr)
     rows=[]
     temp=len(wayPoints)
     #Récupération de la dataframe contenant les villes
-    cities=dtf.citiesToDf()
+    cities=dtf.cities_toDf()
     nSize=len(cities)
     #Appel de la fonction permettant de calculer la distance d'un point à tous les autres
     for i in range(0,nSize):
         #Obtention des paramètres depuis le lieu de départ 
-        distDuree=dm.getDistance_Duree(coordDep[0], coordDep[1], str(cities.iloc[i][1]), str(cities.iloc[i][2]), mode)
-        rows.append([distDuree[1], distDuree[2], distDuree[3], 1000, i])
+        distDuree=dm.get_distance_duree(coordDep[0], coordDep[1], str(cities.iloc[i][1]), str(cities.iloc[i][2]), mode)
+        rows.append([distDuree[1], distDuree[2], distDuree[3], 1000, i+1])
         #Obtention des paramètres depuis le lieu d'arrivée 
-        distDuree=dm.getDistance_Duree(coordArr[0], coordArr[1], str(cities.iloc[i][1]), str(cities.iloc[i][2]), mode)
-        rows.append([distDuree[1], distDuree[2], distDuree[3], 10000, i])
+        distDuree=dm.get_distance_duree(coordArr[0], coordArr[1], str(cities.iloc[i][1]), str(cities.iloc[i][2]), mode)
+        rows.append([distDuree[1], distDuree[2], distDuree[3], 10000, i+1])
         if(temp>0):
             print("Waypoints with cities")
             #Obtention des paramètres depuis les Waypoints
             for j in range(0,temp):
                 coordWayp=dm.getGps(wayPoints[j])
                 #Pour toutes les villes
-                distDuree=dm.getDistance_Duree(coordWayp[0], coordWayp[1], str(cities.iloc[i][1]), str(cities.iloc[i][2]), mode)
-                rows.append([distDuree[1], distDuree[2], distDuree[3], 100000+j, i])
+                distDuree=dm.get_distance_duree(coordWayp[0], coordWayp[1], str(cities.iloc[i][1]), str(cities.iloc[i][2]), mode)
+                rows.append([distDuree[1], distDuree[2], distDuree[3], 100000+j, i+1])
     if(temp>0):
         print("Waypoints with start and arrival")
         #Obtention des paramètres depuis les Waypoints
         for j in range(0,temp):
             #Depuis le départ
-            distDuree=dm.getDistance_Duree(coordWayp[0], coordWayp[1], coordDep[0], coordDep[1], mode)
+            distDuree=dm.get_distance_duree(coordWayp[0], coordWayp[1], coordDep[0], coordDep[1], mode)
             rows.append([distDuree[1], distDuree[2], distDuree[3], 1000, 100000+j])
             #Depuis l'arrivée
-            distDuree=dm.getDistance_Duree(coordWayp[0], coordWayp[1], coordArr[0], coordArr[1], mode)
+            distDuree=dm.get_distance_duree(coordWayp[0], coordWayp[1], coordArr[0], coordArr[1], mode)
             rows.append([distDuree[1], distDuree[2], distDuree[3], 10000, 100000+j])
     print("Start - Arrival")
     #Calcul des paramètres entre le départ et l'arrivée
-    distDuree=dm.getDistance_Duree(coordDep[0], coordDep[1], coordArr[0], coordArr[1], mode)
+    distDuree=dm.get_distance_duree(coordDep[0], coordDep[1], coordArr[0], coordArr[1], mode)
     rows.append([distDuree[1], distDuree[2], distDuree[3], 1000, 10000])
     df1=pd.DataFrame(rows, columns=['time', 'distance', 'heuristic', 'cityDep_id', 'cityArr_id'])
     #Retourne la nouvelle DataFrame
@@ -253,7 +253,7 @@ def computeRecommandation(tab_tags):
 
 #Fonction utilisée pour UDF matrix
 #Score = similarité + log(nombre de visites)
-def scoreTotal(simi, visits):
+def score_total(simi, visits):
     if(visits >= 1):
         return(simi + (log(visits)/2))
     else:
@@ -270,7 +270,7 @@ ________|________________"""
 _________________________
 place_id | avg(avg(Score))
 _________|_______________"""
-def getClassement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities):
+def get_classement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities):
     #Init fonction udf
     user_tags=[]
     n_pT=len(df_placeTypes)
@@ -299,7 +299,7 @@ def getClassement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities)
     temp=df_placeTypes.iloc[:,4:]
     max_val=df_placeTypes['Visits'].apply(np.log).max()
     df_placeTypes['Score']=(temp.sum(axis=1)/n + df_placeTypes['Visits'].apply(np.log))/(max_val+1)
-    overallScore=df_placeTypes.groupby('City_id')['Score'].mean().reset_index().iloc[:50,:]
+    overallScore=df_placeTypes.groupby('City_id')['Score'].mean().reset_index()
     overallScore=overallScore.sort_values('Score', ascending=False).reset_index().drop(['index'], axis=1)
     scoreTable=df_placeTypes.groupby('City_id').mean().sort_values('Score', ascending=False).reset_index().drop(['word', 'Visits'], axis=1)
     scoreTable=scoreTable.iloc[:50,:]
@@ -307,7 +307,7 @@ def getClassement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities)
 
 
 #Renvoi de la liste de villes recommandée en fonction des choix de l'utilisateur
-def getWay(tab_tags, df_overallScore, n, df_cities):
+def get_way(tab_tags, df_overallScore, n, df_cities):
     list_steps=[]
     for i in range(0,n):
         city_id=df_overallScore.iloc[i , 0]
@@ -316,27 +316,20 @@ def getWay(tab_tags, df_overallScore, n, df_cities):
     return list_steps
 
 
-#t=getClassement(df_placeTypes, tab_tags)[0].toPandas()
-#test=getWay(tab_tags, getClassement(df_placeTypes, tab_tags)[0].toPandas(), 5)
-#print(test)
-    
-
 #CONSTRUCTION DE LA MATRICE PERMETTANT DE CALCULER LES GRAPHES
 """
 _______________________________________________________________________________
 time | distance | heuristic | cityDep_id | cityArr_id | ScoreCity1 | ScoreCity2
 _____|__________|___________|____________|____________|____________|___________"""
-def getGraphMatrix(add_dep, add_arr, waypoint, mode, spark, df_placeTypes):
+def get_graph_matrix(add_dep, add_arr, waypoint, mode, overallScore):
     #df_test=computeDepArr(add_dep, add_arr, waypoint, 'driving')
-    df_test=pd.read_csv('../data/trajet_temoin.csv').astype(int)
-    df_params=dtf.paramsToDf("'driving'")
+    df_test=pd.read_csv('../../data/trajet_temoin.csv')
+    df_params=dtf.params_toDf("'driving'")
     df_params=pd.concat([df_params, df_test], axis=0)
     df_params.append(df_test)
-    #Spark Dataframe avec le score de chaque ville
-    overallScore=getClassement(df_placeTypes)[0]
+    #Dataframe avec le score de chaque ville
     #Boucle dans chaque ligne pour affilier un score à chaque ville
-    df_overallScore=overallScore.toPandas()
-    df_overallScore
+    df_overallScore=overallScore
     list_scoreDep=[]
     list_scoreArr=[]
     for index, row in df_params.iterrows():
@@ -346,7 +339,7 @@ def getGraphMatrix(add_dep, add_arr, waypoint, mode, spark, df_placeTypes):
         if(cityDep_id==1000 or cityDep_id==10000 or cityDep_id==100000):
             list_scoreDep.append(0)
         else:
-            score=df_overallScore.loc[(df_overallScore['City_id']==cityDep_id), 'avg(avg(Score))']
+            score=df_overallScore.loc[(df_overallScore['City_id']==cityDep_id), 'Score']
             if(list(score) != []):
                 list_scoreDep.append(list(score)[0])
             else:
@@ -355,7 +348,7 @@ def getGraphMatrix(add_dep, add_arr, waypoint, mode, spark, df_placeTypes):
         if(cityArr_id==1000 or cityArr_id==10000 or cityArr_id==100000):
             list_scoreArr.append(0)
         else:
-            score=df_overallScore.loc[(df_overallScore['City_id']==cityArr_id), 'avg(avg(Score))']
+            score=df_overallScore.loc[(df_overallScore['City_id']==cityArr_id), 'Score']
             if(list(score) != []):
                 list_scoreArr.append(list(score)[0])
             else:
@@ -366,8 +359,6 @@ def getGraphMatrix(add_dep, add_arr, waypoint, mode, spark, df_placeTypes):
     df_scoreDep=df_scoreDep.reset_index(drop=True)
     df_scoreArr=df_scoreArr.reset_index(drop=True)
     df_params=pd.concat([df_params, df_scoreDep, df_scoreArr], axis=1, join='inner')
-    sc_params=spark.createDataFrame(df_params)
-    return sc_params
+    #sc_params=spark.createDataFrame(df_params)
+    return df_params
 ###############################################################################
-    
-#sc_params=getGraphMatrix(add_dep, add_arr, waypoint, 'driving')

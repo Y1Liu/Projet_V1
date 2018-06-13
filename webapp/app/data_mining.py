@@ -48,21 +48,21 @@ RAYON_TERRE=6378137.0
 ###############################################################################
 #Fonction permettant de récupérer la date d'aujourd'hui et celle dans un mois
 #renvoi en string pour l'url
-def getDate():
+def get_date():
     date_today=time.time()
     end_time=date_today+2629743 #in one month
     return [str(date_today), str(end_time)]
 
 
 #Fonction permettant de récupérer des coordonnées GPS à partir d'une adresse
-def getGps(address):
+def get_gps(address):
     g = Nominatim()
     location=g.geocode(address)
     return [str(location.latitude), str(location.longitude)]
 
 
 #Permet de récupérer un JSON avec le trajet entre N points
-def getTrace(path_file, latDep, longDep, latArr, longArr, tWaypoints, mode):
+def get_trace(path_file, latDep, longDep, latArr, longArr, tWaypoints, mode):
     #Création des stops
     temp=np.shape(tWaypoints)
     if(temp[0]==0):
@@ -86,7 +86,7 @@ def getTrace(path_file, latDep, longDep, latArr, longArr, tWaypoints, mode):
 
 #Renvoie toutes les coordonnées GPS d'un tracé sous forme de tableau string lat | long
 #Export des coordonnées dans CSV
-def getTraceGps(base_url, csv_file):
+def get_traceGps(base_url, csv_file):
     lat=[];lng=[]
     r=requests.get(base_url)
     data=r.json()['routes'][0]['legs'][0]['steps']
@@ -103,7 +103,7 @@ def getTraceGps(base_url, csv_file):
 
 
 #Fonction permettant de renvoyer une liste d'id_place
-def getPlaces(lat, lng, rayon):
+def get_places(lat, lng, rayon):
     #Récupération des données via API
     link="https://api.foursquare.com/v2/venues/search?ll="+lat+","+lng+"&categoryId=4d4b7104d754a06370d81259&limit="+LIMIT+"&radius="+rayon+"&client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&v=20180403"
     list_id=[]
@@ -121,7 +121,7 @@ def getPlaces(lat, lng, rayon):
 
 
 #Fonction permettant de retourner une place avec details dans un JSON
-def getPlaceFromId(id_p, path_file):
+def get_placeFromId(id_p, path_file):
     link="https://api.foursquare.com/v2/venues/"+id_p+"?client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&v=20180403"
     print("request : "+link)
     json_data=requests.get(link)
@@ -135,7 +135,7 @@ def getPlaceFromId(id_p, path_file):
 
 #Fonction permettant de lire un json et d'instancier une place à partir des données
 #Retourne une liste de Places
-def fromJsonToPlace(path_file, city_id):
+def from_json_toPlace(path_file, city_id):
     list_places=[]
     data_json=json.load(open(path_file))
     if (len(data_json)!=0):
@@ -184,7 +184,7 @@ def remove_duplicates(lst):
 #Lecture du fichiers contenant les coordonnées GPS
 #Recherche des places autour de chaque point
 #Retourne la liste avec toutes les places
-def getPlacesGps(path_coords, path_file):
+def get_placesGps(path_coords, path_file):
     #Ouverture du fichier
     t1=time.time()
     with open(path_coords, "r") as file_csv:
@@ -198,23 +198,23 @@ def getPlacesGps(path_coords, path_file):
         nSize=len(datas_coord)
         for i in range(0,nSize):
             print(str(i)+" : "+str(datas_coord[i][0])+","+str(datas_coord[i][1]))
-            t=len(getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5000)))
+            t=len(get_places(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5000)))
             print("Nombre de places pour la ville : " + str(t))
             if(i==0):
-                places_id = getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5000))
+                places_id = get_places(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5000))
             else:
-                places_id = places_id + getPlaces(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5000))
+                places_id = places_id + get_places(str(datas_coord[i][0]), str(datas_coord[i][1]), str(5000))
             for j in range (0,t):
                 city_id.append(int(coords[i][0]))
         nSize=len(places_id)
         print("Nombre de places au total : "+str(nSize))
         print("Taille de la liste de villes : "+ str(len(city_id)))
         for i in range(0,nSize):
-            getPlaceFromId(places_id[i], path_file)
+            get_placeFromId(places_id[i], path_file)
             if(i==0):
-                places=fromJsonToPlace(path_file, city_id[i])
+                places=from_json_toPlace(path_file, city_id[i])
             else:
-                places=places+fromJsonToPlace(path_file, city_id[i])
+                places=places+from_json_toPlace(path_file, city_id[i])
     t2=time.time()
     print("Temps de reception des places : ", t2-t1, " s")
     return remove_duplicates(places)
@@ -222,7 +222,7 @@ def getPlacesGps(path_coords, path_file):
 
 #Fonction permettant de récupérer la distance et la durée entre deux coordonnées
 #lors d'un trajet selon différents modes de transport
-def getDistance_Duree(latDep, lngDep, latArr, lngArr, mode):
+def get_distance_duree(latDep, lngDep, latArr, lngArr, mode):
     t1=time.time()
     #Récupération des données via API
     link="https://maps.googleapis.com/maps/api/directions/json?origin="+latDep+","+lngDep+"&mode="+mode+"&destination="+latArr+","+lngArr+"&key="+TK_MAPS_1
@@ -240,7 +240,7 @@ def getDistance_Duree(latDep, lngDep, latArr, lngArr, mode):
 
 #Récupération de toutes les places
 def placesToCsv():
-    temp = getPlacesGps('../data/cities.csv', '../data/data_place.json')
+    temp = get_placesGps('../data/cities.csv', '../data/data_place.json')
     with open('../data/all_places.csv', 'w') as myfile:
         wr = csv.writer(myfile)
         for member in temp:
@@ -250,7 +250,7 @@ def placesToCsv():
 #Reception des tags disponibles dans les places françaises
 #ecriture d'un fichier csv listant les places  
 #retourne une liste avec les places_id et le stags associés
-def getTypes():
+def get_types():
     list_tags=[]
     df = pd.read_csv('../data/all_places.csv')
     nSize=len(df)
@@ -274,7 +274,7 @@ def getTypes():
 #Création du csv permettant de peupler la table d'association tag, place 
 #Une Place est associee par son id aux id de Tags
 def placeTags(path_file, return_file):
-    associations=getTypes()
+    associations=get_types()
     tags = np.genfromtxt(path_file, dtype = None)
     print(associations)
     #print(StringIO(associations))
@@ -317,9 +317,9 @@ def paramsToCsv(path_file, return_file):
                     if (i!=j or i<j):
                         wr = csv.writer(csv_file)
                         try:
-                            wr.writerow([getDistance_Duree(lat_dep[i], lng_dep[i], lat_arr[j], lng_arr[j], "driving"), id_dep[i], id_arr[j]])
-                            wr.writerow([getDistance_Duree(lat_dep[i], lng_dep[i], lat_arr[j], lng_arr[j], "walking"), id_dep[i], id_arr[j]])
-                            wr.writerow([getDistance_Duree(lat_dep[i], lng_dep[i], lat_arr[j], lng_arr[j], "transit"), id_dep[i], id_arr[j]])
+                            wr.writerow([get_distance_duree(lat_dep[i], lng_dep[i], lat_arr[j], lng_arr[j], "driving"), id_dep[i], id_arr[j]])
+                            wr.writerow([get_distance_duree(lat_dep[i], lng_dep[i], lat_arr[j], lng_arr[j], "walking"), id_dep[i], id_arr[j]])
+                            wr.writerow([get_distance_duree(lat_dep[i], lng_dep[i], lat_arr[j], lng_arr[j], "transit"), id_dep[i], id_arr[j]])
                             print(id_dep[i], id_arr[j])
                         except IndexError:
                             print("Trajet inexistant")

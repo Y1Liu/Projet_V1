@@ -23,7 +23,7 @@ import numpy as np
 #FONCTIONS
 ###############################################################################
 #prends deux mots en arguments et renvoie la mesure de similarité
-def getSimilarity(str1, str2):
+def get_similarity(str1, str2):
     try:
         word1=wordnet.synsets(str1, 'n')[0]
         word2=wordnet.synsets(str2, 'n')[0]
@@ -35,7 +35,7 @@ def getSimilarity(str1, str2):
 
 #Création du csv contenant les similarités entre les mots contenus dans les tags
 #Csv à importer dans la base de données
-def similaritiesToCsv(path_file, return_file):
+def similarities_toCsv(path_file, return_file):
     #Récupération du fichier des villes
     tags=np.genfromtxt(path_file, dtype=str)
     nSize=len(tags)
@@ -46,10 +46,10 @@ def similaritiesToCsv(path_file, return_file):
             for j in range(0,nSize):
                 if(i <= j):
                     print(tags[i] + " "+ tags[j])
-                    print(str(i) + " " + str(j) + " " + str(getSimilarity(tags[i], tags[j])))
-                    wr.writerow([i, j, getSimilarity(tags[i], tags[j])])
+                    print(str(i) + " " + str(j) + " " + str(get_similarity(tags[i], tags[j])))
+                    wr.writerow([i, j, get_similarity(tags[i], tags[j])])
    
     
 #similaritiesToCsv('../data/tags.csv','../data/similaritiesTags.csv')
-similaritiesToCsv('../data/tags.csv','../data/similaritiesTags.csv')
+similarities_toCsv('../data/tags.csv','../data/similaritiesTags.csv')
 ###############################################################################
