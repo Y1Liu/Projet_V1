@@ -38,11 +38,10 @@ from node import*
         filtre : Matrice 'df' filtrée par les conditions utilisateur
         distance_begin : distance réelle cumulée     
     OUT : 
-        liste de nodes
-        
+        liste de nodes  
 """
-def childrens(node, df, overallScore, target, optimization, filtre, distance_begin):
-    childrens=[]
+def children(node, df, overallScore, target, optimization, filtre, distance_begin):
+    children=[]
     d1=filtre.loc[filtre['cityDep_id']==node.city]['cityArr_id']
     d2=filtre.loc[filtre['cityArr_id']==node.city]['cityDep_id']
     d2=pd.concat([d1, d2])
@@ -56,17 +55,17 @@ def childrens(node, df, overallScore, target, optimization, filtre, distance_beg
                 H=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))]['heuristic'].values[0]
                 G=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))][optimization].values[0]+distance_begin
                 child=Node(value,score,parent,H,G)
-                childrens.append(child)
+                children.append(child)
             except:
                 score=0
                 parent=node
                 H=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))]['heuristic'].values[0]
                 G=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))][optimization].values[0]+distance_begin
                 child=Node(value,score,parent,H,G)
-                childrens.append(child)
+                children.append(child)
         else : 
-            childrens.append(target)
-    return childrens
+            children.append(target)
+    return children
 
 
 #Obtenir le noeud suivant en fonction de G et H 
@@ -97,17 +96,17 @@ def get_best_child(liste):
         overallScore : Dataframe city_id - score
         optimization : Type d'otpimisation 'distance', 'time', 'affinity'
         filtre : Matrice 'df' filtrée par les conditions utilisateur
-    OUT : 
-        
+    OUT :    
 """
-def get_path(start, target, df, overallScore, optimization, filtre):
+def get_path(start, target, df, overallScore, optimization, filtre, df_cities):
     stack=[]
+    result_id=[]
     stack.append(start)
     pere=start
     tmp=0
     distance_begin=0
     while(tmp!=target.city):
-        x=childrens(pere, df, overallScore, target, optimization, filtre, distance_begin)
+        x=children(pere, df, overallScore, target, optimization, filtre, distance_begin)
         #########################
         temp=x
         for node_s in stack:
@@ -120,8 +119,9 @@ def get_path(start, target, df, overallScore, optimization, filtre):
         pere=child
         tmp=stack[-1].city
         distance_begin += pere.G
-    print("################")
     for obj in stack:
-        print(obj.city)
-    print("################")
+        result_id.append(obj.city)
+    result_names=[]
+    for obj in result_id:
+        result_names.append(df_cities.iloc[int(obj)-1]['name'])
 ###############################################################################
