@@ -318,9 +318,9 @@ def get_way(tab_tags, df_overallScore, n, df_cities):
 
 #CONSTRUCTION DE LA MATRICE PERMETTANT DE CALCULER LES GRAPHES
 """
-_______________________________________________________________________________
-time | distance | heuristic | cityDep_id | cityArr_id | ScoreCity1 | ScoreCity2
-_____|__________|___________|____________|____________|____________|___________"""
+______________________________________________________
+time | distance | heuristic | cityDep_id | cityArr_id 
+_____|__________|___________|____________|____________"""
 def get_graph_matrix(add_dep, add_arr, waypoint, mode, overallScore):
     #df_test=computeDepArr(add_dep, add_arr, waypoint, 'driving')
     df_test=pd.read_csv('../../data/trajet_temoin.csv')

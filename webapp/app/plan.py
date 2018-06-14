@@ -15,59 +15,114 @@
 #LIBRAIRIES
 ###############################################################################
 import computing as cp
+import data_mining as dm
 import networkx as nx
-###############################################################################
-
-
-###############################################################################
-#VALEURS DE TEST
-###############################################################################
-add_dep=" "
-add_arr=" "
-waypoint=" "
-mode=" "
-tab_tags=['Art', 'Museum']
-#optimization='time'
-optimization='distance'
-#optimization='affinity'
-#Durée Maximale sans pause (s)
-t_max=7200
-#Duree maximale du repas (s)
-eat=900
-#Dist maximale (m)
-dist_max=300000
+import dataframes as dtf
+from math import sin, cos, acos, radians
+import pandas as pd
+from node import*
 ###############################################################################
 
 
 ###############################################################################
 #FONCTIONS
 ###############################################################################
-def get_heuristic(a, b):
-    print(a)
-    print(b)
-    #heuristic=0
-    heuristic=temp.loc[((temp['cityDep_id']==a) & (temp['cityArr_id']==b))|((temp['cityDep_id']==b) & (temp['cityArr_id']==a))]['heuristic'].values[0]
-    return heuristic
+#Obtenir tous les enfants d'un noeud parent
+"""
+    IN : 
+        node : noeud père
+        df : matrice de données graphe (get_graph_matrix)
+        overallScore : Dataframe city_id - score
+        target : noeud cible
+        optimization : Type d'otpimisation 'distance', 'time', 'affinity'
+        filtre : Matrice 'df' filtrée par les conditions utilisateur
+        distance_begin : distance réelle cumulée     
+    OUT : 
+        liste de nodes
+        
+"""
+def childrens(node, df, overallScore, target, optimization, filtre, distance_begin):
+    childrens=[]
+    d1=filtre.loc[filtre['cityDep_id']==node.city]['cityArr_id']
+    d2=filtre.loc[filtre['cityArr_id']==node.city]['cityDep_id']
+    d2=pd.concat([d1, d2])
+    temp=d2.values[:]
+    #Renvoie un tableau de noeuds
+    for value in temp : 
+        if(value != target.city):
+            try:
+                score=overallScore.loc[overallScore['City_id']==value]['Score'].values[0]
+                parent=node
+                H=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))]['heuristic'].values[0]
+                G=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))][optimization].values[0]+distance_begin
+                child=Node(value,score,parent,H,G)
+                childrens.append(child)
+            except:
+                score=0
+                parent=node
+                H=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))]['heuristic'].values[0]
+                G=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))][optimization].values[0]+distance_begin
+                child=Node(value,score,parent,H,G)
+                childrens.append(child)
+        else : 
+            childrens.append(target)
+    return childrens
 
 
-def get_bestway():
-    #########################################################################################################################  
-    if(optimization=='distance'):
-        temp=matrix.loc[matrix['distance']<=dist_max]
-        A=nx.from_pandas_edgelist(temp, source='cityDep_id', target='cityArr_id', edge_attr=['distance', 'heuristic', 'time'])
-        #t=nx.astar_path(A, source=1000, target=10000, heuristic=computeH, weight='distance')
-        t=nx.shortest_path(A, source=1000, target=10000, weight='distance')
-    #########################################################################################################################
-    elif(optimization=='time'):
-        temp=matrix.loc[matrix['time']<=t_max]
-        A=nx.from_pandas_edgelist(temp, source='cityDep_id', target='cityArr_id', edge_attr=['distance', 'heuristic', 'time'])
-        #t=nx.astar_path(A, source=1000, target=10000, heuristic=computeH, weight='time')
-        t=nx.shortest_path(A, source=1000, target=10000, weight='time')
-    #########################################################################################################################
-    elif(optimization=='affinity'):
-        #A=nx.from_pandas_edgelist(matrix, source='cityDep_id', target='cityArr_id', edge_attr=['distance', 'heuristic', 'time'])
-        #t=nx.astar_path(A, source=1000, target=10000, heuristic=computeH, weight='distance')
-        #t=nx.longest_path(A, source=1000, target=10000, weight='ScoreCity2')
-        print(1)
-    print(t)
+#Obtenir le noeud suivant en fonction de G et H 
+"""
+    IN : liste de nodes
+    OUT : node
+"""
+def get_best_child(liste):
+    for i in range(0, len(liste)):
+        for j in range(i+1, len(liste)):
+            x1=liste[i].H
+            y1=liste[i].G
+            x2=liste[j].H
+            y2=liste[j].G
+            if((x1+y1)>(x2+y2)):
+                tmp=liste[i]
+                liste[i]=liste[j]
+                liste[j]=tmp
+    return(liste[0])
+ 
+    
+#Obtenir le chemin optimal
+"""
+    IN : 
+        start : node
+        target : node
+        df : matrice de données graphe (get_graph_matrix)
+        overallScore : Dataframe city_id - score
+        optimization : Type d'otpimisation 'distance', 'time', 'affinity'
+        filtre : Matrice 'df' filtrée par les conditions utilisateur
+            
+    OUT : 
+        
+"""
+def get_path(start, target, df, overallScore, optimization, filtre):
+    stack=[]
+    stack.append(start)
+    pere=start
+    tmp=0
+    distance_begin=0
+    while(tmp!=target.city):
+        x=childrens(pere, df, overallScore, target, optimization, filtre, distance_begin)
+        #########################
+        temp=x
+        for node_s in stack:
+            for node_c in x:
+                if(node_s.city==node_c.city):
+                    temp.remove(node_c)
+        #########################
+        child=get_best_child(temp)
+        stack.append(child)
+        pere=child
+        tmp=stack[-1].city
+        distance_begin += pere.G
+    print("################")
+    for obj in stack:
+        print(obj.city)
+    print("################")
 ###############################################################################

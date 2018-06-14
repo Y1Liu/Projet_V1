@@ -23,10 +23,10 @@ import matplotlib.pyplot as plt
 ###############################################################################
 #FONCTIONS
 ###############################################################################
-def waysVisualization(df):
+def ways_visualization(df):
     G=nx.from_pandas_edgelist(df, source='cityDep_id', target='cityArr_id', edge_attr='distance')
     nx.draw(G, with_labels=True, node_color='g', alpha=0.7, node_size=500, width=0.1,edge_color='g')
     plt.show()
 
-waysVisualization(dataframes.paramsToDf("'driving'"))
+ways_visualization(dataframes.paramsToDf("'driving'"))
 ###############################################################################

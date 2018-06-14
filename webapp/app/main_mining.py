@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8 
 
+
 ###############################################################################
 #Fichier appelant les fonctions permettant la récupération des données au format JSON
 #Par Arnaud Duhamel et Robin Cavalieri

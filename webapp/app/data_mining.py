@@ -273,7 +273,7 @@ def get_types():
 
 #Création du csv permettant de peupler la table d'association tag, place 
 #Une Place est associee par son id aux id de Tags
-def placeTags(path_file, return_file):
+def place_tags(path_file, return_file):
     associations=get_types()
     tags = np.genfromtxt(path_file, dtype = None)
     print(associations)
@@ -290,14 +290,13 @@ def placeTags(path_file, return_file):
                 if(associations[i][1]==tags[j]):
                     print(associations[i][0])
                     print(j)
-                    wr.writerow([associations[i][0], j])
-                    
+                    wr.writerow([associations[i][0], j])            
 
 
 #Récupération des paramètres de distance, durée et heuristique
 #entre toutes les villes
 #Insertion dans un CSV                     
-def paramsToCsv(path_file, return_file):
+def params_toCsv(path_file, return_file):
     with open(path_file, 'r') as csvfile:
         cities=csv.reader(csvfile)
         l=list(map(tuple,cities))

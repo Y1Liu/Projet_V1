@@ -11,7 +11,7 @@
 
 
 ###############################################################################
-#OBJETS
+#OBJET
 ###############################################################################
 class Place:
     #CONSTRUCTEUR DE Place
@@ -24,29 +24,29 @@ class Place:
         self.geometry=geometry #Float[]
         self.visitsCount=visitsCount #Int
 
-    def getId(self):
+    def get_id(self):
         return self.id_#String
 
-    def getName(self):
+    def get_name(self):
         return self.name #String
 
-    def getPhoto(self):
+    def get_photo(self):
         return self.photo #String
 
-    def getTypes(self):
+    def get_types(self):
         return self.types #tab String
 
-    def getGeometry(self):
+    def get_geometry(self):
         return self.geometry #tab Float
 
-    def getVisitsCount(self):
+    def get_visitsCount(self):
         return self.visitsCount #Int
     
-    def getCity_id(self):
+    def get_city_id(self):
         return self.city_id #Int
 
-    def displayPlace(self):
-        print("Id : " + self.id_)
+    def display_place(self):
+        print("pd : " + self.id_)
         print("Name : " + self.name)
         print("Photo : " + self.photo)
         print("Types : " + str(self.types))
