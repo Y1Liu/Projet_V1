@@ -91,7 +91,7 @@ def init_matrix():
     df_visits=pd.DataFrame(data=d)
     d={'City_id':[]}
     df_city=pd.DataFrame(data=d)
-    df_types=dtf.typesToDf()
+    df_types=dtf.types_toDf()
     #n=len(tab_tags)
     n_pT=len(df_placeTypes)
     #Ajout des city_id à la matrice

@@ -25,7 +25,7 @@ import computing as cp
 CACHE_TIMEOUT = 60 #Définit le timeout du cache à 60 secondes
 cache = SimpleCache()
 tags_user=[]
-datas=cp.initMatrix()
+datas=cp.init_matrix()
 app = Flask(__name__)
 ###############################################################################
 

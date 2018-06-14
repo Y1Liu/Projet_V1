@@ -23,8 +23,52 @@
   <script src="vendor/jquery/jquery-1.11.2.min.js"></script>
   <script src="vendor/typeahead/typeahead.js"></script>
   <script src="vendor/tagsinput/bootstrap-tagsinput.js"></script>
+  
+  <style>
+  
+input[type="checkbox"]:not(:checked), 
+input[type="checkbox"]:checked {
+  position: absolute;
+  left: -9999%;
+}
+
+input[type="checkbox"] + label {
+  display: inline-block;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  color: black;
+  background-color: white;
+  margin-bottom: 0px;
+  font-weight: 100;
+}
+
+input[type="checkbox"]:checked + label {
+  border: 1px solid #1abc9c;
+  color: white;
+  background-color: #1abc9c;
+}
+
+.btn {
+  padding: 0;
+  margin-top: -0.7%;
+  clear: both;
+}
+
+.checkbox {
+  list-style-type: none;
+  list-style-position: outside;
+  padding: 1px;
+  float: left;
+  margin-right: 5px;
+}
+</style>
+  
 </head>
 <body>
+
+<!-- Création du carousel d'accueil -->
 <div class="carousel fade-carousel slide" data-ride="carousel" data-interval="4000" id="bs-carousel">
   <!-- Overlay -->
   <div class="overlay"></div>
@@ -62,9 +106,9 @@
   </div> 
 </div>
 
-
+<!-- Création du formulaire de renseignement -->
 <div id="parent">
-<div class="container">
+<div class="container" style="margin-top: 5%;">
   <br />
   <br />
   <form class="form-horizontal" action="" role="form" id="form">
@@ -76,13 +120,13 @@
     </div>
 
     <div class="form-group">
-      <label class="control-label col-sm-2" for="pwd">Jour du départ(*)</label>
+      <label class="control-label col-sm-2" for="pwd">Jour du départ</label>
       <div class="col-sm-10">          
         <input type="date" class="form-control" id="date_dep" name="date_dep" method="get" >
       </div>
     </div>
 	<div class="form-group">
-      <label class="control-label col-sm-2" for="pwd">Heure du départ(*)</label>
+      <label class="control-label col-sm-2" for="pwd">Heure du départ</label>
       <div class="col-sm-10">          
         <input type="time" class="form-control" id="time_dep" name="time_dep" method="get" >
       </div>
@@ -96,7 +140,7 @@
       </div>
     </div>
 	<div class="form-group">
-      <label class="control-label col-sm-2" for="pwd">Jour d'arrivée(*)</label>
+      <label class="control-label col-sm-2" for="pwd">Jour d'arrivée</label>
       <div class="col-sm-10">          
         <input type="date" class="form-control" id="date_arr" name="date_arr" method="get" >
       </div>
@@ -105,7 +149,7 @@
      <div id="loadingGif" style="display:none; position: absolute; margin-top: 0px; margin-left: 480px; z-index:900;"><img src="../static/img/logo.gif" style=" border-radius: 30px; height: 140%; width: 140%;"></div>
      
 	<div class="form-group">
-      <label class="control-label col-sm-2" for="pwd">Heure d'arrivée(*)</label>
+      <label class="control-label col-sm-2" for="pwd">Heure d'arrivée</label>
       <div class="col-sm-10">          
         <input type="time" class="form-control" id="time_arr" name=time_arr" method="get">
       </div>
@@ -126,8 +170,8 @@
     </script>
     	<div class="form-group">
       <label class="control-label col-sm-2" for="email">Tags(*)</label>
-      <div class="col-sm-10">
-		<input type="text" class="form-control" id="tags" name="tags" method="get" value="Rock,Art,Museum" />
+      <div class="col-sm-10" style="padding-bottom">
+		<input type="text" class="form-control" id="tags" name="tags" method="get" placeholder="Entrez vos tags de préférences" />
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -139,64 +183,120 @@
 </div>
 </div>
     <br />
-    <div class="form-group">
+    <div class="form-group" data-toogle="buttons">
       <label class="control-label col-sm-2" for="email">Moyen de transport(*)</label>
       <div class="col-sm-10">
-	   <button type="button" class="btn btn-default">Voiture</button>
-	   <button type="button" class="btn btn-default">Transports en commun</button>
-	   <button type="button" class="btn btn-default">A pied</button>
+      <ul class="btn">
+      <li class="checkbox">
+    	   <input type="checkbox" method="get" id="transport_voiture" name="transport" value="driving">
+    	   <label for="transport_voiture">Voiture</label>
+    	   </li>
+    	   <li class="checkbox">
+    	   <input type="checkbox" method="get" id="transport_en_commun" name="transport" value="transit">
+	       <label for="transport_en_commun">Transport en commun</label>
+	       </li>
+	       <li class="checkbox">
+    	   <input type="checkbox" method="get" id="transport_walking" name="transport" value="walking">
+	      <label for="transport_walking">A pied</label>
+	      </li>
+	      </ul>
 	</div>
 </div>
    <div class="form-group">
-      <label class="control-label col-sm-2" for="email">Durée maximale de trajet sans pause(*)</label>
+      <label class="control-label col-sm-2" for="email">Durée maximale de trajet sans pause</label>
       <div class="col-sm-10">
-	   <button type="button" class="btn btn-default">1 h</button>
-	   <button type="button" class="btn btn-default">2 h</button>
-	   <button type="button" class="btn btn-default">3 h</button>
-	   <button type="button" class="btn btn-default">4 h</button>
+      <ul class="btn">
+      <li class="checkbox">
+    	   <input type="checkbox" method="get" id="no_pause" name="tps_max_trajet" value="direct">
+    	   <label for="no_pause">Sans pause</label>
+    	   </li>
+    	   <li class="checkbox">
+    	   <input type="checkbox" method="get" id="pause_1h" name="tps_max_trajet" value="1h">
+	       <label for="pause_1h">1 h</label>
+	       </li>
+	       <li class="checkbox">
+    	   <input type="checkbox" method="get" id="pause_2h" name="tps_max_trajet" value="2h">
+	      <label for="pause_2h">2 h</label>
+	      </li>
+	       <li class="checkbox">
+    	   <input type="checkbox" method="get" id="pause_3h" name="tps_max_trajet" value="3h">
+	      <label for="pause_3h">3 h</label>
+	      </li>
+	       <li class="checkbox">
+    	   <input type="checkbox" method="get" id="pause_4h" name="tps_max_trajet" value="4h">
+	      <label for="pause_4h">4 h</label>
+	      </li>
+	      </ul>
 	</div>
 </div>
-	   <div class="form-group">
-    <label class="control-label col-sm-2" for="email">Durée maximale du repas(*)</label>
+	 <div class="form-group">
+    <label class="control-label col-sm-2" for="email">Durée maximale du repas</label>
       <div class="col-sm-10">
-	   <button type="button" class="btn btn-default">15 min</button>
-	   <button type="button" class="btn btn-default">30 min</button>
-	   <button type="button" class="btn btn-default">45 min</button>
-	   <button type="button" class="btn btn-default">1 h</button>
-	   <button type="button" class="btn btn-default">1 h 30</button>
+      <ul class="btn">
+      <li class="checkbox">
+    	   <input type="checkbox" method="get" id="repas_15min" name="tps_repas" value="15min">
+    	   <label for="repas_15min">15 min</label>
+    	   </li>
+    	   <li class="checkbox">
+    	   <input type="checkbox" method="get" id="repas_30min" name="tps_repas" value="30min">
+	       <label for="repas_30min">30 min</label>
+	       </li>
+	       <li class="checkbox">
+    	   <input type="checkbox" method="get" id="repas_45min" name="tps_repas" value="45min">
+	      <label for="repas_45min">45 min</label>
+	      </li>
+	       <li class="checkbox">
+    	   <input type="checkbox" method="get" id="repas_1h" name="tps_repas" value="1h">
+	      <label for="repas_1h">1 h</label>
+	      </li>
+	       <li class="checkbox">
+    	   <input type="checkbox" method="get" id="repas_1h30" name="tps_repas" value="1h30">
+	      <label for="repas_1h30">1 h 30</label>
+	      </li>
+	      </ul>
 	</div>
 </div>
    <div class="form-group">
       <label class="control-label col-sm-2" for="email">Optimisation(*)</label>
       <div class="col-sm-10">
-	   <button type="button" class="btn btn-default">Distance</button>
-	   <button type="button" class="btn btn-default">Temps</button>
-	   <button type="button" class="btn btn-default">Affinité</button>
+      <ul class="btn">
+      <li class="checkbox">
+    	   <input type="checkbox" method="get" id="optimisation_distance" name="optimisation" value="distance">
+    	   <label for="optimisation_distance">Distance</label>
+    	   </li>
+    	   <li class="checkbox">
+    	   <input type="checkbox" method="get" id="optimisation_time" name="optimisation" value="time">
+	       <label for="optimisation_time">Temps</label>
+	       </li>
+	       <li class="checkbox">
+    	   <input type="checkbox" method="get" id="optimisation_affinity" name="optimisation" value="affinity">
+	      <label for="optimisation_affinity">Affinité</label>
+	      </li>
+	      </ul>
+    	</div>
 	</div>
-</div>
+
 	<br />
 	<div class="form-group">        
       <div class="col-sm-offset-2 col-sm-10">
-      	<a class="goToMap" href="map">
-        <button type="submit" id="submit" href="#map" style="color: #f5f5f5; background-color: #1abc9c; border-color: #1abc9c; border-radius: 5px; padding: 5px;" onclick="showDiv()">Soumettre</button></a>
+        <button type="submit" id="submit" style="color: #f5f5f5; background-color: #1abc9c; border-color: #1abc9c; border-radius: 5px; padding: 5px;" onclick="gototab()">Soumettre</button>
       </div>
     </div>
   </form>
 </div>
 </div>
 
-<div id="wrapper">
+<!-- Affichage de la carte -->
+<div id="wrapper" style="z-index: 1050;">
+        <div id="loadingGif" style="display:none; position: absolute; margin-top: 0px; margin-left: 480px; z-index:800;"><img src="../static/img/logo.gif" style=" border-radius: 30px; height: 140%; width: 140%;"></div>
+
   <!-- Sidebar -->
-  <div id="sidebar-wrapper">
+  <div id="sidebar-wrapper" style="z-index: 800;">
     <ul class="sidebar-nav" id="side_bar">
       <li class="sidebar-brand" style="font-weight: bold; color: #999999;">
         <h1 style="color=#1abc9c;">Trajet</h1>
       </li>
       <hr>
-      <ul>
-      <li>
-      <p id="depart"></p>
-    </ul>
   </div>
   <!-- /#sidebar-wrapper -->
   <!-- Page Content -->
@@ -216,9 +316,37 @@
   </div>
   <!-- /#page-content-wrapper -->
 </div>
-<!-- /#wrapper -->
 
-<script type="text/javascript">
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false"></script>
+<!-- /#wrapper -->
+<script>
+
+function gototab(reload) {
+    window.location.hash = '#map';
+    window.location.reload(true);
+  document.getElementById('loadingGif').style.display = "block";
+  setTimeout(function() {
+    document.getElementById('loadingGif').style.display = "none";
+    },30000);  
+}
+ 
+
+$("input:checkbox").on('click', function() {
+  // in the handler, 'this' refers to the box clicked on
+  var $box = $(this);
+  if ($box.is(":checked")) {
+    // the name of the box is retrieved using the .attr() method
+    // as it is assumed and expected to be immutable
+    var group = "input:checkbox[name='" + $box.attr("name") + "']";
+    // the checked state of the group/box on the other hand will change
+    // and the current value is retrieved using .prop() method
+    $(group).prop("checked", false);
+    $box.prop("checked", true);
+  } else {
+    $box.prop("checked", false);
+  }
+});
+
 var engine = new Bloodhound({
   local: [{value: 'red'}, {value: 'blue'}, {value: 'green'} , {value: 'yellow'}, {value: 'violet'}, {value: 'brown'}, {value: 'purple'}, {value: 'black'}, {value: 'white'}],
   datumTokenizer: function(d) {
@@ -230,7 +358,7 @@ var engine = new Bloodhound({
 engine.initialize();
 
 $('#escales').tokenfield({
-  typeahead: [null, { source: engine.ttAdapter() }]
+typeahead: [null, { source: engine.ttAdapter() }]
 });
 
 $('#tags').tokenfield({
@@ -239,8 +367,10 @@ $('#tags').tokenfield({
 	delay: 100,
   },
   showAutocompleteOnFocus: true
-})
-  // Select all links with hashes
+});
+
+// Fonction permettant de scroller
+// Select all links with hashes
 $('a[href*="#"]')
   // Remove links that don't actually link to anything
   .not('[href="#"]')
@@ -277,16 +407,8 @@ $('a[href*="#"]')
     }
   }); 
   
-function showDiv() {
-  document.getElementById('loadingGif').style.display = "block";
-  setTimeout(function() {
-    document.getElementById('loadingGif').style.display = "none";
-    document.getElementById('map').style.display = "block";
-  },30000);  
-} 
-  
-  
-// on crée un tableau avec tous les points du voyage du départ à l'arrivee avec toutes les escales 
+ 
+// fonction permettant de recuperer les termes contenus dans l'url 
 var urlParams;
 (window.onpopstate = function () {
     var match,
@@ -303,13 +425,12 @@ var urlParams;
 
 var esca=[];
 var dep = urlParams["depart"];
-document.getElementById('depart').innerHTML = dep;
 var arr = urlParams["arrivee"];
 var esc = urlParams["escales"],
   wordArray = esc.split(',');
 
 var voyage=[dep];
-for (var i=0; i<esc.length;i++) {
+for (var i=0; i < esc.length; i++) {
   voyage.push(wordArray[i])
 }
 voyage.push(arr); 
@@ -322,6 +443,8 @@ var heure_dep = urlParams["time_dep"],
 	dep_time = heure_dep.split(',');
 var date_dep = urlParams["date_dep"];
 
+var optimization = urlParams["optimisation"];
+
 
 var data = {
 	Depart: dep,
@@ -329,21 +452,21 @@ var data = {
 	depart_jour: date_dep,
 	Arrivee: arr,
 	Escales: wordArray,
-	tags_users: tags
+	tags_users: tags,
+	optimisation: optimization
 }
 
 
-     $('#submit').click(function() {
-        $.ajax({
-          type: "POST",
-          contentType: "application/json;charset=utf-8",
-          url: "/test",
-          traditional: "true",
-          data: JSON.stringify(data),
-          dataType: "json"
-          });
-		
-    });
+ $('#submit').click(function() {
+    $.ajax({
+      type: "POST",
+      contentType: "application/json;charset=utf-8",
+      url: "/test",
+      traditional: "true",
+      data: JSON.stringify(data),
+      dataType: "json"
+      });	
+});
 
 var recom = {{ test|tojson }};
 
