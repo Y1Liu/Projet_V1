@@ -329,6 +329,7 @@ def get_graph_matrix(add_dep, add_arr, waypoint, mode, overallScore):
     df_params.append(df_test)
     #Dataframe avec le score de chaque ville
     #Boucle dans chaque ligne pour affilier un score à chaque ville
+    """
     df_overallScore=overallScore
     list_scoreDep=[]
     list_scoreArr=[]
@@ -360,5 +361,6 @@ def get_graph_matrix(add_dep, add_arr, waypoint, mode, overallScore):
     df_scoreArr=df_scoreArr.reset_index(drop=True)
     df_params=pd.concat([df_params, df_scoreDep, df_scoreArr], axis=1, join='inner')
     #sc_params=spark.createDataFrame(df_params)
+    """
     return df_params
 ###############################################################################

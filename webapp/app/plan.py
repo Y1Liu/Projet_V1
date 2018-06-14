@@ -97,7 +97,6 @@ def get_best_child(liste):
         overallScore : Dataframe city_id - score
         optimization : Type d'otpimisation 'distance', 'time', 'affinity'
         filtre : Matrice 'df' filtrée par les conditions utilisateur
-            
     OUT : 
         
 """

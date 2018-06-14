@@ -14,17 +14,13 @@
 #OBJET
 ###############################################################################
 class Node: 
+    #CONSTRUCTEUR DE Node
     def __init__(self,city,score,parent,H,G):
-        #Id : int 
-        self.city = city
-        #Score : float
-        self.score = score
-        #Parent : Node 
-        self.parent = parent
-        #H : int 
-        self.H = H
-        #G : int
-        self.G = G
+        self.city = city #Id : int 
+        self.score = score #Score : float
+        self.parent = parent #Parent : Node
+        self.H = H #H : int 
+        self.G = G #G : int
         
     def get_city(self):
         return self.city
