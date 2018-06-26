@@ -21,6 +21,7 @@ import dataframes as dtf
 from math import sin, cos, acos, radians
 import pandas as pd
 from node import*
+import sys
 ###############################################################################
 
 
@@ -123,5 +124,11 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities):
         result_id.append(obj.city)
     result_names=[]
     for obj in result_id:
-        result_names.append(df_cities.iloc[int(obj)-1]['name'])
+        if (obj==1000):
+            result_names.append(['Lille', 0])
+        elif (obj==10000):
+            result_names.append(['Marseille', 0])
+        else:
+            result_names.append([df_cities.iloc[int(obj)-1]['name'], overallScore.loc[overallScore['City_id']==obj]['Score'].values[0]])
+    return result_names
 ###############################################################################

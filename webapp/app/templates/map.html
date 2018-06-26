@@ -24,7 +24,6 @@
     <div id="map"></div>
     <script>
     
-// on crée un tableau avec tous les points du voyage du départ à l'arrivee avec toutes les escales 
 var urlParams;
 (window.onpopstate = function () {
     var match,
@@ -38,6 +37,7 @@ var urlParams;
        urlParams[decode(match[1])] = decode(match[2]);
 })();
 
+
 var esca=[];
 var dep = urlParams["depart"];
 var arr = urlParams["arrivee"];
@@ -45,12 +45,64 @@ var esc = urlParams["escales"],
   wordArray = esc.split(',');
 
 var voyage=[dep];
-for (var i=0; i<esc.length;i++) {
+for (var i=0; i < esc.length; i++) {
   voyage.push(wordArray[i])
 }
 voyage.push(arr); 
 
+// Récupération des tags sous forme de tableau
+var tag = urlParams["tags"],
+	tags = tag.split(',');
+
+/*var heure_dep = urlParams["time_dep"],
+	dep_time = heure_dep.split(',');
+var date_dep = urlParams["date_dep"];*/
+
+var pause = urlParams["tps_max_trajet"];
+
+var optimization = urlParams["optimisation"];
+
+var mode = urlParams["transport"];
+
+
+var data = {
+	depart: dep,
+	arrivee: arr,
+	escales: wordArray,
+	tags_users: tags,
+	tps_max: pause,
+	optimisation: optimization,
+	transport: mode
+}
+
+$("form").submit(function(){
+   $.ajax({
+          type: "POST",
+          contentType: "application/json;charset=utf-8",
+          url: "/",
+          traditional: "true",
+          data: JSON.stringify(data),
+          dataType: "json"
+          });	
+});
+
+
+var recom = {{ test|tojson }};
+
+</script>
+<script type="text/javascript">
 function initMap() {
+
+		var myWrapper = $("#wrapper");
+		  $("#menu-toggle").click(function(e) {
+		    e.preventDefault();
+		    $("#wrapper").toggleClass("toggled");
+		    myWrapper.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) {
+		      // code to execute after transition ends
+		      google.maps.event.trigger(map, 'resize');
+		    });
+		  });
+
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
           //center: ('Amiens, France')
@@ -70,50 +122,7 @@ function initMap() {
         displayRoute(dep, arr, directionsService,
             directionsDisplay);
                 
-        
-        /*geocoder = new google.maps.Geocoder();
-        for (var i = 0; i < voyage.length; i++) {
-            codeAddress(geocoder, map, voyage[i]);
-       }*/
 }
-      
-      /*function codeAddress(geocoder, map, address) {
-        geocoder.geocode({'address': address}, function(results, status) {
-          if (status === 'OK') {
-            map.setCenter(results[0].geometry.location);
-            
-            switch(address) {
-                case dep:
-                    color = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-                    content = address;
-                    break;
-                case arr:
-                    color = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
-                    content = address;
-                    break;
-                default:
-                    color = 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
-                    content = address;
-            }            
-            var infowindow = new google.maps.InfoWindow({
-              content: content
-            });
-            
-            var marker = new google.maps.Marker({
-              map: map,
-              position: results[0].geometry.location,
-              icon : color
-            });
-            marker.addListener('click', function() {
-                infowindow.open(map, marker);
-            });
-            
-          } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-          }
-        });
-      }*/
-    
       function displayRoute(origin, destination, service, display) {
           var waypts=[];
           for (var i = 0; i < wordArray.length ; i++) { 
@@ -126,7 +135,7 @@ function initMap() {
                 });
             }         
           }
-          
+ 
         service.route({
           origin: origin,
           destination: destination,
@@ -137,11 +146,13 @@ function initMap() {
         }, function(response, status) {
           if (status === 'OK') {
             display.setDirections(response);
+            alert(recom)
           } else {
             alert('Could not display directions due to: ' + status);
           }
         });
       }
+    </script>
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8pxsl2jFQSwshMT2I5Weue8CKLgxalY8&callback=initMap">
