@@ -312,7 +312,7 @@ def get_way(tab_tags, df_overallScore, n, df_cities):
     list_steps=[]
     for i in range(0,n):
         city_id=df_overallScore.iloc[i , 0]
-        city_name=df_cities.loc[[city_id], 'name']
+        city_name=df_cities.loc[[city_id-1], 'name']
         list_steps.append([city_name.values[0], df_overallScore.loc[[i], 'Score'].values[0]])
     return list_steps
 

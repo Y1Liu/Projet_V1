@@ -35,7 +35,7 @@ def cities_toDf():
 
 #Fonction permettant de mettre la table PLACE au format de DataFrame
 def places_toDf():
-    results=pd.read_csv('../../data/all_places.csv', names=['id', 'name', 'photo', 'type', 'visits', 'lat', 'lng', 'city_id'])
+    results=pd.read_csv('../../data/all_places.csv')
     results
     return results
 
