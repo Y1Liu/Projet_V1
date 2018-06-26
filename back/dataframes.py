@@ -101,4 +101,6 @@ def similaritiesToDf():
 def placeTypesToDf():
     results=pd.read_csv('../data/placeTags.csv', names=['place_id', 'word'])
     return results
+
+placesToDf()
 ###############################################################################

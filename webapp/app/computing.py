@@ -98,9 +98,9 @@ def init_matrix():
     #Ajout du nombre de visites à la matrice
     for i in range(0,n_pT):
         place_id=df_placeTypes.iloc[i]['place_id']
-        city_id=df_places.loc[df_places['id']==place_id, 'city_id']
+        city_id=df_places.loc[df_places['id']==place_id, 'city_id'].values[0]
         df_city=df_city.append({'City_id': city_id}, ignore_index=True)
-        visits=df_places.loc[df_places['id']==place_id, 'visits']
+        visits=df_places.loc[df_places['id']==place_id, 'visits'].values[0]
         df_visits=df_visits.append({'Visits': visits}, ignore_index=True)
     df_placeTypes=pd.concat([df_placeTypes, df_city], axis=1)
     df_placeTypes=pd.concat([df_placeTypes, df_visits], axis=1)
