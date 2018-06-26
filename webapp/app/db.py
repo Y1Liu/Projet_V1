@@ -23,11 +23,12 @@ import pyodbc
 ###############################################################################
 #Initialisation de la base de donnÃ©es
 #Retourne le contexte
+"""
 def init_db():
     server = '10.2.38.20,1433'
     database = 'Planner'
     username = 'azerty'
-    connexion = pyodbc.connect('Trusted_connection=yes;DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ 'azerty')
+    connexion = pyodbc.connect('Trusted_connection=yes;DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID=;PWD=)
     return connexion
 
 
@@ -44,4 +45,5 @@ def command(db_cmd, arg):
 def insert_param(time, distance, heuristic):
     res=command('INSERT INTO param([time],[distance],[heuristic]) VALUES(?,?,?)',(time, distance, heuristic))
     return res
+"""
 ###############################################################################

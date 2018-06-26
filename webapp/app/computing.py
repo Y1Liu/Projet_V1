@@ -300,20 +300,20 @@ def get_classement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities
     temp=df_placeTypes.iloc[:,4:]
     max_val=df_placeTypes['Visits'].apply(np.log).max()
     df_placeTypes['Score']=(temp.sum(axis=1)/n + df_placeTypes['Visits'].apply(np.log))/(max_val+1)
-    overallScore=df_placeTypes.groupby('City_id')['Score'].mean().reset_index()
-    overallScore=overallScore.sort_values('Score', ascending=False).reset_index().drop(['index'], axis=1)
-    scoreTable=df_placeTypes.groupby('City_id').mean().sort_values('Score', ascending=False).reset_index().drop(['word', 'Visits'], axis=1)
-    scoreTable=scoreTable.iloc[:50,:]
-    return [overallScore, scoreTable]  
+    overall_score=df_placeTypes.groupby('City_id')['Score'].mean().reset_index()
+    overall_score=overall_score.sort_values('Score', ascending=False).reset_index().drop(['index'], axis=1)
+    score_table=df_placeTypes.groupby('City_id').mean().sort_values('Score', ascending=False).reset_index().drop(['word', 'Visits'], axis=1)
+    score_table=score_table.iloc[:50,:]
+    return [overall_score, score_table]  
 
 
 #Renvoi de la liste de villes recommandée en fonction des choix de l'utilisateur
-def get_way(tab_tags, df_overallScore, n, df_cities):
+def get_way(tab_tags, df_overall_score, n, df_cities):
     list_steps=[]
     for i in range(0,n):
-        city_id=df_overallScore.iloc[i , 0]
+        city_id=df_overall_score.iloc[i , 0]
         city_name=df_cities.loc[[city_id], 'name']
-        list_steps.append([city_name.values[0], df_overallScore.loc[[i], 'Score'].values[0]])
+        list_steps.append([city_name.values[0], df_overall_score.loc[[i], 'Score'].values[0]])
     return list_steps
 
 
@@ -364,8 +364,4 @@ def get_graph_matrix(add_dep, add_arr, waypoint, mode, overallScore):
     #sc_params=spark.createDataFrame(df_params)
     """
     return df_params
-
-
-tab = init_matrix()
-x= get_classement(tab[2], ['Rock', 'Art'], tab[1], tab[3], tab[0])
 ###############################################################################
