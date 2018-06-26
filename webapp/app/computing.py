@@ -296,6 +296,7 @@ def get_classement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities
             df=df.append({tab_tags[i]: simi}, ignore_index=True)
         df_placeTypes=pd.concat([df_placeTypes, df], axis=1)
     #Computation du classement des villes  
+    #Correspond aux colonnes Score par 'tag'
     temp=df_placeTypes.iloc[:,4:]
     max_val=df_placeTypes['Visits'].apply(np.log).max()
     df_placeTypes['Score']=(temp.sum(axis=1)/n + df_placeTypes['Visits'].apply(np.log))/(max_val+1)
