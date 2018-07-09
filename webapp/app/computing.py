@@ -112,48 +112,49 @@ def init_matrix():
 #FONCTIONS
 ###############################################################################
 #Fonction permettant de retourner une Dataframe avec les distances, temps entre les villes avec le lieu de départ et d'arrivée de l'utilisateur
-def compute_depArr(addDep, addArr, wayPoints, mode): 
+def compute_depArr(addDep, addArr, waypoints, mode): 
     #Récupération des coordonnées depuis les adresses fournies
-    coordDep=dm.get_gps(addDep)
-    coordArr=dm.get_gps(addArr)
+    coord_dep=dm.get_gps(addDep)
+    coord_arr=dm.get_gps(addArr)
     rows=[]
-    temp=len(wayPoints)
+    temp=len(waypoints)
     #Récupération de la dataframe contenant les villes
     cities=dtf.cities_toDf()
-    nSize=len(cities)
+    n_size=len(cities)
     #Appel de la fonction permettant de calculer la distance d'un point à tous les autres
-    for i in range(0,nSize):
+    for i in range(0,n_size):
         #Obtention des paramètres depuis le lieu de départ 
-        distDuree=dm.get_distance_duree(coordDep[0], coordDep[1], str(cities.iloc[i][1]), str(cities.iloc[i][2]), mode)
-        rows.append([distDuree[1], distDuree[2], distDuree[3], 1000, i+1])
+        dist_duree=dm.get_distance_duree(coord_dep[0], coord_dep[1], str(cities.iloc[i][2]), str(cities.iloc[i][3]), mode)
+        rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 1000, i+1])
         #Obtention des paramètres depuis le lieu d'arrivée 
-        distDuree=dm.get_distance_duree(coordArr[0], coordArr[1], str(cities.iloc[i][1]), str(cities.iloc[i][2]), mode)
-        rows.append([distDuree[1], distDuree[2], distDuree[3], 10000, i+1])
+        dist_duree=dm.get_distance_duree(coord_arr[0], coord_arr[1], str(cities.iloc[i][2]), str(cities.iloc[i][3]), mode)
+        rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 10000, i+1])
         if(temp>0):
-            print("Waypoints with cities")
             #Obtention des paramètres depuis les Waypoints
             for j in range(0,temp):
-                coordWayp=dm.getGps(wayPoints[j])
+                coord_wayp=dm.get_gps(waypoints[j])
                 #Pour toutes les villes
-                distDuree=dm.get_distance_duree(coordWayp[0], coordWayp[1], str(cities.iloc[i][1]), str(cities.iloc[i][2]), mode)
-                rows.append([distDuree[1], distDuree[2], distDuree[3], 100000+j, i+1])
+                dist_duree=dm.get_distance_duree(coord_wayp[0], coord_wayp[1], str(cities.iloc[i][2]), str(cities.iloc[i][3]), mode)
+                rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 100000+j, i+1])
     if(temp>0):
-        print("Waypoints with start and arrival")
         #Obtention des paramètres depuis les Waypoints
         for j in range(0,temp):
             #Depuis le départ
-            distDuree=dm.get_distance_duree(coordWayp[0], coordWayp[1], coordDep[0], coordDep[1], mode)
-            rows.append([distDuree[1], distDuree[2], distDuree[3], 1000, 100000+j])
+            dist_duree=dm.get_distance_duree(coord_wayp[0], coord_wayp[1], coord_dep[0], coord_dep[1], mode)
+            rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 1000, 100000+j])
             #Depuis l'arrivée
-            distDuree=dm.get_distance_duree(coordWayp[0], coordWayp[1], coordArr[0], coordArr[1], mode)
-            rows.append([distDuree[1], distDuree[2], distDuree[3], 10000, 100000+j])
-    print("Start - Arrival")
+            dist_duree=dm.get_distance_duree(coord_wayp[0], coord_wayp[1], coord_arr[0], coord_arr[1], mode)
+            rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 10000, 100000+j])
     #Calcul des paramètres entre le départ et l'arrivée
-    distDuree=dm.get_distance_duree(coordDep[0], coordDep[1], coordArr[0], coordArr[1], mode)
-    rows.append([distDuree[1], distDuree[2], distDuree[3], 1000, 10000])
+    dist_duree=dm.get_distance_duree(coord_dep[0], coord_dep[1], coord_arr[0], coord_arr[1], mode)
+    rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 1000, 10000])
     df1=pd.DataFrame(rows, columns=['time', 'distance', 'heuristic', 'cityDep_id', 'cityArr_id'])
     #Retourne la nouvelle DataFrame
     return(df1)
+    
+"""temp = compute_depArr('Lille', 'Marseille', ['Grenoble'], 'driving')    
+with open('trajet_temoin.csv', 'w') as csv_file:
+    temp.to_csv(csv_file)"""
 
 """
 #Fonction permettant de mesurer la similarité entre 2 places
@@ -322,16 +323,17 @@ def get_way(tab_tags, df_overall_score, n, df_cities):
 ______________________________________________________
 time | distance | heuristic | cityDep_id | cityArr_id 
 _____|__________|___________|____________|____________"""
-def get_graph_matrix(add_dep, add_arr, waypoint, mode, overallScore):
-    #df_test=computeDepArr(add_dep, add_arr, waypoint, 'driving')
-    df_test=pd.read_csv('../../data/trajet_temoin.csv')
-    df_params=dtf.params_toDf("'driving'")
+def get_graph_matrix(add_dep, add_arr, waypoint, mode, overall_score):
+    df_test=compute_depArr(add_dep, add_arr, waypoint, 'driving')
+    #df_test=pd.read_csv('../static/data/trajet_temoin.csv')
+    #df_test=df_test.iloc[:,1:]
+    #print(df_test)
+    df_params=dtf.params_toDf(mode)
     df_params=pd.concat([df_params, df_test], axis=0)
-    df_params.append(df_test)
+    #df_params.append(df_test)
     #Dataframe avec le score de chaque ville
     #Boucle dans chaque ligne pour affilier un score à chaque ville
-    """
-    df_overallScore=overallScore
+    df_overall_score=overall_score
     list_scoreDep=[]
     list_scoreArr=[]
     for index, row in df_params.iterrows():
@@ -341,7 +343,7 @@ def get_graph_matrix(add_dep, add_arr, waypoint, mode, overallScore):
         if(cityDep_id==1000 or cityDep_id==10000 or cityDep_id==100000):
             list_scoreDep.append(0)
         else:
-            score=df_overallScore.loc[(df_overallScore['City_id']==cityDep_id), 'Score']
+            score=df_overall_score.loc[(df_overall_score['City_id']==cityDep_id), 'Score']
             if(list(score) != []):
                 list_scoreDep.append(list(score)[0])
             else:
@@ -350,7 +352,7 @@ def get_graph_matrix(add_dep, add_arr, waypoint, mode, overallScore):
         if(cityArr_id==1000 or cityArr_id==10000 or cityArr_id==100000):
             list_scoreArr.append(0)
         else:
-            score=df_overallScore.loc[(df_overallScore['City_id']==cityArr_id), 'Score']
+            score=df_overall_score.loc[(df_overall_score['City_id']==cityArr_id), 'Score']
             if(list(score) != []):
                 list_scoreArr.append(list(score)[0])
             else:
@@ -362,6 +364,6 @@ def get_graph_matrix(add_dep, add_arr, waypoint, mode, overallScore):
     df_scoreArr=df_scoreArr.reset_index(drop=True)
     df_params=pd.concat([df_params, df_scoreDep, df_scoreArr], axis=1, join='inner')
     #sc_params=spark.createDataFrame(df_params)
-    """
-    return df_params
+    out=df_params
+    return out
 ###############################################################################

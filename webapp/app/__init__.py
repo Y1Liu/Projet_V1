@@ -12,7 +12,9 @@
 ###############################################################################
 from flask import Flask
 from config import Config
-
+from app import routes
+import data_mining, computing, plan
+from Node import Node
 from flask_bootstrap import Bootstrap
 
 ###############################################################################
@@ -25,5 +27,3 @@ app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 
 
-from app import routes
-import data_mining, computing
