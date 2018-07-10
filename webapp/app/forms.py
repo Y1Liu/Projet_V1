@@ -18,7 +18,7 @@ from wtforms import StringField, SubmitField, SelectField, SelectMultipleField, 
 import request, app
 #from wtforms_components import TimeField
 from wtforms.validators import DataRequired
-from .tags import *
+from .Tags import *
 
 ###############################################################################
 #Fonction créant le formulaire
