@@ -18,12 +18,6 @@ import pandas as pd
 import numpy as np
 import data_mining as dm
 from pyspark.sql.session import SparkSession
-from pyspark.sql.functions import monotonically_increasing_id
-from pyspark.sql.types import IntegerType
-from pyspark.sql.types import FloatType
-from pyspark.sql.window import Window
-from pyspark.sql import functions as F
-from pyspark.sql.functions import udf
 from math import log
 import pyspark
 import dataframes as dtf
