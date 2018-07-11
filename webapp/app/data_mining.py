@@ -56,7 +56,7 @@ def get_date():
 
 #Fonction permettant de récupérer des coordonnées GPS à partir d'une adresse
 def get_gps(address):
-    g = Nominatim()
+    g = Nominatim(timeout=4)
     location=g.geocode(address)
     return [str(location.latitude), str(location.longitude)]
 

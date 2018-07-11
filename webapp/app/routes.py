@@ -9,17 +9,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_mongoengine import MongoEngine, Document
 import pymongo as pm
-from RegisterForm import RegisterForm
-from LoginForm import LoginForm
-import bcrypt
-from LogoutForm import LogoutForm
-from ModifForm import ModifForm
-from ModifAcceptedForm import ModifAcceptedForm
+from registerform import RegisterForm
+from loginform import LoginForm
+from logoutform import LogoutForm
+from modifform import ModifForm
+from modifacceptedform import ModifAcceptedForm
 from tags import *
 import computing as cp
 import plan as pl
 import time
-from node import *
+from graphnode import *
+import hashlib
 ###############################################################################
 # App config.
 DEBUG = True
@@ -60,9 +60,11 @@ class ReusableForm(FlaskForm):
 def login():
     login_form=LoginForm(request.form)
     if login_form.validate_on_submit():
-        hashpass=bcrypt.hashpw(request.form['login_password'].encode('utf-8'), bcrypt.gensalt())
-        user=users.find({'email':request.form['login_email'], 'password':hashpass})   
-        if user:
+        pw=request.form['login_password'].encode('utf-8')
+        hashpass=hashlib.md5(pw)
+        pwd=hashpass.hexdigest()
+        user=users.find({'email':request.form['login_email'], 'password':pwd}).count()   
+        if user==1:
             session['email']=request.form['login_email']
             return redirect(url_for('form'))
         else:
@@ -74,8 +76,10 @@ def login():
 def register():
     register_form = RegisterForm(request.form)  
     if register_form.validate_on_submit():
-        hashpass=bcrypt.hashpw(request.form['register_password'].encode('utf-8'), bcrypt.gensalt())
-        users.insert({'email': request.form['register_email'], 'password':hashpass, 'nom':request.form['register_nom'], 'prenom':request.form['register_prenom'], 'rue':request.form['register_rue'], 'cp':request.form['register_cp'], 'ville':request.form['register_ville'], 'tags':request.form['register_tags']})
+        pw=request.form['register_password'].encode('utf-8')
+        hashpass=hashlib.md5(pw)
+        pwd=hashpass.hexdigest()
+        users.insert({'email': request.form['register_email'], 'password':pwd, 'nom':request.form['register_nom'], 'prenom':request.form['register_prenom'], 'rue':request.form['register_rue'], 'cp':request.form['register_cp'], 'ville':request.form['register_ville'], 'tags':request.form['register_tags']})
         session['email'] = request.form['register_email']
         return redirect(url_for('form'))
     return render_template('register.html', register_form=register_form)    
@@ -112,87 +116,50 @@ def form():
         return redirect(url_for('index'))
     
     form = ReusableForm(request.form)
-    #tags_user=[]
-    #add_dep='Lille'
-    #add_arr='Marseille'
-    #escales='Grenoble'
     test=[]
     tags=['Hall', 'Museum']
-    #optimisation='distance'
-    #mode='driving'
-    #overallScore= cp.get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
-    start=Node(13, 0, None, 0, 0)
-    target=Node(2, 0, None, 0, 0)
-    #d_max=300000
-    #dtfr = cp.get_graph_matrix('Lille', 'Marseille', [], 'driving', overallScore)
-    #df_filtered = dtfr
+
+    start=Node(1000, 0, None, 0, 0)
+    target=Node(10000, 0, None, 0, 0)
+
     if request.method == 'POST':
         add_dep=request.form.get('add_dep')
-        #add_dep='Lille'
         session["add_dep"]=add_dep
         
         add_arr=request.form.get('add_arr')
-        #add_arr='Marseille'
         session["add_arr"]=add_arr
         escales=[form.escales.data]
-        #escales=['Grenoble']
         
         tags=form.tags.data
         session["tags"]=tags
         
         optimisation=request.form.get('optimisation')
-        #session["optimisation"]=optimisation
         
         mode=request.form.get('locomotion')
-        #session["mode"]=mode
         
         h_dep=request.form.get('h_dep')
         j_dep=request.form.get('j_dep')
         h_arr=request.form.get('h_arr')
         j_arr=request.form.get('j_arr')
-        #escales=request.form.get('escales')
         t_max=request.form.get('t_max')
         #d_max=request.form.get('d_max')
         t_repas=request.form.get('t_repas')
         
         overallScore = cp.get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
-        #session["overallScore"]=overallScore
         
-        #t_max=10800
         d_max=300000
-        #mode='driving'
-        #optimisation='distance'
         
         dtfr=cp.get_graph_matrix(add_dep, add_arr, escales, 'driving', overallScore)
-        #session["dtfr"]=dtfr
         df_filtered = dtfr.loc[dtfr['distance'] < d_max]
-        #session["df_filtered"]=df_filtered
-        #df_filtered = df.loc[df['time']<=t_max]
+
         test=pl.get_path(start, target, dtfr, overallScore, optimisation, df_filtered, datas[0], add_dep, add_arr, escales)
-        #test=cp.get_way(tags, cp.get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0], 2, datas[0])
         session["test"]=test
         return redirect('/map')
     else:
-        #add_dep=session.get("add_dep", None)
-        #add_arr=session.get("add_arr", None)
+
         tags=session.get("tags", None)
-        #optimisation=session.get("optimisation", None)
-        #mode=session.get("mode", None)
-        #overallScore=session.get("overallScore", None)
-        #dtfr=session.get("dtfr", None)
-        #df_filtered=session.get("df_filtered", None)
         test=session.get("test", None)  
-    #test=pl.get_path(start, target, dtfr, overallScore, optimisation, df_filtered, datas[0], add_dep, add_arr)
-    #session["test"]=test
-        #return redirect('/map')
-    #if tags == []:
-        #tags=session.get("tags", None)
-    #else:
-        #pass
-    #test=cp.get_way(tags, cp.get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0], 2, datas[0])
-    #test=pl.get_path(start, target, df, overallScore, optimisation, df_filtered, datas[0])
-    #session["test"]=test
-    #tags=['Museum']
+
     return render_template('form.html', title='Formulaire', form=form, logout_form=logout_form, modif_form=modif_form, session_email=session['email'])
  
 
@@ -206,10 +173,7 @@ def map():
     arrivee=session.get("add_arr", None)
     tags=session.get("tags", None)
     test=session.get("test", None)
-    
-    return render_template('map.html', title='Map', depart=depart, arrivee=arrivee, tags=tags, test=test)
+    return render_template('map.html', title='Map', depart=depart, arrivee=arrivee, tags=tags, test=test, escales=escales)
 
-
- 
 if __name__ == "__main__":
     app.run(debug="true")
