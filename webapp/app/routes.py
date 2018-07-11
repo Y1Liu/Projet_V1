@@ -8,17 +8,18 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_mongoengine import MongoEngine, Document
 import pymongo as pm
-from RegisterForm import RegisterForm
-from LoginForm import LoginForm
+from registerform import RegisterForm
+from loginform import LoginForm
 import bcrypt
-from LogoutForm import LogoutForm
-from ModifForm import ModifForm
-from ModifAcceptedForm import ModifAcceptedForm
-from GeneralForm import GeneralForm
-from Tags import Tags
+from logoutform import LogoutForm
+from modifform import ModifForm
+from modifacceptedform import ModifAcceptedForm
+from generalform import GeneralForm
+from tags import Tags
 import computing as cp
 import plan as pl
-from Node import Node
+import hashlib
+from graphnode import *
 ###############################################################################
 
 
@@ -53,9 +54,11 @@ users=db['users']
 def login():
     login_form=LoginForm(request.form)
     if login_form.validate_on_submit():
-        hashpass=bcrypt.hashpw(request.form['login_password'].encode('utf-8'), bcrypt.gensalt())
-        user=users.find({'email':request.form['login_email'], 'password':hashpass})   
-        if user:
+        pw=request.form['login_password'].encode('utf-8')
+        hashpass=hashlib.md5(pw)
+        pwd=hashpass.hexdigest()
+        user=users.find({'email':request.form['login_email'], 'password':pwd}).count()
+        if user==1:
             session['email']=request.form['login_email']
             return redirect(url_for('form'))
         else:
@@ -67,11 +70,13 @@ def login():
 def register():
     register_form = RegisterForm(request.form)  
     if register_form.validate_on_submit():
-        #hashpass=bcrypt.hashpw(request.form['register_password'].encode('utf-8'), bcrypt.gensalt())
-        users.insert({'email': request.form['register_email'], 'password':request.form['register_password'], 'nom':request.form['register_nom'], 'prenom':request.form['register_prenom'], 'rue':request.form['register_rue'], 'cp':request.form['register_cp'], 'ville':request.form['register_ville'], 'tags':request.form['register_tags']})
+        pw=request.form['register_password'].encode('utf-8')
+        hashpass=hashlib.md5(pw)
+        pwd=hashpass.hexdigest()
+        users.insert({'email': request.form['register_email'], 'password':pwd, 'nom':request.form['register_nom'], 'prenom':request.form['register_prenom'], 'rue':request.form['register_rue'], 'cp':request.form['register_cp'], 'ville':request.form['register_ville'], 'tags':request.form['register_tags']})
         session['email'] = request.form['register_email']
         return redirect(url_for('form'))
-    return render_template('register.html', register_form=register_form)    
+    return render_template('register.html', register_form=register_form)
     
 
 @app.route('/', methods=['GET','POST'])

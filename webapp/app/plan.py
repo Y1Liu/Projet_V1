@@ -16,7 +16,7 @@
 ###############################################################################
 from computing import get_graph_matrix, init_matrix, get_classement
 import pandas as pd
-from node import *
+from graphnode import *
 ###############################################################################
 
 
@@ -177,9 +177,9 @@ tags=['Art', 'Museum']
 overall_score = get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
 start=Node(1000, 0, None, 0, 0)
 target=Node(10000, 0, None, 0, 0)
-add_dep='Saint-Nazaire'
+add_dep='Lille'
 add_arr='Marseille'
-escale=[]
+escale=['Grenoble']
 t_max=7200
 d_max=300000
 mode='driving'

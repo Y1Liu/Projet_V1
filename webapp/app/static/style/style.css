@@ -313,3 +313,9 @@ body {
 #form {
     z-index: 950;
 }
+
+.form-group {
+    margin-bottom: 0%;
+    margin-top: 0%;
+}
+}

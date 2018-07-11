@@ -8,7 +8,7 @@ from wtforms.validators import Email, Length, InputRequired
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from wtforms.validators import DataRequired
-from Tags import Tags, TAGS
+from tags import Tags, TAGS
 
 ###############################################################################    
 class GeneralForm(FlaskForm):

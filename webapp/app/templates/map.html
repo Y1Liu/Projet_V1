@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link href="{{ url_for('static', filename='js/map.js') }}" type="text/javascript"/>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Planificateur Intelligent - Trajet</title>
@@ -172,7 +173,7 @@
   </div>
   <!-- /#page-content-wrapper -->
 </div>
-<script type="text/javascript">
+<script>
 var dep = '{{ depart }}';
 var arr = '{{ arrivee }}';
 var tags = '{{ tags }}';
@@ -228,7 +229,7 @@ function initMap() {
           }
         });
       }
-    </script>
+    </script>script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8pxsl2jFQSwshMT2I5Weue8CKLgxalY8&callback=initMap">
     </script>

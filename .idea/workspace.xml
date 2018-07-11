@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/webapp/app/routes.py" line="17" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="99956c0a-45e2-4769-9ecf-6b3849fc89c1" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/webapp/app/Form.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/form.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/GeneralForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/generalform.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/LoginForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/loginform.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/LogoutForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/logoutform.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/ModifAcceptedForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/modifacceptedform.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/ModifForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/modifform.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/Node.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/Node.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/graphnode.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/Place.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/place.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/RegisterForm.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/registerform.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/Tags.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/tags.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/computing.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/computing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/data_mining.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/data_mining.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/forms.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/plan.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/plan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/static/style/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/static/style/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/templates/form.html" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/templates/form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webapp/app/templates/map.html" beforeDir="false" afterPath="$PROJECT_DIR$/webapp/app/templates/map.html" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/Machine_20Learning_20__20Planificateur_20intelligent$node.coverage" NAME="node Coverage Results" MODIFIED="1531316612901" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webapp/app" />
+    <SUITE FILE_PATH="coverage/Machine_20Learning_20__20Planificateur_20intelligent$Node.coverage" NAME="Node Coverage Results" MODIFIED="1531234861319" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webapp/app" />
+    <SUITE FILE_PATH="coverage/Machine_20Learning_20__20Planificateur_20intelligent$plan.coverage" NAME="plan Coverage Results" MODIFIED="1531316660513" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webapp/app" />
+    <SUITE FILE_PATH="coverage/Machine_20Learning_20__20Planificateur_20intelligent$routes.coverage" NAME="routes Coverage Results" MODIFIED="1531319286014" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/webapp/app" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="routes.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/webapp/app/routes.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="21" column="23" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
+              <folding>
+                <element signature="e#0#84#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="plan.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webapp/app/plan.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="18" column="23" selection-start-line="18" selection-start-column="23" selection-end-line="18" selection-end-column="23" />
+              <folding>
+                <element signature="e#516#583#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webapp/app/static/css/style.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1156">
+              <caret line="68" column="23" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webapp/app/static/style/style.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3859">
+              <caret line="227" column="1" selection-start-line="227" selection-start-column="1" selection-end-line="227" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="computing.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webapp/app/computing.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="272">
+              <caret line="16" selection-start-line="16" selection-end-line="16" />
+              <folding>
+                <element signature="e#545#564#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="graphnode.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webapp/app/graphnode.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="generalform.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webapp/app/generalform.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" column="31" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="data_mining.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webapp/app/data_mining.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="14" column="22" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
+              <folding>
+                <element signature="e#555#566#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="registerform.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/webapp/app/registerform.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" column="20" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#120#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/webapp/app/RegisterForm.py" />
+        <option value="$PROJECT_DIR$/webapp/app/GeneralForm.py" />
+        <option value="$PROJECT_DIR$/webapp/app/static/css/style.css" />
+        <option value="$PROJECT_DIR$/webapp/app/computing.py" />
+        <option value="$PROJECT_DIR$/webapp/app/generalform.py" />
+        <option value="$PROJECT_DIR$/webapp/app/data_mining.py" />
+        <option value="$PROJECT_DIR$/webapp/app/plan.py" />
+        <option value="$PROJECT_DIR$/webapp/app/routes.py" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths>
+      <path value="$PROJECT_DIR$/webapp/app/static/css/bootstrap-4.1.1/package.json" />
+    </packageJsonPaths>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="260" />
+    <option name="y" value="20" />
+    <option name="width" value="1400" />
+    <option name="height" value="1000" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="style" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Machine%20Learning%20-%20Planificateur%20intelligent" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="Z:\Machine%20Learning%20-%20Planificateur%20intelligent\webapp\app" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.routes">
+    <configuration name="Node" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Machine%20Learning%20-%20Planificateur%20intelligent" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/webapp/app" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="Z:\Machine%20Learning%20-%20Planificateur%20intelligent\webapp\app\graphnode.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="node" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Machine%20Learning%20-%20Planificateur%20intelligent" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/webapp/app" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="Z:\Machine%20Learning%20-%20Planificateur%20intelligent\webapp\app\graphnode.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="plan" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Machine%20Learning%20-%20Planificateur%20intelligent" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/webapp/app" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/webapp/app/plan.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="routes" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Machine%20Learning%20-%20Planificateur%20intelligent" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/webapp/app" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/webapp/app/routes.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.routes" />
+      <item itemvalue="Python.Node" />
+      <item itemvalue="Python.node" />
+      <item itemvalue="Python.plan" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.routes" />
+        <item itemvalue="Python.plan" />
+        <item itemvalue="Python.node" />
+        <item itemvalue="Python.Node" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="99956c0a-45e2-4769-9ecf-6b3849fc89c1" name="Default" comment="" />
+      <created>1531226048397</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1531226048397</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.334375" side_tool="true" visible="true" weight="0.16033755" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.665625" visible="true" weight="0.16033755" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18020834" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="right" id="SciView" order="3" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="0" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/webapp/app/routes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#84#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/plan.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="9" selection-start-line="18" selection-start-column="5" selection-end-line="18" selection-end-column="9" />
+          <folding>
+            <element signature="e#516#583#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/static/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1156">
+          <caret line="68" column="23" lean-forward="true" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/static/style/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3859">
+          <caret line="227" column="1" lean-forward="true" selection-start-line="227" selection-start-column="1" selection-end-line="227" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/computing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="e#545#564#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/graphnode.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="4" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/generalform.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="31" lean-forward="true" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/data_mining.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="22" lean-forward="true" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
+          <folding>
+            <element signature="e#555#566#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/registerform.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="20" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#120#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/tags.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/place.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/test1.json" />
+    <entry file="file://$PROJECT_DIR$/webapp/app/templates/form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-153" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/static/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1156">
+          <caret line="68" column="23" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/forms.py" />
+    <entry file="file://$PROJECT_DIR$/webapp/app/static/style/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3859">
+          <caret line="227" column="1" selection-start-line="227" selection-start-column="1" selection-end-line="227" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/computing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="e#545#564#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/generalform.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="31" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/registerform.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="20" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#120#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/data_mining.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="22" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
+          <folding>
+            <element signature="e#555#566#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/graphnode.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/plan.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="23" selection-start-line="18" selection-start-column="23" selection-end-line="18" selection-end-column="23" />
+          <folding>
+            <element signature="e#516#583#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/webapp/app/routes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="23" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#84#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
