@@ -17,7 +17,7 @@ import json
 import csv
 import time
 import requests
-import place as p
+import Place as p
 import numpy as np
 import pandas as pd
 from geopy.geocoders import Nominatim
