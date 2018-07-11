@@ -36,6 +36,7 @@ from graphnode import *
     OUT : 
         liste de nodes  
 """
+
 def children(node, df, overallScore, target, optimization, filtre, distance_begin):
     children=[]
     d1=filtre.loc[filtre['cityDep_id']==node.city]['cityArr_id']
@@ -46,6 +47,7 @@ def children(node, df, overallScore, target, optimization, filtre, distance_begi
     for value in temp : 
         if(value != target.city):
             try:
+                print(value, target.city)
                 score=overallScore.loc[overallScore['City_id']==value]['Score'].values[0]
                 parent=node
                 H=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))]['heuristic'].values[0]
@@ -55,7 +57,7 @@ def children(node, df, overallScore, target, optimization, filtre, distance_begi
             except:
                 score=0
                 parent=node
-                #print(value, target.city)
+                print(value, target.city)
                 H=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))]['heuristic'].values[0]
                 G=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))][optimization].values[0]+distance_begin
                 child=Node(value,score,parent,H,G)
@@ -137,6 +139,7 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities, a
     distance_begin=0
     for k in 0,len(waypoint):
         if k<len(waypoint):
+            #print(waypoint[k])
             #index des waypoints
             target_id=100000+k
             next_target=Node(target_id, 0, None, 0, 0)
@@ -144,6 +147,7 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities, a
         elif k==len(waypoint):
             next_target=target
             print("FINAL")
+        print("NEXT TARGET : "+ str(next_target.city))
         while(tmp!=next_target.city):
             x=children(pere, df, overallScore, next_target, 'distance', filtre, distance_begin)
             temp=x
@@ -172,21 +176,21 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities, a
     return result_names
 
 
-"""datas=init_matrix()
+datas=init_matrix()
 tags=['Art', 'Museum']
 overall_score = get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
 start=Node(1000, 0, None, 0, 0)
 target=Node(10000, 0, None, 0, 0)
 add_dep='Lille'
 add_arr='Marseille'
-escale=['Grenoble']
+escale=['Grenoble', 'Lyon']
 t_max=7200
 d_max=300000
 mode='driving'
 optimisation='distance'
 dtfr=get_graph_matrix(add_dep, add_arr, escale, mode, overall_score)
-
+dtfr.to_csv('trajet_temoin.csv')
 df_filtered = dtfr.loc[dtfr['distance'] < d_max]
-print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))"""
+print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))
 
 ###############################################################################

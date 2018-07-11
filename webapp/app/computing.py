@@ -18,12 +18,6 @@ import pandas as pd
 import numpy as np
 import data_mining as dm
 from pyspark.sql.session import SparkSession
-from pyspark.sql.functions import monotonically_increasing_id
-from pyspark.sql.types import IntegerType
-from pyspark.sql.types import FloatType
-from pyspark.sql.window import Window
-from pyspark.sql import functions as F
-from pyspark.sql.functions import udf
 from math import log
 import pyspark
 import dataframes as dtf
@@ -145,6 +139,14 @@ def compute_depArr(addDep, addArr, waypoints, mode):
             #Depuis l'arrivée
             dist_duree=dm.get_distance_duree(coord_wayp[0], coord_wayp[1], coord_arr[0], coord_arr[1], mode)
             rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 10000, 100000+j])
+    if(temp>1):
+        for j in range(0,temp):
+            for k in range(0,temp):
+                coord_wayp1 = dm.get_gps(waypoints[j])
+                coord_wayp2 = dm.get_gps(waypoints[k])
+                if(j<k):
+                    dist_duree = dm.get_distance_duree(coord_wayp1[0], coord_wayp1[1], coord_wayp2[0], coord_wayp2[1], mode)
+                    rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 100000+j, 100000+k])
     #Calcul des paramètres entre le départ et l'arrivée
     dist_duree=dm.get_distance_duree(coord_dep[0], coord_dep[1], coord_arr[0], coord_arr[1], mode)
     rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 1000, 10000])

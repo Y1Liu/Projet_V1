@@ -10,7 +10,6 @@ from flask_mongoengine import MongoEngine, Document
 import pymongo as pm
 from registerform import RegisterForm
 from loginform import LoginForm
-import bcrypt
 from logoutform import LogoutForm
 from modifform import ModifForm
 from modifacceptedform import ModifAcceptedForm
@@ -57,6 +56,7 @@ def login():
         pw=request.form['login_password'].encode('utf-8')
         hashpass=hashlib.md5(pw)
         pwd=hashpass.hexdigest()
+
         user=users.find({'email':request.form['login_email'], 'password':pwd}).count()
         if user==1:
             session['email']=request.form['login_email']
@@ -70,6 +70,7 @@ def login():
 def register():
     register_form = RegisterForm(request.form)  
     if register_form.validate_on_submit():
+
         pw=request.form['register_password'].encode('utf-8')
         hashpass=hashlib.md5(pw)
         pwd=hashpass.hexdigest()
@@ -108,7 +109,21 @@ def form():
     if logout_form.logout_submit.data and logout_form.validate_on_submit():
         session['email']=None
         return redirect(url_for('index'))
-    
+    form = GeneralForm(request.form)
+    test=[]
+    tags=['Hall', 'Museum']
+
+    start=Node(1000, 0, None, 0, 0)
+    target=Node(10000, 0, None, 0, 0)
+
+    if request.method == 'POST':
+        add_dep=request.form.get('add_dep')
+        session["add_dep"]=add_dep
+        
+        add_arr=request.form.get('add_arr')
+        session["add_arr"]=add_arr
+        escales=[form.escales.data]
+
     form = GeneralForm(request.form)
     test=[]
     tags=['Hall', 'Museum']
@@ -132,6 +147,12 @@ def form():
         t_repas=request.form.get('t_repas')
         d_max=int(request.form.get('d_max'))
         overallScore = cp.get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
+        
+        d_max=300000
+        
+        dtfr=cp.get_graph_matrix(add_dep, add_arr, escales, 'driving', overallScore)
+        df_filtered = dtfr.loc[dtfr['distance'] < d_max]
+
         dtfr=cp.get_graph_matrix(add_dep, add_arr, escales, 'driving', overallScore)
         df_filtered = dtfr.loc[dtfr['distance'] < d_max]
         test=pl.get_path(start, target, dtfr, overallScore, optimisation, df_filtered, datas[0], add_dep, add_arr, escales)
@@ -139,22 +160,16 @@ def form():
         return redirect('/map')
     else:
         tags=session.get("tags", None)
-        test=session.get("test", None)  
+        test=session.get("test", None)
     return render_template('form.html', title='Formulaire', form=form, logout_form=logout_form, modif_form=modif_form, session_email=session['email'])
-
-
-@app.route('/test')
-def test():
-    return render_template('t.html', title='test')
-
 
 @app.route('/map')
 def map():
     depart=session.get("add_dep", None)
     arrivee=session.get("add_arr", None)
     tags=session.get("tags", None)
-    test=session.get("test", None)   
-    return render_template('map.html', title='Map', depart=depart, arrivee=arrivee, tags=tags, test=test)
+    test=session.get("test", None)
+    return render_template('map.html', title='Map', depart=depart, arrivee=arrivee, tags=tags, test=test, escales=escales)
 ###############################################################################
 
 
