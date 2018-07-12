@@ -44,7 +44,7 @@ def places_toDf():
 def params_toDf(mode):
     results=pd.read_csv('../../data/params.csv', names=['mode', 'time', 'distance', 'heuristic', 'cityDep_id', 'cityArr_id'])
     results=results.loc[results['mode']==mode]
-    results=results.iloc[:,1:]
+    results=results.iloc[:, 1:]
     return results
 
 
