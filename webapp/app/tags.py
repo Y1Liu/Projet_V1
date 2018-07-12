@@ -1,10 +1,13 @@
+###############################################################################
+#CLASSE Tags
+###############################################################################
 class Tags:
     def __init__(self, items):
         self.items = items
     def __iter__(self):
         for item in self.items:
             yield(item)
-
+###############################################################################
 
 TAGS = [('Track','Track'),('Service','Service'),('Boutique','Boutique'),('Boxing','Boxing'),('Theme','Theme'),('Station','Station'),('Playground','Playground'),\
         ('Hobby','Hobby'),('Fitness','Fitness'),('Comedy','Comedy'),('Public','Public'),('Bookste','Bookste'),('Bistro','Bistro'),('Ballroom','Ballroom'),\

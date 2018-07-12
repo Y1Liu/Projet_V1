@@ -9,7 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import pymongo as pm
 
-
+###############################################################################
+#CLASSE Modification du profil utilisateur
 ###############################################################################    
 class ModifAcceptedForm(FlaskForm):
     register_email = StringField('email',  validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])

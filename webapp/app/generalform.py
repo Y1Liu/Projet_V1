@@ -10,7 +10,10 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from wtforms.validators import DataRequired
 from tags import Tags, TAGS
 
-###############################################################################    
+
+###############################################################################
+#CLASSE Formulaire de renseingment
+###############################################################################
 class GeneralForm(FlaskForm):
     add_dep=StringField('Adresse de départ :', validators=[DataRequired()])
     add_arr=StringField('Adresse d\'arrivée :', validators=[DataRequired()])

@@ -27,13 +27,18 @@ import dataframes as dtf
 ###############################################################################
 #Création du spark context
 ###############################################################################
-
+"""
+    IN : 
+    OUT :   
+        spark : SparkContext
+"""
+#Fonction permettant de créer un spark context
 def get_spark_context():
     sc = pyspark.SparkContext.getOrCreate()
     conf = pyspark.SparkConf()
     conf.setAppName('SmartPlanner')
-    #conf.setMaster('spark://10.2.68.52:7077')
-    conf.setMaster('local[*]')
+    conf.setMaster('spark://10.2.68.52:7077')
+    #conf.setMaster('local[*]')
     conf.set('spark.executor.memory', '8g')
     conf.set('spark.executor.cores', '3')
     conf.set('spark.cores.max', '9')
@@ -43,7 +48,6 @@ def get_spark_context():
     spark = SparkSession(sc)
     spark.catalog.clearCache()
     return spark
-
 ###############################################################################
 
 
@@ -58,7 +62,7 @@ def get_spark_context():
 
 
 ###############################################################################
-#IMPORT DES MATRICES DE DONNEES SOUS FORME DE DataFrames
+#FONCTIONS
 ###############################################################################
 #Récupération de la matrice de types sous forme de dataframe
 #df_types=dtf.typesToDf()
@@ -75,6 +79,12 @@ def get_spark_context():
 #Récupération de la matrice de placesSimilarity sous forme de dataframe
 #Spark DataFrame
 #placesSimilarities=spark.read.format('csv').option('header', 'true').load('../data/placesSimilarities.csv')
+"""
+    Initialisation de toutes les matrices de données depuis les csv
+    IN : 
+    OUT :   
+        [df_cities, df_types, df_placeTypes, df_similarities, df_places]
+"""
 def init_matrix():
     df_cities=dtf.cities_toDf()
     df_types=dtf.types_toDf()
@@ -99,17 +109,23 @@ def init_matrix():
     df_placeTypes=pd.concat([df_placeTypes, df_city], axis=1)
     df_placeTypes=pd.concat([df_placeTypes, df_visits], axis=1)
     return [df_cities, df_types, df_placeTypes, df_similarities, df_places]
-###############################################################################
 
 
-###############################################################################
-#FONCTIONS
-###############################################################################
+"""
+    Initialisation de toutes les matrices de données depuis les csv
+    IN : 
+        add_dep : str(adresse de départ)
+        add_arr : str(adresse d'arrivée)
+        waypoints : liste([str(adresse1), str(adresse2), ...])
+        mode : "driving", "walking", "transit"
+    OUT :   
+        [df_cities, df_types, df_placeTypes, df_similarities, df_places]
+"""
 #Fonction permettant de retourner une Dataframe avec les distances, temps entre les villes avec le lieu de départ et d'arrivée de l'utilisateur
-def compute_depArr(addDep, addArr, waypoints, mode): 
+def compute_depArr(add_dep, add_arr, waypoints, mode):
     #Récupération des coordonnées depuis les adresses fournies
-    coord_dep=dm.get_gps(addDep)
-    coord_arr=dm.get_gps(addArr)
+    coord_dep=dm.get_gps(add_dep)
+    coord_arr=dm.get_gps(add_arr)
     rows=[]
     temp=len(waypoints)
     #Récupération de la dataframe contenant les villes
@@ -153,10 +169,7 @@ def compute_depArr(addDep, addArr, waypoints, mode):
     df1=pd.DataFrame(rows, columns=['time', 'distance', 'heuristic', 'cityDep_id', 'cityArr_id'])
     #Retourne la nouvelle DataFrame
     return(df1)
-    
-"""temp = compute_depArr('Lille', 'Marseille', ['Grenoble'], 'driving')    
-with open('trajet_temoin.csv', 'w') as csv_file:
-    temp.to_csv(csv_file)"""
+
 
 """
 #Fonction permettant de mesurer la similarité entre 2 places
@@ -179,6 +192,7 @@ def getSimilarity(id_place1, id_place2):
             #print(score)
     return score/nb_ind
 """
+
 
 """
 #Fonction permettant de mesurer la similarité entre les TAGS UTILISATEURS ET TOUTES LES PLACES
@@ -208,6 +222,7 @@ def getSimilarityUsersPlaces(df_tags, df_placesTypes_ind):
     return 0
 """
 
+
 """
 #Fonction créant la matrice de similarité entre les évenements
 def placesSimilarities():
@@ -225,6 +240,7 @@ def placesSimilarities():
     df_sim.to_csv('../data/placesSimilarities.csv', sep=',', encoding='utf-8')
     return(df_sim)
 """
+
 
 """
 #Fonction permettant de lire les Tags données par l'utilisateur 
@@ -254,7 +270,13 @@ def computeRecommandation(tab_tags):
 """
 
 
-#Fonction utilisée pour UDF matrix
+"""
+    IN : 
+        simi : float(similarité)
+        visits : int(nombre de visites)
+    OUT :   
+        float(similarité)
+"""
 #Score = similarité + log(nombre de visites)
 def score_total(simi, visits):
     if(visits >= 1):
@@ -266,13 +288,21 @@ def score_total(simi, visits):
 #CONSTRUCTION DE LA MATRICE DE SIMILARITE ENTRE LES EVENEMENTS
 #Récupération des id de tags choisis par l'utilisateur
 """
-_________________________
-City_id | avg(avg(Score))
-________|________________"""
+    IN : 
+        df_placeTypes : dataframe
+        tab_tags : liste des tags ["Rock", "Music", ...]
+        df_types : dataframe
+        df_similarities : dataframe
+        df_cities : dataframe
+    OUT :   
+        [overall_score, score_table] 
+        _________________________
+        City_id | avg(avg(Score))
+        ________|________________   
+        _________________________
+        place_id | avg(avg(Score))
+        _________|_______________
 """
-_________________________
-place_id | avg(avg(Score))
-_________|_______________"""
 def get_classement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities):
     #Init fonction udf
     user_tags=[]
@@ -307,9 +337,18 @@ def get_classement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities
     overall_score=overall_score.sort_values('Score', ascending=False).reset_index().drop(['index'], axis=1)
     score_table=df_placeTypes.groupby('City_id').mean().sort_values('Score', ascending=False).reset_index().drop(['word', 'Visits'], axis=1)
     score_table=score_table.iloc[:50,:]
-    return [overall_score, score_table]  
+    return [overall_score, score_table]
 
 
+"""
+    IN : 
+        tab_tags : liste des tags ["Rock", "Music", ...]
+        df_overall_score : dataframe contenant les scores de chaque ville
+        n : int(nombre d'étapes)
+        df_cities : dataframe contenant le nom des villes et leur id
+    OUT :   
+        list_steps : liste d'étapes [["ville1", "score1"], ["ville2", "score2"], ...]
+"""
 #Renvoi de la liste de villes recommandée en fonction des choix de l'utilisateur
 def get_way(tab_tags, df_overall_score, n, df_cities):
     list_steps=[]
@@ -322,9 +361,19 @@ def get_way(tab_tags, df_overall_score, n, df_cities):
 
 #CONSTRUCTION DE LA MATRICE PERMETTANT DE CALCULER LES GRAPHES
 """
-______________________________________________________
-time | distance | heuristic | cityDep_id | cityArr_id 
-_____|__________|___________|____________|____________"""
+    IN : 
+        add_dep : str(adresse de départ)
+        add_arr : str(adresse d'arrivée)
+        waypoint : [str(adresse étage1), str(adresse étage1)]
+        mode : "driving", "walking", "transit"
+        overall_score : dataframe contenant les scores de chaque ville
+    OUT :   
+        out :
+    ______________________________________________________
+    time | distance | heuristic | cityDep_id | cityArr_id
+    _____|__________|___________|____________|____________
+
+"""
 def get_graph_matrix(add_dep, add_arr, waypoint, mode, overall_score):
     df_test=compute_depArr(add_dep, add_arr, waypoint, 'driving')
     #df_test=pd.read_csv('trajet_temoin.csv')

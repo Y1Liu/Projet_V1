@@ -36,7 +36,6 @@ from graphnode import *
     OUT : 
         liste de nodes  
 """
-
 def children(node, df, overallScore, target, optimization, filtre, distance_begin):
     children=[]
     d1=filtre.loc[filtre['cityDep_id']==node.city]['cityArr_id']
@@ -47,7 +46,6 @@ def children(node, df, overallScore, target, optimization, filtre, distance_begi
     for value in temp : 
         if(value != target.city):
             try:
-                print(value, target.city)
                 score=overallScore.loc[overallScore['City_id']==value]['Score'].values[0]
                 parent=node
                 H=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))]['heuristic'].values[0]
@@ -57,7 +55,6 @@ def children(node, df, overallScore, target, optimization, filtre, distance_begi
             except:
                 score=0
                 parent=node
-                print(value, target.city)
                 H=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))]['heuristic'].values[0]
                 G=df.loc[((df['cityDep_id']==value)&(df['cityArr_id']==target.city))|((df['cityDep_id']==target.city)&(df['cityArr_id']==value))][optimization].values[0]+distance_begin
                 child=Node(value,score,parent,H,G)
@@ -85,8 +82,7 @@ def get_best_child(liste):
                 liste[j]=tmp
     return(liste[0])
  
-    
-#Obtenir le chemin optimal
+
 """
     IN : 
         start : node
@@ -95,7 +91,8 @@ def get_best_child(liste):
         overallScore : Dataframe city_id - score
         optimization : Type d'otpimisation 'distance', 'time', 'affinity'
         filtre : Matrice 'df' filtrée par les conditions utilisateur
-    OUT :    
+    OUT :   
+        result_name : tableau avec les noms et scores de chaque étape 
 """
 def get_path(start, target, df, overallScore, optimization, filtre, df_cities, add_dep, add_arr, waypoint):
     """stack=[]
@@ -142,16 +139,12 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities, a
             print(waypoint[k])
             target_id=100000+k
             next_target=Node(target_id, 0, None, 0, 0)
-            print("WAYPOINT")
         elif k==(len(waypoint)-1):
             target_id = 100000 + k
             next_target = Node(target_id, 0, None, 0, 0)
-            print("OTHERS WAYP")
         elif k==len(waypoint):
             target_id = 10000
             next_target = Node(target_id, 0, None, 0, 0)
-            print("FINAL")
-        print("NEXT TARGET : "+ str(next_target.city))
         while(tmp!=next_target.city):
             x=children(pere, df, overallScore, next_target, 'distance', filtre, distance_begin)
             temp=x

@@ -10,6 +10,8 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import pymongo as pm
 
 
+###############################################################################
+#CLASSE Formulaire d'enregistrement nouveau profil
 ###############################################################################    
 class RegisterForm(FlaskForm):
     register_email = StringField('email',  validators=[InputRequired(), Email(message='Invalid email'), Length(max=30)])
