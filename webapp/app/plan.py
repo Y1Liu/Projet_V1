@@ -137,15 +137,19 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities, a
     pere=start
     tmp=0
     distance_begin=0
-    for k in 0,len(waypoint):
-        if k<len(waypoint):
-            #print(waypoint[k])
-            #index des waypoints
+    for k in range(0,len(waypoint)+1):
+        if k<(len(waypoint)-1):
+            print(waypoint[k])
             target_id=100000+k
             next_target=Node(target_id, 0, None, 0, 0)
             print("WAYPOINT")
+        elif k==(len(waypoint)-1):
+            target_id = 100000 + k
+            next_target = Node(target_id, 0, None, 0, 0)
+            print("OTHERS WAYP")
         elif k==len(waypoint):
-            next_target=target
+            target_id = 10000
+            next_target = Node(target_id, 0, None, 0, 0)
             print("FINAL")
         print("NEXT TARGET : "+ str(next_target.city))
         while(tmp!=next_target.city):
@@ -192,5 +196,4 @@ dtfr=get_graph_matrix(add_dep, add_arr, escale, mode, overall_score)
 dtfr.to_csv('trajet_temoin.csv')
 df_filtered = dtfr.loc[dtfr['distance'] < d_max]
 print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))
-
 ###############################################################################

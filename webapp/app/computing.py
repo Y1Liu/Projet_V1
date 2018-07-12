@@ -326,9 +326,9 @@ ______________________________________________________
 time | distance | heuristic | cityDep_id | cityArr_id 
 _____|__________|___________|____________|____________"""
 def get_graph_matrix(add_dep, add_arr, waypoint, mode, overall_score):
-    #df_test=compute_depArr(add_dep, add_arr, waypoint, 'driving')
-    df_test=pd.read_csv('trajet_temoin.csv')
-    df_test=df_test.iloc[:,1:]
+    df_test=compute_depArr(add_dep, add_arr, waypoint, 'driving')
+    #df_test=pd.read_csv('trajet_temoin.csv')
+    #df_test=df_test.iloc[:,1:]
     #print(df_test)
     df_params=dtf.params_toDf(mode)
     df_params=pd.concat([df_params, df_test], axis=0)

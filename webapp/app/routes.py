@@ -56,7 +56,6 @@ def login():
         pw=request.form['login_password'].encode('utf-8')
         hashpass=hashlib.md5(pw)
         pwd=hashpass.hexdigest()
-
         user=users.find({'email':request.form['login_email'], 'password':pwd}).count()
         if user==1:
             session['email']=request.form['login_email']
@@ -70,7 +69,6 @@ def login():
 def register():
     register_form = RegisterForm(request.form)  
     if register_form.validate_on_submit():
-
         pw=request.form['register_password'].encode('utf-8')
         hashpass=hashlib.md5(pw)
         pwd=hashpass.hexdigest()
@@ -123,7 +121,6 @@ def form():
         add_arr=request.form.get('add_arr')
         session["add_arr"]=add_arr
         escales=[form.escales.data]
-
     form = GeneralForm(request.form)
     test=[]
     tags=['Hall', 'Museum']
@@ -147,9 +144,7 @@ def form():
         t_repas=request.form.get('t_repas')
         d_max=int(request.form.get('d_max'))
         overallScore = cp.get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
-        
         d_max=300000
-        
         dtfr=cp.get_graph_matrix(add_dep, add_arr, escales, 'driving', overallScore)
         df_filtered = dtfr.loc[dtfr['distance'] < d_max]
 
