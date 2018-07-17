@@ -293,18 +293,47 @@ def get_placesGps(path_coords, path_file):
 #Fonction permettant de récupérer la distance et la durée entre deux coordonnées
 #lors d'un trajet selon différents modes de transport
 def get_distance_duree(lat_dep, lng_dep, lat_arr, lng_arr, mode):
-    t1=time.time()
     #Récupération des données via API
-    link="https://maps.googleapis.com/maps/api/directions/json?origin="+lat_dep+","+lng_dep+"&mode="+mode+"&destination="+lat_arr+","+lng_arr+"&key="+TK_MAPS_1
+    link="https://maps.googleapis.com/maps/api/directions/json?origin="+lat_dep+","+lng_dep+"&mode="+mode+"&destination="+lat_arr+","+lng_arr+"&key="+TK_MAPS_2
     print(link)
     json_data=requests.get(link)
     #conversion au format JSON
     data=json_data.json()
-    t2=time.time()
     dist = data['routes'][0]['legs'][0]['distance']['value']
     duree = data['routes'][0]['legs'][0]['duration']['value']
     heuristic = RAYON_TERRE*acos(sin(radians(float(lat_dep)))*sin(radians(float(lat_arr)))+cos(radians(float(lat_dep)))*cos(radians(float(lat_arr)))*cos(radians(float(lng_arr))-radians(float(lng_dep))))
     return [mode, duree, dist, heuristic]
+
+
+"""
+    OPENSTREETMAP VERSION : L'API GOOGLE MAPS ACTIVE LA FACTURATION A COMPTER DU 17/07
+    Problèmes : Les serveurs d'OPENSTREETMAP ont tendance à ne plus répondre au-delà d'un certain nombre de requêtes
+    IN : 
+        lat_dep : str(latitude d'adresse de départ)
+        lng_dep : str(longitude d'adresse de départ)
+        lat_arr : str(latitude d'adresse d'arrivée)
+        lng_arr : str(longitude d'adresse d'arrivée)
+        mode : "driving", "walking", "transit"
+    OUT :   
+        [mode, duree, dist, heuristic]
+"""
+"""
+#Fonction permettant de récupérer la distance et la durée entre deux coordonnées
+#lors d'un trajet selon différents modes de transport
+def get_distance_duree(lat_dep, lng_dep, lat_arr, lng_arr, mode):
+    #Récupération des données via API
+    #link="https://maps.googleapis.com/maps/api/directions/json?origin="+lat_dep+","+lng_dep+"&mode="+mode+"&destination="+lat_arr+","+lng_arr+"&key="+TK_MAPS_1
+    link = "http://router.project-osrm.org/route/v1/" + mode + "/" + lat_dep + "," + lng_dep + ";" + lat_arr + "," + lng_arr + "?overview=false"
+    print(link)
+    json_data = requests.get(link)
+    data = json_data.json()['routes'][0]['legs']
+    dist = data[0]['distance']
+    duree = data[0]['duration']
+    heuristic = RAYON_TERRE * acos(sin(radians(float(lat_dep))) * sin(radians(float(lat_arr))) + cos(radians(float(lat_dep))) * cos(radians(float(lat_arr))) * cos(radians(float(lng_arr)) - radians(float(lng_dep))))
+    # parsed=json.loads(json_data)
+    # conversion au format JSON
+    return [mode, duree, dist, heuristic]
+"""
 
 
 """
@@ -368,6 +397,7 @@ def place_tags(path_file, return_file):
                     print(j)
                     wr.writerow([associations[i][0], j])            
 """
+
 
 """
     IN:

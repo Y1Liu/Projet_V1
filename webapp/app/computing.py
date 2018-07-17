@@ -121,6 +121,13 @@ def init_matrix():
     OUT :   
         [df_cities, df_types, df_placeTypes, df_similarities, df_places]
 """
+"""
+    IDs
+    1000 : POINT DE DEPART
+    10000 : POINT D'ARRIVEE
+
+    >= 100000 : escales 
+"""
 #Fonction permettant de retourner une Dataframe avec les distances, temps entre les villes avec le lieu de départ et d'arrivée de l'utilisateur
 def compute_depArr(add_dep, add_arr, waypoints, mode):
     #Récupération des coordonnées depuis les adresses fournies
@@ -337,6 +344,11 @@ def get_classement(df_placeTypes, tab_tags, df_types, df_similarities, df_cities
     overall_score=overall_score.sort_values('Score', ascending=False).reset_index().drop(['index'], axis=1)
     score_table=df_placeTypes.groupby('City_id').mean().sort_values('Score', ascending=False).reset_index().drop(['word', 'Visits'], axis=1)
     score_table=score_table.iloc[:50,:]
+    mask = overall_score.Score < 0
+    column_name = 'Score'
+    overall_score.loc[mask, 'Score'] = 0.1
+    max_G=overall_score['Score'].max()
+    overall_score['Score'] = overall_score['Score'] * (5 / max_G)
     return [overall_score, score_table]
 
 
@@ -374,8 +386,14 @@ def get_way(tab_tags, df_overall_score, n, df_cities):
     _____|__________|___________|____________|____________
 
 """
+"""
+    1000 : POINT DE DEPART
+    10000 : POINT D'ARRIVEE
+
+    >= 100000 : escales 
+"""
 def get_graph_matrix(add_dep, add_arr, waypoint, mode, overall_score):
-    df_test=compute_depArr(add_dep, add_arr, waypoint, 'driving')
+    df_test=compute_depArr(add_dep, add_arr, waypoint, mode)
     #df_test=pd.read_csv('trajet_temoin.csv')
     #df_test=df_test.iloc[:,1:]
     #print(df_test)
@@ -415,6 +433,6 @@ def get_graph_matrix(add_dep, add_arr, waypoint, mode, overall_score):
     df_scoreArr=df_scoreArr.reset_index(drop=True)
     df_params=pd.concat([df_params, df_scoreDep, df_scoreArr], axis=1, join='inner')
     #sc_params=spark.createDataFrame(df_params)
-    out=df_params
-    return out
+    df_params.to_csv('trajet_temoin.csv')
+    return df_params
 ###############################################################################

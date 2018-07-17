@@ -67,19 +67,37 @@ def children(node, df, overallScore, target, optimization, filtre, distance_begi
 #Obtenir le noeud suivant en fonction de G et H 
 """
     IN : liste de nodes
+         overall_score : dataframe score de chaque ville 
+         optimization : 'time', 'distance', 'affinity'
+         max_G : maximum distance 
+         max_H : maximul heuristique
     OUT : node
 """
-def get_best_child(liste):
+def get_best_child(liste, overall_score, optimization, max_G, max_H):
     for i in range(0, len(liste)):
         for j in range(i+1, len(liste)):
             x1=liste[i].H
             y1=liste[i].G
             x2=liste[j].H
             y2=liste[j].G
-            if((x1+y1)>(x2+y2)):
-                tmp=liste[i]
-                liste[i]=liste[j]
-                liste[j]=tmp
+            try:
+                score_city1=overall_score.loc[overall_score['City_id']==liste[i].city]['Score'].values[0]
+            except:
+                score_city1=0.1
+            try:
+                score_city2=overall_score.loc[overall_score['City_id']==liste[j].city]['Score'].values[0]
+            except:
+                score_city2=0.1
+            if optimization=="affinity":
+                if((x1/max_G + y1/max_H)*score_city2 > (x2/max_G + y2/max_H)*score_city1):
+                    tmp=liste[i]
+                    liste[i]=liste[j]
+                    liste[j]=tmp
+            else:
+                if((x1+y1)>(x2+y2)):
+                    tmp=liste[i]
+                    liste[i]=liste[j]
+                    liste[j]=tmp
     return(liste[0])
  
 
@@ -94,39 +112,12 @@ def get_best_child(liste):
     OUT :   
         result_name : tableau avec les noms et scores de chaque étape 
 """
+"""
+    1000 : POINT DE DEPART
+    10000 : POINT D'ARRIVEE
+    >= 100000 : escales 
+"""
 def get_path(start, target, df, overallScore, optimization, filtre, df_cities, add_dep, add_arr, waypoint):
-    """stack=[]
-    result_id=[]
-    stack.append(start)
-    pere=start
-    tmp=0
-    distance_begin=0
-    while(tmp!=target.city):
-        x=children(pere, df, overallScore, target, 'distance',filtre, distance_begin)
-        #########################
-        temp=x
-        for node_s in stack:
-            for node_c in x:
-                if(node_s.city==node_c.city):
-                    temp.remove(node_c)
-        #########################
-        child=get_best_child(temp)
-        stack.append(child)
-        pere=child
-        print(child.city)
-        tmp=stack[-1].city
-        distance_begin += pere.G
-    for obj in stack:
-        result_id.append(obj.city)
-    result_names=[]
-    for obj in result_id:
-        if(obj<100):
-            result_names.append([df_cities.iloc[int(obj)-1]['name'], overallScore.loc[overallScore['City_id']==obj]['Score'].values[0]])
-        elif(obj==1000):
-            result_names.append([add_dep, 0])
-        elif(obj==10000):
-            result_names.append([add_arr, 0]) 
-    return result_names"""
     result_names=[]    
     stack=[]
     result_id=[]
@@ -143,10 +134,10 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities, a
             target_id = 100000 + k
             next_target = Node(target_id, 0, None, 0, 0)
         elif k==len(waypoint):
-            target_id = 10000
+            target_id = target.city
             next_target = Node(target_id, 0, None, 0, 0)
         while(tmp!=next_target.city):
-            x=children(pere, df, overallScore, next_target, 'distance', filtre, distance_begin)
+            x=children(pere, df, overallScore, next_target, optimization, filtre, distance_begin)
             temp=x
             for node_s in stack:
                 for node_c in x:
@@ -180,13 +171,13 @@ start=Node(1000, 0, None, 0, 0)
 target=Node(10000, 0, None, 0, 0)
 add_dep='Lille'
 add_arr='Marseille'
-escale=['Grenoble', 'Lyon']
+escale=['Amiens']
 t_max=7200
 d_max=300000
 mode='driving'
 optimisation='distance'
 dtfr=get_graph_matrix(add_dep, add_arr, escale, mode, overall_score)
-dtfr.to_csv('trajet_temoin.csv')
+#dtfr.to_csv('trajet_temoin_dunkerque_marseille.csv')
 df_filtered = dtfr.loc[dtfr['distance'] < d_max]
 print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))
 ###############################################################################
