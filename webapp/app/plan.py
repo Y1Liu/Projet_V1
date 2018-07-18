@@ -117,7 +117,7 @@ def get_best_child(liste, overall_score, optimization, max_G, max_H):
     10000 : POINT D'ARRIVEE
     >= 100000 : escales 
 """
-def get_path(start, target, df, overallScore, optimization, filtre, df_cities, add_dep, add_arr, waypoint):
+def get_path(start, target, df, overall_score, optimization, filtre, df_cities, add_dep, add_arr, waypoint):
     result_names=[]    
     stack=[]
     result_id=[]
@@ -137,13 +137,13 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities, a
             target_id = target.city
             next_target = Node(target_id, 0, None, 0, 0)
         while(tmp!=next_target.city):
-            x=children(pere, df, overallScore, next_target, optimization, filtre, distance_begin)
+            x=children(pere, df, overall_score, next_target, 'distance', filtre, distance_begin)
             temp=x
             for node_s in stack:
                 for node_c in x:
                     if(node_s.city==node_c.city):
                         temp.remove(node_c)
-            child=get_best_child(temp)
+            child=get_best_child(temp, overall_score, optimization, overall_score['Score'].max(), df['heuristic'].max())
             stack.append(child)
             pere=child
             tmp=stack[-1].city
@@ -153,7 +153,7 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities, a
     ###########################################################################
     for obj in result_id:
         if(obj<100):
-            result_names.append([df_cities.iloc[int(obj)-1]['name'], overallScore.loc[overallScore['City_id']==obj]['Score'].values[0]])
+            result_names.append([df_cities.iloc[int(obj)-1]['name'], overall_score.loc[overall_score['City_id']==obj]['Score'].values[0]])
         elif(obj==1000):
             result_names.append([add_dep, 0])
         elif(obj==10000):
@@ -164,7 +164,7 @@ def get_path(start, target, df, overallScore, optimization, filtre, df_cities, a
     return result_names
 
 
-datas=init_matrix()
+"""datas=init_matrix()
 tags=['Art', 'Museum']
 overall_score = get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
 start=Node(1000, 0, None, 0, 0)
@@ -173,11 +173,17 @@ add_dep='Lille'
 add_arr='Marseille'
 escale=['Amiens']
 t_max=7200
-d_max=300000
+d_max=400000
 mode='driving'
-optimisation='distance'
+optimisation='affinity'
 dtfr=get_graph_matrix(add_dep, add_arr, escale, mode, overall_score)
+<<<<<<< HEAD
 dtfr.to_csv('trajet_temoin_lille_marseille.csv')
 df_filtered = dtfr.loc[dtfr['distance'] < d_max]
 print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))
+=======
+#dtfr.to_csv('trajet_temoin_dunkerque_marseille.csv')
+df_filtered = dtfr.loc[(dtfr['distance']<d_max) & (dtfr['distance'] > 50000)]
+print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))"""
+>>>>>>> d2910c5ad8aa9051a374696770d7794ba756881d
 ###############################################################################
