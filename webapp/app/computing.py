@@ -393,9 +393,9 @@ def get_way(tab_tags, df_overall_score, n, df_cities):
     >= 100000 : escales 
 """
 def get_graph_matrix(add_dep, add_arr, waypoint, mode, overall_score):
-    df_test=compute_depArr(add_dep, add_arr, waypoint, mode)
-    #df_test=pd.read_csv('trajet_temoin.csv')
-    #df_test=df_test.iloc[:,1:]
+    #df_test=compute_depArr(add_dep, add_arr, waypoint, mode)
+    df_test=pd.read_csv('trajet_temoin.csv')
+    df_test=df_test.iloc[:,1:6]
     #print(df_test)
     df_params=dtf.params_toDf(mode)
     df_params=pd.concat([df_params, df_test], axis=0)
