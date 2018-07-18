@@ -70,7 +70,7 @@ def children(node, df, overallScore, target, optimization, filtre, distance_begi
          overall_score : dataframe score de chaque ville 
          optimization : 'time', 'distance', 'affinity'
          max_G : maximum distance 
-         max_H : maximul heuristique
+         max_H : maximum heuristique
     OUT : node
 """
 def get_best_child(liste, overall_score, optimization, max_G, max_H):
@@ -177,7 +177,7 @@ d_max=300000
 mode='driving'
 optimisation='distance'
 dtfr=get_graph_matrix(add_dep, add_arr, escale, mode, overall_score)
-#dtfr.to_csv('trajet_temoin_dunkerque_marseille.csv')
+dtfr.to_csv('trajet_temoin_lille_marseille.csv')
 df_filtered = dtfr.loc[dtfr['distance'] < d_max]
 print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))
 ###############################################################################
