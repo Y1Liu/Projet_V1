@@ -35,6 +35,7 @@ import computing as cp
 import plan as pl
 import hashlib
 from graphnode import *
+import numpy as np
 ###############################################################################
 
 
@@ -107,7 +108,7 @@ def register():
         pw=request.form['register_password'].encode('utf-8')
         hashpass=hashlib.md5(pw)
         pwd=hashpass.hexdigest()
-        users.insert({'email': request.form['register_email'], 'password':pwd, 'nom':request.form['register_nom'], 'prenom':request.form['register_prenom'], 'rue':request.form['register_rue'], 'cp':request.form['register_cp'], 'ville':request.form['register_ville'], 'tags':request.form['register_tags']})
+        users.insert({'email': request.form['register_email'], 'password':pwd, 'nom':request.form['register_nom'], 'prenom':request.form['register_prenom'], 'rue':request.form['register_rue'], 'cp':request.form['register_cp'], 'ville':request.form['register_ville'], 'tags':register_form.register_tags.data})
         session['email'] = request.form['register_email']
         return redirect(url_for('form'))
     return render_template('register.html', register_form=register_form)
@@ -147,7 +148,7 @@ def profile():
     if modif_accepted_form.register_submit.data and modif_accepted_form.validate_on_submit():
         return redirect(url_for('index'))
     return render_template('profile.html', logout_form=logout_form, modif_form=modif_form, session_email=session['email'], modif_accepted_form=modif_accepted_form)    
-    
+
 
 #Page de formulaire
 """
@@ -193,19 +194,17 @@ def form():
         j_arr=request.form.get('j_arr')
         session["j_arr"]=j_arr
         t_max=int(request.form.get('t_max'))
-        t_repas=request.form.get('t_repas')
         d_max=int(request.form.get('d_max'))
         overallScore = cp.get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
-        #d_max=300000
         dtfr=cp.get_graph_matrix(add_dep, add_arr, escales, mode, overallScore)
         if (optimisation == 'distance'):
-            df_filtered = dtfr.loc[dtfr['distance'] < d_max]
+            df_filtered = dtfr.loc[(dtfr['distance'] < d_max) & (dtfr['distance'] > 50000)]
         elif (optimisation == 'time'):
             df_filtered = dtfr.loc[dtfr['time'] < t_max]
         elif (optimisation == 'affinity'):
             df_filtered = dtfr.loc[(dtfr['distance']<d_max) & (dtfr['distance'] > 50000)]
         test=pl.get_path(start, target, dtfr, overallScore, optimisation, df_filtered, datas[0], add_dep, add_arr, escales)
-        session["test"]=test
+        session["test"]=test[0]
         return redirect('/map')
     else:
         tags=session.get("tags", None)

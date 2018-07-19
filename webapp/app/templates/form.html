@@ -140,17 +140,6 @@
                 {% endfor %}
                 </div>  
             </div>          
-            <div class="row">
-                <div class="col">
-                {{ form.t_repas.label }}
-                {% for subfield in form.t_repas %}
-                <tr>
-                    <td>{{ subfield }}</td>
-                    <td>{{ subfield.label }}</td>
-                </tr>
-                {% endfor %}
-                </div>
-            </div>
             <br />
             <div class="col">
                 <input type="submit" value="Submit" />

@@ -168,6 +168,7 @@ var score =[];
 var dep = '{{ depart }}';
 var arr = '{{ arrivee }}';
 var tags = '{{ tags }}';
+
 var recom = '{{ test }}';
 var heure = '{{ h_dep }}';
 var escales= ['{{ test[0][0] }}', '{{ test[1][0] }}', '{{ test[2][0] }}', '{{ test[3][0] }}','{{ test[4][0] }}','{{ test[5][0] }}'];
@@ -226,7 +227,7 @@ function initMap() {
         
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer({
-          draggable: true,
+          draggable: false,
           map: map,
           panel: document.getElementById('right-panel'),
           suppressMarkers : false
