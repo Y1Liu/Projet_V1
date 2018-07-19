@@ -175,6 +175,7 @@ def compute_depArr(add_dep, add_arr, waypoints, mode):
     rows.append([dist_duree[1], dist_duree[2], dist_duree[3], 1000, 10000])
     df1=pd.DataFrame(rows, columns=['time', 'distance', 'heuristic', 'cityDep_id', 'cityArr_id'])
     #Retourne la nouvelle DataFrame
+    df1.to_csv('trajet_essai.csv')
     return(df1)
 
 
@@ -393,8 +394,8 @@ def get_way(tab_tags, df_overall_score, n, df_cities):
     >= 100000 : escales 
 """
 def get_graph_matrix(add_dep, add_arr, waypoint, mode, overall_score):
-    #df_test=compute_depArr(add_dep, add_arr, waypoint, mode)
-    df_test=pd.read_csv('trajet_temoin.csv')
+    df_test=compute_depArr(add_dep, add_arr, waypoint, mode)
+    #df_test=pd.read_csv('trajet_temoin.csv')
     df_test=df_test.iloc[:,1:6]
     #print(df_test)
     df_params=dtf.params_toDf(mode)

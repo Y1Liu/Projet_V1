@@ -16,8 +16,7 @@
 ###############################################################################
 from computing import get_graph_matrix, init_matrix, get_classement
 import pandas as pd
-from graphnode import *
-###############################################################################
+from graphnode import *###############################################################################
 
 
 ###############################################################################
@@ -163,8 +162,8 @@ def get_path(start, target, df, overall_score, optimization, filtre, df_cities, 
             result_names.append([waypoint[idx], 0])
     return result_names
 
-
-"""datas=init_matrix()
+"""
+datas=init_matrix()
 tags=['Art', 'Museum']
 overall_score = get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
 start=Node(1000, 0, None, 0, 0)
@@ -177,13 +176,8 @@ d_max=400000
 mode='driving'
 optimisation='affinity'
 dtfr=get_graph_matrix(add_dep, add_arr, escale, mode, overall_score)
-<<<<<<< HEAD
-dtfr.to_csv('trajet_temoin_lille_marseille.csv')
-df_filtered = dtfr.loc[dtfr['distance'] < d_max]
-print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))
-=======
-#dtfr.to_csv('trajet_temoin_dunkerque_marseille.csv')
+dtfr.to_csv("trajet_test.csv")
 df_filtered = dtfr.loc[(dtfr['distance']<d_max) & (dtfr['distance'] > 50000)]
-print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))"""
->>>>>>> d2910c5ad8aa9051a374696770d7794ba756881d
+print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))
+"""
 ###############################################################################

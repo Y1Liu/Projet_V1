@@ -294,7 +294,7 @@ def get_placesGps(path_coords, path_file):
 #lors d'un trajet selon différents modes de transport
 def get_distance_duree(lat_dep, lng_dep, lat_arr, lng_arr, mode):
     #Récupération des données via API
-    link="https://maps.googleapis.com/maps/api/directions/json?origin="+lat_dep+","+lng_dep+"&mode="+mode+"&destination="+lat_arr+","+lng_arr+"&key="+TK_MAPS_2
+    link="https://maps.googleapis.com/maps/api/directions/json?origin="+lat_dep+","+lng_dep+"&mode="+mode+"&destination="+lat_arr+","+lng_arr+"&key="+TK_MAPS_1
     print(link)
     json_data=requests.get(link)
     #conversion au format JSON
