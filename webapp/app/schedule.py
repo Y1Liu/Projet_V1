@@ -3,7 +3,7 @@
 
 
 ###############################################################################
-#Fichier contenant les fonction de scheduling horaire
+#Fichier contenant les fonction de planification horaire horaire
 #Par Arnaud Duhamel et Robin Cavalieri
 #Planificateur intelligent
 #SOLUTEC Paris
@@ -15,6 +15,8 @@
 #LIBRAIRIES
 ###############################################################################
 import datetime
+import pandas as pd
+import numpy as np
 ###############################################################################
 
 

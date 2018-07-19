@@ -110,6 +110,7 @@ def get_best_child(liste, overall_score, optimization, max_G, max_H):
         filtre : Matrice 'df' filtrée par les conditions utilisateur
     OUT :   
         result_name : tableau avec les noms et scores de chaque étape 
+        result_id : tableau avec les id chaque étape
 """
 """
     1000 : POINT DE DEPART
@@ -160,7 +161,7 @@ def get_path(start, target, df, overall_score, optimization, filtre, df_cities, 
         elif(obj >= 100000): 
             idx=obj-100000
             result_names.append([waypoint[idx], 0])
-    return result_names
+    return [result_names, result_id]
 
 """
 datas=init_matrix()
