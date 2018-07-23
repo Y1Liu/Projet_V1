@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% if title %}
+		<title>{{ title }} - Interface</title>
+		{% else %}
+		<title>Interface de renseignements</title>
+		{% endif %}
+	</head>
+	<body>
+<!--Création du header -->
+<div class="header">
+      <div class="form-group">
+          <div>
+              <div class="row">
+                  <div class="col-sm-4">
+                      <p class="mail">{{ session_email }}<p>
+                  </div>
+                  <div class="col-sm-4">
+                      <form  class= "form form-horizontal" method="post" role="form" id="logout_form">
+                          {{ logout_form.csrf_token }}
+                          {{ wtf.form_field(logout_form.logout_submit) }}
+                      </form>
+                  </div>
+                  <div class="col-sm-4">
+                      <form  class= "form form-horizontal" method="post" role="form" id="modif_form">
+                          {{ modif_form.csrf_token }}
+                          {{ wtf.form_field(modif_form.modif_submit) }} 
+                      </form>  
+                  </div>
+              </div>                
+          </div>
+      </div>
+</div>
+
+{% block content %}{% endblock %}
+
+<div class="footer">
+          <p>
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Italian Trulli" style="width:30px;height:30px;">
+        Copyright © SmartPlanner - Tous droits réservés
+    </p>
+  </div> 
+	</body>
+</html>
