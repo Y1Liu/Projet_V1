@@ -56,7 +56,7 @@ def schedule_str(t_dep, t_arr, df, result_plan):
     for i in range(0, len(result_plan)-1):
         delta=df.loc[((df['cityDep_id']==result_plan[i])&(df['cityArr_id']==result_plan[i+1])) ^ ((df['cityDep_id']==result_plan[i+1])&(df['cityArr_id']==result_plan[i])), 'time'].values[0]
         t=t+delta
-        print(t)
+        #print(t)
         heures.append(t)
     for i in range(0, len(heures)):
         #Arret après 22h
