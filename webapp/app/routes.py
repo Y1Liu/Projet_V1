@@ -58,7 +58,6 @@ login_manager.login_view = 'login'
 bootstrap = Bootstrap(app)
 datas=cp.init_matrix()
 SESSION_TYPE = "mongodb"
-#Session(app)
 mongo = pm.MongoClient()
 ###############################################################################
 
@@ -134,14 +133,14 @@ def register():
             existing_user = User.objects(email=register_form.register_email.data).first()
             if existing_user is None:
                 pwd = generate_password_hash(register_form.register_password.data, method='sha256')
-                new = User( email=request.form['register_email'],
-                            password=pwd,
-                            nom=request.form['register_nom'],
-                            prenom=request.form['register_prenom'],
-                            rue=request.form['register_rue'],
-                            cp=request.form['register_cp'],
-                            ville=request.form['register_ville'],
-                            tags=register_form.register_tags.data).save()
+                new = User(email=request.form['register_email'],
+                    password=pwd,
+                    nom=request.form['register_nom'],
+                    prenom=request.form['register_prenom'],
+                    rue=request.form['register_rue'],
+                    cp=request.form['register_cp'],
+                    ville=request.form['register_ville'],
+                    tags=register_form.register_tags.data).save()
                 login_user(new)
                 return redirect(url_for('form'))
             else:
