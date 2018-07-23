@@ -10,11 +10,13 @@
     <script src="https://maps.googleapis.com/maps/api/js?v=3"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <script src="snazzy-info-window.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.20&sensor=false"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/jquery.js') }}" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="{{ url_for('static', filename='css/custom.css') }}"" rel="stylesheet" type="text/css" />
     <meta charset="utf-8">
     <title>Planificateur Intelligent - Trajet</title>
     <style type="text/css">
@@ -78,30 +80,14 @@
    border: 1px solid rgba(72, 181, 233, 0.6);
    border-radius: 2px 2px 10px 10px; // apply 10px to the bottom corners of the infowindow
 }
-.results {
-  font-size: 0;
-  padding-bottom: 16px;
-}
-.results-content {
-  font-size: 13px;
-  display: inline-block;
-  margin-left: 20px;
-  vertical-align: top;
-  background: url('https://i.stack.imgur.com/rwkqF.png') 0 0 repeat-x;
-  width: 185px;
-  height: 35px;
-}
-.results .results-content span.stars span {
-  background: url('https://i.stack.imgur.com/rwkqF.png') 0 -36px repeat-x;
-  display: inline-block;
-  height: 35px;
-}
+
 
   </style>
 
   </head>
   <body>
 {% import 'bootstrap/wtf.html' as wtf %}
+<!--Création du header -->
 <div class="header">
       <div class="form-group">
           <div>
@@ -125,21 +111,32 @@
           </div>
       </div>
 </div>
-  <!-- Sidebar -->
+  <!-- Sidebar contenant le recapitulatif du trajet -->
   <div id="sidebar-wrapper">
     <ul class="sidebar-nav" id="side_bar">
-      <li class="sidebar-brand" style="font-weight: bold; color: #999999;">
-        <h1>Informations trajet</h1>
-      </li>
-      <hr>
       <div id="recap">
-        <h4 style="text-align: center">'{{ j_dep }}'</h4>
-      <h4 style="text-align: center"> '{{ h_dep }}' '{{ depart }}'</h4>
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <section class="main-timeline-section">
+        <div class="conference-center-line"></div>
 
-      <h4 style="text-align: center"> Arrivée : '{{ arrivee }}'</h4>
+        <div class="conference-timeline-content">
+
+          <b><div class="hedding-title">'{{ h_dep }}'<br />Lille</div></b>
+          <!-- ici on intègre toutes les étapes via la propriété js innerHTML-->
+            <div id="recap_trajet">
+          </div>
+            <b><div class="hedding-title">Marseille<br />'{{ time[5] }}'</div></b>
+
+          </div>
+        </div>
+      </section>
+  </div>
+</div>
     </div>
     </ul>
   </div>
+  <!-- Affichage de la carete -->
   <div id="page-content-wrapper">
     <div class="container-fluid">
       <div class="row">
@@ -163,21 +160,23 @@
   <!-- /#page-content-wrapper -->
 </div>
 <script>
+/* Récupération de toutes les informations transmises par le formulaire utilisateur */
 var trajet = [];
 var score =[];
 var dep = '{{ depart }}';
 var arr = '{{ arrivee }}';
 var tags = '{{ tags }}';
-
 var recom = '{{ test }}';
+var time = ['{{ time[0] }}', '{{ time[1] }}', '{{ time[2] }}', '{{ time[3] }}','{{ time[4] }}','{{ time[5] }}'];
 var heure = '{{ h_dep }}';
 var escales= ['{{ test[0][0] }}', '{{ test[1][0] }}', '{{ test[2][0] }}', '{{ test[3][0] }}','{{ test[4][0] }}','{{ test[5][0] }}'];
 var scores= ['{{ test[0][1] }}', '{{ test[1][1] }}', '{{ test[2][1] }}', '{{ test[3][1] }}','{{ test[4][1] }}','{{ test[5][1] }}'];
-for (i=0;i<recom.length; i++) {
-  if (!recom[i][0]) {
+
+for (i=0;i<escales.length; i++) {
+  if (!escales[i]) {
     trajet=trajet;
   }
-  trajet.push(recom[i][0])
+  trajet.push(escales[i])
 }
 for (i=0;i<recom.length; i++) {
   if (!recom[i][i]) {
@@ -186,26 +185,34 @@ for (i=0;i<recom.length; i++) {
   score.push(recom[i][1])
 }
 
-$.fn.stars = function() { 
-  return this.each(function() {
-    // Get the value
-    var val = parseFloat($(this).html()); 
-    // Make sure that the value is in 0 - 5 range, multiply to get width
-    var size = Math.max(0, (Math.min(5, val))) * 36.5; 
-    // Create stars holder
-    var $span = $('<span> </span>').width(size); 
-    // Replace the numerical value with stars
-    $(this).empty().append($span);
-  });
+$.fn.stars = function() {
+    return $(this).each(function() {
+        $(this).html($('<span />').width(Math.max(0, (Math.min(5, parseFloat($(this).html())))) * 16));
+    });
 }
 
 $(function() {
   console.log("Calling stars()");
-  $('.results-content span.stars').stars();
-});    
+  $('.result .results-content span.stars').stars();
+});
 
+/* Ajout des étapes dans la sidebar */
+var div = document.getElementById('recap_trajet');
+for (var i = 1; i < escales.length-1; i++) {
+    div.innerHTML+='<div class="timeline-article content-right-container">'+
+                '<div class="content-date">'+
+                    '<span>'+time[i]+'</span>'+
+                '</div>'+
+                '<div class="meta-date">'+'</div>'+
+                '<div class="content-box">'+
+                  '<p>'+escales[i]+'</p>'+
+                '</div>'+
+            '</div>'
+}
+
+/* Création de la carte */
 function initMap() {
-          var myWrapper = $("#wrapper");
+        var myWrapper = $("#wrapper");
         $("#menu-toggle").click(function(e) {
           e.preventDefault();
           $("#wrapper").toggleClass("toggled");
@@ -230,7 +237,7 @@ function initMap() {
           draggable: false,
           map: map,
           panel: document.getElementById('right-panel'),
-          suppressMarkers : false
+          suppressMarkers : true
         });
   
         directionsDisplay.addListener('directions_changed', function() {
@@ -239,10 +246,10 @@ function initMap() {
         displayRoute(dep, arr, directionsService,
             directionsDisplay);
 
-        /*geocoder = new google.maps.Geocoder();
+        geocoder = new google.maps.Geocoder();
         for (var i = 0; i < trajet.length; i++) {
-            codeAddress(geocoder, map, trajet[i], score[i]);
-       }*/
+            codeAddress(geocoder, map, trajet[i], scores[i]);
+       }
                 
 }
 
@@ -269,13 +276,12 @@ function initMap() {
                       '<div class="iw-title">'+address+'</div>' +
                       '<div class="iw-content">' +
                        '<img src="{{ url_for('static', filename='cities/Bordeaux.jpg') }}" alt="Smiley face" height="125" width="125">'+'Nam lorem dui, molestie nec elementum nec, lobortis sed lacus. Morbi nec tellus dolor.' +
-                      '<div class="iw-subTitle">Score</div>' + '<div class="results">' + '<div class="results-content">' + '<span class="stars">' + score + '</span>' + '</div>' + '</div>'+
+                      '<div class="iw-subTitle">Score</div>' + score + ' / 5.0 ' +
                       '<div class="iw-bottom-gradient"></div>' +
                        '</div>'
-              
-
             });
             
+            /* Personalisation des marqueurs*/
             var marker = new google.maps.Marker({
               map: map,
               position: results[0].geometry.location,
@@ -323,7 +329,7 @@ function initMap() {
       }
       function displayRoute(origin, destination, service, display) {
         var waypts=[];
-        for (var i = 0; i < escales.length ; i++) { 
+        for (var i = 1; i < escales.length-1 ; i++) { 
           if (!escales[i]) {
               // si l'escale n'existe pas on n'ajoute rien a waypts
               waypts=waypts;

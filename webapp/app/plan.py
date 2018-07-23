@@ -153,7 +153,7 @@ def get_path(start, target, df, overall_score, optimization, filtre, df_cities, 
     ###########################################################################
     for obj in result_id:
         if(obj<100):
-            result_names.append([df_cities.iloc[int(obj)-1]['name'], overall_score.loc[overall_score['City_id']==obj]['Score'].values[0]])
+            result_names.append([df_cities.iloc[int(obj)-1]['name'], round(overall_score.loc[overall_score['City_id']==obj]['Score'].values[0],2)])
         elif(obj==1000):
             result_names.append([add_dep, 0])
         elif(obj==10000):

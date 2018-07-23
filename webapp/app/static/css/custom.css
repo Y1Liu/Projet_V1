@@ -1,0 +1,124 @@
+body{
+    background-color: #f1f1f1;
+}
+.main-timeline-section{
+    position: relative;
+    width: 100%;
+    margin:auto;
+}
+.main-timeline-section .timeline-start,
+.main-timeline-section .timeline-end {
+    background: #1abc9c;
+    border-radius:100px;
+    margin: 0 auto;
+    width:30px;
+    height:30px;
+}
+
+.hedding-title{
+    position:relative;
+    left:50%;
+    top:-30px;
+    transform: translateX(-50%);
+    border-radius: 5px;
+    background-color:#fff;
+    color:#1abc9c;
+    border:1px solid #1abc9c;
+    padding:5px 15px;
+    float: left;
+}
+.main-timeline-section .conference-center-line {
+    position: absolute;
+    width: 4px;
+    height:100%;
+    top: 0;
+    left:50%;
+    margin-left: -2px;
+    background:#1abc9c;
+    z-index: -1;
+}
+.timeline-article{
+    width:100%;
+    position:relative;
+    margin:40px 0px;
+    min-height: 135px;
+    z-index: 0;
+}
+.timeline-article .content-date{
+    position: absolute;
+    top:33%;
+    left:10%;
+    font-size:18px;
+    transform: translateY(50%);
+}
+.timeline-article .meta-date {
+    position: absolute;
+    top:50%;
+    left: 50%;
+    width:20px;
+    height:20px;
+    transform: translateY(-50%);
+    margin-left: -11px;
+    border-radius: 100%;
+    background:#fff;
+    border:1px solid #1abc9c;
+}
+.timeline-article .content-box{
+    position:absolute;
+    box-shadow: 2px 2px 4px 0px #c1c1c1;
+    border:1px solid #1abc9c;
+    border-radius: 5px;
+    background-color: #fff;
+    top:50%;
+    transform: translateY(-50%);
+    padding:8px;
+    left:50%;
+    margin-left:50px;
+}
+.content-left-container .content-box{
+    left:5%;
+    margin-left: 0px;
+}
+.content-left-container .content-date{
+    left:55%;
+}
+.content-right-container .content-box:before{
+    content: " ";
+    position:absolute;
+    left:-10px;
+    top:40%;
+    transform: translateX(-50%);
+    border:10px solid transparent;
+    border-right-color:#;
+    display:block;
+}
+.content-left-container .content-box:before{
+    content: " ";
+    position:absolute;
+    top:40%;
+    right:-30px;
+    transform: translateX(-50%);
+    border:10px solid transparent;
+    border-left-color:#1abc9c;
+}
+.timeline-article .image-part img{
+    height: 50px;
+    width: 50px;
+    float:left;
+    margin-right:10px;
+}
+.timeline-article .title-description h1{
+    margin:0px;
+    font-size: 18px;
+    float:left;
+}
+.timeline-article .title-description p{
+    padding-top:5px;
+    font-size:14px;
+}
+
+@media (max-width: 460px){
+    body{
+        display: none;
+    }
+}
