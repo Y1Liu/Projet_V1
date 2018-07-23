@@ -40,15 +40,15 @@ body {
     .container_register {
       position: relative;
       top: 3%;
-      margin-top: 5%;
+      margin-top: 2%;
       border: transparent;
       border-radius: 12px;
       background: rgba(255,255,255,0.65);
       max-width: 500px;
-        padding-right: 15px;
-        padding-left: 5%;
-        margin-right: auto;
-        margin-left: auto;
+		padding-right: 15px;
+		padding-left: 5%;
+		margin-right: auto;
+		margin-left: auto;
     }
 
     #modif_submit,

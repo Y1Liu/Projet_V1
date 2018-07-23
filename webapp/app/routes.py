@@ -35,6 +35,8 @@ import computing as cp
 import plan as pl
 import hashlib
 from graphnode import *
+import configparser
+import numpy as np
 ###############################################################################
 
 
@@ -44,7 +46,15 @@ from graphnode import *
 DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
+cfg = configparser.ConfigParser()
+cfg.read('conf.cfg')
+user = cfg.get('DB', 'user')
+password = cfg.get('DB', 'password')
+app.config['MONGODB_SETTINGS'] = {'db': 'smartplanner_users', 'host': 'mongodb://'+user+':'+password+'@ds263660.mlab.com:63660/smartplanner_users'}
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 bootstrap = Bootstrap(app)
 datas=cp.init_matrix()
 SESSION_TYPE = "mongodb"
@@ -56,12 +66,26 @@ mongo = pm.MongoClient()
 ###############################################################################
 #DATABASE
 ###############################################################################
-client=pm.MongoClient('mongodb://root:root_06@ds263660.mlab.com:63660/smartplanner_users')
-db=client.get_database()
-users=db['users']
+db=MongoEngine(app)
 ###############################################################################
+class User(UserMixin, db.Document):
+    # CONSTRUCTEUR DE User
+    """
+    def __init__(self, email, password, nom, prenom, rue, cp, ville, tags):
+    """
+    email = db.EmailField(max_length=30)
+    password = db.StringField(max_length=100)
+    nom = db.StringField(max_length=30)
+    prenom = db.StringField(max_length=30)
+    rue = db.StringField(max_length=30)
+    cp = db.StringField(max_length=30)
+    ville = db.StringField(max_length=30)
+    tags = db.ListField(max_length=30)
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.objects(pk=user_id).first()
 ############################################################################### 
 #ROUTES
 ###############################################################################
@@ -77,17 +101,19 @@ users=db['users']
 """
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    login_form=LoginForm(request.form)
-    if login_form.validate_on_submit():
-        pw=request.form['login_password'].encode('utf-8')
-        hashpass=hashlib.md5(pw)
-        pwd=hashpass.hexdigest()
-        user=users.find({'email':request.form['login_email'], 'password':pwd}).count()
-        if user==1:
-            session['email']=request.form['login_email']
-            return redirect(url_for('form'))
-        else:
-            return redirect(url_for('login'))
+    if current_user.is_authenticated == True:
+        return redirect(url_for('form'))
+    login_form = LoginForm()
+    if request.method == 'POST':
+        if login_form.validate():
+            check_user = User.objects(email=login_form.login_email.data).first()
+            if check_user:
+                if check_password_hash(check_user['password'], login_form.login_password.data):
+                    login_user(check_user)
+                    return redirect(url_for('form'))
+                else:
+                    error = "e-mail ou mot de passe invalide"
+                    return render_template('login.html', error=error, login_form=login_form)
     return render_template('login.html', login_form=login_form)
 
 
@@ -102,14 +128,25 @@ def login():
 """
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    register_form = RegisterForm(request.form)  
-    if register_form.validate_on_submit():
-        pw=request.form['register_password'].encode('utf-8')
-        hashpass=hashlib.md5(pw)
-        pwd=hashpass.hexdigest()
-        users.insert({'email': request.form['register_email'], 'password':pwd, 'nom':request.form['register_nom'], 'prenom':request.form['register_prenom'], 'rue':request.form['register_rue'], 'cp':request.form['register_cp'], 'ville':request.form['register_ville'], 'tags':request.form['register_tags']})
-        session['email'] = request.form['register_email']
-        return redirect(url_for('form'))
+    register_form = RegisterForm()
+    if request.method == 'POST':
+        if register_form.validate():
+            existing_user = User.objects(email=register_form.register_email.data).first()
+            if existing_user is None:
+                pwd = generate_password_hash(register_form.register_password.data, method='sha256')
+                new = User( email=request.form['register_email'],
+                            password=pwd,
+                            nom=request.form['register_nom'],
+                            prenom=request.form['register_prenom'],
+                            rue=request.form['register_rue'],
+                            cp=request.form['register_cp'],
+                            ville=request.form['register_ville'],
+                            tags=register_form.register_tags.data).save()
+                login_user(new)
+                return redirect(url_for('form'))
+            else:
+                error = "Compte existant"
+                return render_template('register.html', error=error, register_form=register_form)
     return render_template('register.html', register_form=register_form)
 
 
@@ -135,6 +172,7 @@ def index():
         4) Après validation de modif_form -> redirection vers route 'profile'
 """
 @app.route('/profile', methods=['GET', 'POST'])
+@login_required
 def profile():
     logout_form=LogoutForm(request.form)
     modif_form=ModifForm(request.form)
@@ -142,12 +180,12 @@ def profile():
     if modif_form.modif_submit.data and modif_form.validate_on_submit():
         return redirect(url_for('profile'))
     if logout_form.logout_submit.data and logout_form.validate_on_submit():
-        session['email']=None
+        logout_user()
         return redirect(url_for('login'))
     if modif_accepted_form.register_submit.data and modif_accepted_form.validate_on_submit():
         return redirect(url_for('index'))
-    return render_template('profile.html', logout_form=logout_form, modif_form=modif_form, session_email=session['email'], modif_accepted_form=modif_accepted_form)    
-    
+    return render_template('profile.html', logout_form=logout_form, modif_form=modif_form, session_email=current_user.email, modif_accepted_form=modif_accepted_form)
+
 
 #Page de formulaire
 """
@@ -159,13 +197,14 @@ def profile():
         si optimisation en affinités : get_way = liste d'étapes [["ville1", "score1"], ["ville2", "score2"], ...] 
 """
 @app.route('/form', methods=['GET','POST'])
+@login_required
 def form():
     logout_form=LogoutForm(request.form)
     modif_form=ModifForm(request.form)
     if modif_form.modif_submit.data and modif_form.validate_on_submit():
         return redirect(url_for('profile'))
     if logout_form.logout_submit.data and logout_form.validate_on_submit():
-        session['email']=None
+        logout_user()
         return redirect(url_for('index'))
 
     form = GeneralForm(request.form)
@@ -193,24 +232,22 @@ def form():
         j_arr=request.form.get('j_arr')
         session["j_arr"]=j_arr
         t_max=int(request.form.get('t_max'))
-        t_repas=request.form.get('t_repas')
         d_max=int(request.form.get('d_max'))
         overallScore = cp.get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
-        #d_max=300000
         dtfr=cp.get_graph_matrix(add_dep, add_arr, escales, mode, overallScore)
         if (optimisation == 'distance'):
-            df_filtered = dtfr.loc[dtfr['distance'] < d_max]
+            df_filtered = dtfr.loc[(dtfr['distance'] < d_max) & (dtfr['distance'] > 50000)]
         elif (optimisation == 'time'):
             df_filtered = dtfr.loc[dtfr['time'] < t_max]
         elif (optimisation == 'affinity'):
             df_filtered = dtfr.loc[(dtfr['distance']<d_max) & (dtfr['distance'] > 50000)]
         test=pl.get_path(start, target, dtfr, overallScore, optimisation, df_filtered, datas[0], add_dep, add_arr, escales)
-        session["test"]=test
+        session["test"]=test[0]
         return redirect('/map')
     else:
         tags=session.get("tags", None)
         test=session.get("test", None)
-    return render_template('form.html', title='Formulaire', form=form, logout_form=logout_form, modif_form=modif_form, session_email=session['email'])
+    return render_template('form.html', title='Formulaire', form=form, logout_form=logout_form, modif_form=modif_form, session_email=current_user.email)
 
 
 #Page d'affichage de la carte
@@ -226,6 +263,7 @@ def form():
         template 'map.html' avec la carte complétée
 """
 @app.route('/map', methods=['GET','POST'])
+@login_required
 def map():
     depart=session.get("add_dep", None)
     j_dep=session.get("j_dep", None)
@@ -239,9 +277,9 @@ def map():
     if modif_form.modif_submit.data and modif_form.validate_on_submit():
         return redirect(url_for('profile'))
     if logout_form.logout_submit.data and logout_form.validate_on_submit():
-        session['email'] = None
+        logout_user()
         return redirect(url_for('login'))
-    return render_template('map.html', title='Map', depart=depart, j_dep=j_dep, h_dep=h_dep, arrivee=arrivee, tags=tags, test=test, logout_form=logout_form, modif_form=modif_form, session_email=session['email'], modif_accepted_form=modif_accepted_form)
+    return render_template('map.html', title='Map', depart=depart, j_dep=j_dep, h_dep=h_dep, arrivee=arrivee, tags=tags, test=test, logout_form=logout_form, modif_form=modif_form, session_email=current_user.email, modif_accepted_form=modif_accepted_form)
 ###############################################################################
 
 

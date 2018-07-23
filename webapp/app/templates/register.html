@@ -30,6 +30,9 @@
                             {{ wtf.form_field(register_form.register_nom) }}
                             {{ wtf.form_field(register_form.register_prenom) }}
                             {{ wtf.form_field(register_form.register_email) }}
+                            {% if error %}
+                                <p class=error>{{ error }}</p>
+                            {% endif %}
                             {{ wtf.form_field(register_form.register_password) }}
                             {{ wtf.form_field(register_form.register_rue) }}
                             {{ wtf.form_field(register_form.register_cp) }}

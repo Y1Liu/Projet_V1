@@ -47,7 +47,7 @@ def get_sec(time_str):
     OUT : 
         str_heures : str(["10:21", "20:10, "", ..."])
 """
-def schedule_str(t_dep, t_arr, d_repas, df, result_plan):
+def schedule_str(t_dep, t_arr, df, result_plan):
     t_dep_conv=get_sec(t_dep)
     t_arr_conv=get_sec(t_arr)
     heures=[t_dep_conv]

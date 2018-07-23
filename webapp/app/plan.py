@@ -161,9 +161,9 @@ def get_path(start, target, df, overall_score, optimization, filtre, df_cities, 
         elif(obj >= 100000): 
             idx=obj-100000
             result_names.append([waypoint[idx], 0])
-    return [result_names, result_id]
+    return (result_names, result_id)
 
-
+"""
 datas=init_matrix()
 tags=['Art', 'Museum']
 overall_score = get_classement(datas[2], tags, datas[1], datas[3], datas[0])[0]
@@ -180,5 +180,5 @@ dtfr=get_graph_matrix(add_dep, add_arr, escale, mode, overall_score)
 #dtfr.to_csv("trajet_test.csv")
 df_filtered = dtfr.loc[(dtfr['distance']<d_max) & (dtfr['distance'] > 50000)]
 print(get_path(start, target, dtfr, overall_score, optimisation, df_filtered, datas[0], add_dep, add_arr, escale))
-
+"""
 ###############################################################################

@@ -28,6 +28,9 @@
                         <h1>Connectez-vous</h1>
                             {{ wtf.form_field(login_form.login_email) }}
                             {{ wtf.form_field(login_form.login_password) }}
+                            {% if error %}
+                                <p class=error>{{ error }}</p>
+                            {% endif %}
                             {{ wtf.form_field(login_form.login_submit) }}
                             <br></br>
                             <a href="register">Pas encore membre ?</a>
