@@ -162,18 +162,6 @@ def register():
     return render_template('register.html', register_form=register_form)
 
 
-# Page d'accueil
-"""
-    IN :  
-    OUT : template 'index.html'  
-"""
-
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template('index.html', Title="Accueil")
-
-
 # Page de profil
 """
     IN : 
@@ -181,7 +169,7 @@ def index():
         logout_form & modif_form : header    
     OUT : 
         1) template 'profile.html'
-        2) Après validation de modif_accepted_form -> redirection vers route 'index'
+        2) Après validation de modif_accepted_form -> redirection vers route 'login'
         3) Après validation de logout_form -> deconnexion et redirection vers route 'login'
         4) Après validation de modif_form -> redirection vers route 'profile'
 """
@@ -199,7 +187,7 @@ def profile():
         logout_user()
         return redirect(url_for('login'))
     if modif_accepted_form.register_submit.data and modif_accepted_form.validate_on_submit():
-        return redirect(url_for('index'))
+        return redirect(url_for('profile'))
     return render_template('profile.html', logout_form=logout_form, modif_form=modif_form, session_email=current_user.email, modif_accepted_form=modif_accepted_form)
 
 
@@ -223,7 +211,7 @@ def form():
         return redirect(url_for('profile'))
     if logout_form.logout_submit.data and logout_form.validate_on_submit():
         logout_user()
-        return redirect(url_for('index'))
+        return redirect(url_for('login'))
 
     form = GeneralForm(request.form)
     test = []
@@ -259,8 +247,7 @@ def form():
             df_filtered = dtfr.loc[dtfr['time'] < t_max]
         elif (optimisation == 'affinity'):
             df_filtered = dtfr.loc[(dtfr['distance'] < d_max) & (dtfr['distance'] > 50000)]
-        test = pl.get_path(start, target, dtfr, overallScore, optimisation, df_filtered, datas[0], add_dep, add_arr,
-                           escales)
+        test = pl.get_path(start, target, dtfr, overallScore, optimisation, df_filtered, datas[0], add_dep, add_arr, escales)
         session["test"] = test[0]
         time = sc.schedule_str(h_dep, h_arr, dtfr, test[1])
         session["time"] = time
