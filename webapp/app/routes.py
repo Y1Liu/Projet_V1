@@ -14,15 +14,10 @@
 ###############################################################################
 #LIBRAIRIES
 ###############################################################################
-from flask import Flask, render_template, flash, request, redirect, url_for, session
-from wtforms import TextField, TextAreaField, validators, StringField, SubmitField, RadioField, SelectMultipleField, SelectField
-from wtforms_components import TimeField
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_bootstrap import Bootstrap
-from flask_wtf import FlaskForm
-from wtforms.validators import Email, Length, InputRequired
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask_mongoengine import MongoEngine, Document
 import pymongo as pm
 from registerform import RegisterForm
 from loginform import LoginForm
@@ -30,13 +25,11 @@ from logoutform import LogoutForm
 from modifform import ModifForm
 from modifacceptedform import ModifAcceptedForm
 from generalform import GeneralForm
-from tags import Tags
 import computing as cp
 import plan as pl
-import hashlib
 from graphnode import *
+from user import User
 import configparser
-import numpy as np
 ###############################################################################
 
 
@@ -46,12 +39,6 @@ import numpy as np
 DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
-cfg = configparser.ConfigParser()
-cfg.read('conf.cfg')
-user = cfg.get('DB', 'user')
-password = cfg.get('DB', 'password')
-app.config['MONGODB_SETTINGS'] = {'db': 'smartplanner_users', 'host': 'mongodb://'+user+':'+password+'@ds263660.mlab.com:63660/smartplanner_users'}
-app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -62,32 +49,20 @@ mongo = pm.MongoClient()
 ###############################################################################
 
 
-###############################################################################
-#DATABASE
-###############################################################################
-db=MongoEngine(app)
-###############################################################################
-class User(UserMixin, db.Document):
-    # CONSTRUCTEUR DE User
-    """
-    def __init__(self, email, password, nom, prenom, rue, cp, ville, tags):
-    """
-    email = db.EmailField(max_length=30)
-    password = db.StringField(max_length=100)
-    nom = db.StringField(max_length=30)
-    prenom = db.StringField(max_length=30)
-    rue = db.StringField(max_length=30)
-    cp = db.StringField(max_length=30)
-    ville = db.StringField(max_length=30)
-    tags = db.ListField(max_length=30)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.objects(pk=user_id).first()
 ############################################################################### 
 #ROUTES
 ###############################################################################
+"""
+    IN:
+        user_id
+    OUT:
+        Objet(User) correspondant
+"""
+@login_manager.user_loader
+def load_user(user_id):
+    return User.objects(pk=user_id).first()
+
+
 #Page de login
 """
     IN : 

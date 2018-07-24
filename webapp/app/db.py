@@ -1,49 +1,40 @@
 #!/usr/bin/env python
 # coding: utf-8
-
 ###############################################################################
-#Fichier base de donnÃ©es
+#Initialisation de l'application app - base de données MONGODB
 #Par Arnaud Duhamel et Robin Cavalieri
 #Planificateur intelligent
 #SOLUTEC Paris
 #10/04/2018
-#Les fonctions d'insertion dans la BDD sont encascadÃ©es selon les dÃ©pendances
 ###############################################################################
 
 
 ###############################################################################
 #LIBRAIRIES
 ###############################################################################
-import pyodbc
+from routes import app
+import configparser
+from flask_mongoengine import MongoEngine
 ###############################################################################
 
 
 ###############################################################################
-#FONCTION
+#CONNEXION BDD
 ###############################################################################
-#Initialisation de la base de donnÃ©es
-#Retourne le contexte
-"""
-def init_db():
-    server = '10.2.38.20,1433'
-    database = 'Planner'
-    username = 'azerty'
-    connexion = pyodbc.connect('Trusted_connection=yes;DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID=;PWD=)
-    return connexion
-
-
-#Permet de rÃ©aliser une commande sql
-def command(db_cmd, arg):
-    context=init_db()
-    handler=context.cursor()
-    res=handler.execute(db_cmd, arg)
-    context.commit()
-    return res
-
-
-#Insertion des parametres dans la BDD : time | distance | heuristic | position_id(FK)
-def insert_param(time, distance, heuristic):
-    res=command('INSERT INTO param([time],[distance],[heuristic]) VALUES(?,?,?)',(time, distance, heuristic))
-    return res
-"""
+cfg = configparser.ConfigParser()
+cfg.read('conf.cfg')
+user = cfg.get('DB', 'user')
+password = cfg.get('DB', 'password')
+app.config['MONGODB_SETTINGS'] = {'db': 'smartplanner_users', 'host': 'mongodb://'+user+':'+password+'@ds263660.mlab.com:63660/smartplanner_users'}
+app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 ###############################################################################
+
+
+###############################################################################
+#DATABASE
+###############################################################################
+db=MongoEngine(app)
+###############################################################################
+
+
+

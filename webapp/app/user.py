@@ -1,23 +1,20 @@
 from flask_login import UserMixin
-from routes import db
+from db import db
 ###############################################################################
 #CLASSE User
 ###############################################################################
-class User(UserMixin):
+class User(UserMixin, db.Document):
     # CONSTRUCTEUR DE User
-    """
     def __init__(self, email, password, nom, prenom, rue, cp, ville, tags):
-    """
-    email = db.StringField(max_length=30)
-    password = db.StringField(max_length=30)
-    nom = db.StringField(max_length=30)
-    prenom = db.StringField(max_length=30)
-    rue = db.StringField(max_length=30)
-    cp = db.StringField(max_length=30)
-    ville = db.StringField(max_length=30)
-    tags = db.StringField(max_length=30)
+        self.email = db.EmailField(max_length=30)
+        self.password = db.StringField(max_length=100)
+        self.nom = db.StringField(max_length=30)
+        self.prenom = db.StringField(max_length=30)
+        self.rue = db.StringField(max_length=30)
+        self.cp = db.StringField(max_length=30)
+        self.ville = db.StringField(max_length=30)
+        self.tags = db.ListField(max_length=30)
 
-    """
     def get_email(self):
         return self.email  # String
 
@@ -41,5 +38,4 @@ class User(UserMixin):
 
     def get_tags(self):
         return self.tags  # [String]
-    """
 ###############################################################################
