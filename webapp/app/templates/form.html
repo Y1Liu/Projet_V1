@@ -20,30 +20,9 @@
   <source src="{{ url_for('static', filename='img/video.mp4') }}" type="video/mp4">
 </video>
 {% import 'bootstrap/wtf.html' as wtf %}
-<!-- Header avec la session utilisateur et les boutons deconnexion et profil -->
-         <div class="header">
-            <div class="form-group">
-                <div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <p class="mail">{{ session_email }}<p>
-                        </div>
-                        <div class="col-sm-4">
-                            <form  class= "form form-horizontal" method="post" role="form" id="logout_form">
-                                {{ logout_form.csrf_token }}
-                                {{ wtf.form_field(logout_form.logout_submit) }}
-                            </form>
-                        </div>
-                        <div class="col-sm-4">
-                            <form  class= "form form-horizontal" method="post" role="form" id="modif_form">
-                                {{ modif_form.csrf_token }}
-                                {{ wtf.form_field(modif_form.modif_submit) }} 
-                            </form>  
-                        </div>
-                    </div>                
-                </div>
-            </div>
-        </div>
+{% extends "base.html" %}
+
+{% block content %}
 <!-- Creation des champs du formulaire -->
 <div id="parent"> 
     <div class="container">
@@ -149,27 +128,7 @@
       <br> 
     </div>
 </div>
-<br>      
-    {% block content %}
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
- 
-        {% for message in messages %}
-            {% if "Error" not in message[1]: %}
-                <div class="alert alert-info">
-                <strong>Success! </strong> {{ message[1] }}
-                </div>
-            {% endif %}
- 
-            {% if "Error" in message[1]: %}
-                <div class="alert alert-warning">
-                {{ message[1] }}
-                </div>
-            {% endif %}
-        {% endfor %}
-            {% endif %}
-        {% endwith %}
-        {% endblock %}
+{% endblock %}
 
 <script>
     function showDiv() {
